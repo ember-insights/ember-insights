@@ -1,0 +1,18 @@
+{
+  "name": "ember-insights",
+  "version": "0.0.0",
+  "homepage": "https://github.com/roundscope/ember-insights",
+  "authors": [
+    "Roundscope Team <hi@roundscope.com>"
+  ],
+  "description": "Ember middleware for tracking users activities and make it managable over Google Analytics",
+  "main": "dist/ember-insights.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

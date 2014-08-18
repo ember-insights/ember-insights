@@ -2,7 +2,7 @@
   "name": "ember-insights",
   "version": "0.0.0",
   "description": "Ember middleware for tracking users activities and make it managable over Google Analytics",
-  "main": "ember-insights.js",
+  "main": "ember-insights.amd.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "bower install"

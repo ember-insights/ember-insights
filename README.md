@@ -1,6 +1,34 @@
 ember-insights
 ==============
 
+Installation
+------------
+
+Enable through Ember initializer
+```coffeescript
+`import GoogleAnalyticInsights from '../utils/ember-insights'`
+
+initializer =
+
+  name: 'Google Analytics insights'
+
+  initialize: (container, application)->
+    GoogleAnalyticInsights.configure('staging', {
+        debug: true
+        insights:
+          transitions: ['page.dashboard']
+          actions: ['publishPage']
+          map:
+            page:
+              editor:
+                actions: ['transition', 'fullPageSave']
+      })
+
+    GoogleAnalyticInsights.start('staging')
+
+`export default initializer`
+```
+
 Refs
 ----
 

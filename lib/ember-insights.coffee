@@ -1,3 +1,4 @@
+self = @
 @configs ||= []
 
 initializer =
@@ -7,31 +8,71 @@ initializer =
     @configs[env] = settings
 
   start: (env) =>
-    settings = @configs[env]
-    Ember.assert("can't find settings for '#{env}' environment", settings)
-    # catch events from ActionHandler and apply them w/ specified insights
+    @settings = @configs[env]
+    Ember.assert("can't find settings for '#{env}' environment", @settings)
+    # assert insights map
+    Ember.assert("can't find 'insights' map for '#{env}' environment", @settings.insights)
+    @settings.insights = Ember.Object.create(@settings.insights)
+    # start catching events from ActionHandler and apply them w/ specified insights map
     Ember.ActionHandler.reopen
       send: @middleware
 
+    @utils
+
+# Some convenience as wrappers for extending the `window.ga` function
+@utils =
+  hasGA: ->
+    window.ga and typeof window.ga is 'function'
+
+  sendEvent: (category, action) ->
+    ga 'send', 'event', category, action  if @hasGA()
+
+  trackPageView: (path) ->
+   if @hasGA()
+      unless path
+        loc  = window.location
+        path = if loc.hash then loc.hash.substring(1) else loc.pathname + loc.search
+
+      ga 'send', 'pageview', path
+
 @middleware = (actionName) ->
   # get active router
-  # router = if @target then @target.router else @get('controller.target.router')
   router = @container.lookup('router:main').router
-  unless router
-    # bubble event back to the engine
-    @_super.apply(@, arguments)
-    return
+  if router
+    # get the from route name
+    routeName = router.currentHandlerInfos[router.currentHandlerInfos.length - 1].name
 
-  activeTransition    = router.activeTransition && router.activeTransition.targetName
-  activeLeafMostRoute = router.currentHandlerInfos[router.currentHandlerInfos.length - 1].name
+    # try to find out particular insight declaration
+    match = (path, entity) ->
+      self.settings.insights.getWithDefault(path, []).indexOf(entity) != -1
+    # look for the insight declaration
+    context = if (actionName is 'transition')
+      #  inside 'transitions'
+      a = match('transitions', routeName)
+      b = match('transitions', routeName.replace('.index', ''))
+      # inside 'map'
+      c = match("map.#{routeName}.actions", 'transition')
+      d = match("map.#{routeName.replace('.index', '')}.actions", 'transition')
 
-  # fetch the correct analytics route handler object from the lookup table based on the following, in order:
-  #   1. if currently transitioning to a route, get that new route's handler
-  #   2. otherwise, get the active leaf-most route handler
-  #   3. if either of those do not resolve, look in _global
-  #   4. finally, if none resolve, then there will be no tracking
-  routeName = activeTransition || activeLeafMostRoute
+      if (a || b || c || d) then { category: 'transition', action: routeName }
+    else
+      # inside 'actions'
+      a = match('actions', actionName)
+      # inside 'map'
+      b = match("map.#{routeName}.actions", actionName)
+      c = match("map.#{routeName.replace('.index', '')}.actions", actionName)
 
-  console.log(actionName)
+      if (a || b || c) then { category: 'action', action: actionName }
+    # pass matched event to Google Analytic service
+    self.utils.sendEvent(context.category, context.action) if context
+
+  # drop a line to the developers console
+  if self.settings.debug
+    Ember.debug("TRAP: '#{actionName}' action from '#{routeName}' route")
+    Ember.debug("TRAP MATCHED: '#{actionName}' action ") if context
+
+  # bubble event back to the Ember engine
+  @_super.apply(@, arguments)
+
 
 `export default initializer`

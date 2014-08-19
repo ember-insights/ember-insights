@@ -1,10 +1,10 @@
 self = @
-@configs ||= []
 
 initializer =
   configure: (env, settings) =>
     # 0. assert settings
     # X. assign settings by particular environment
+    @configs      ||= []
     @configs[env] = settings
 
   start: (env) =>
@@ -25,15 +25,20 @@ initializer =
     window.ga and typeof window.ga is 'function'
 
   sendEvent: (category, action) ->
-    ga 'send', 'event', category, action  if @hasGA()
+    if @hasGA()
+      ga('send', 'event', category, action)
+    else
+      Ember.debug("Can't tsend event due to the `window.ga` is not a 'function'")
 
   trackPageView: (path) ->
-   if @hasGA()
+    if @hasGA()
       unless path
         loc  = window.location
         path = if loc.hash then loc.hash.substring(1) else loc.pathname + loc.search
 
-      ga 'send', 'pageview', path
+      ga('send', 'pageview', path)
+    else
+      Ember.debug("Can't track page view due to the `window.ga` is not a 'function'")
 
 @middleware = (actionName) ->
   # get active router

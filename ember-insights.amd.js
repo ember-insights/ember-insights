@@ -6,11 +6,10 @@ define("ember-insights",
 
     self = this;
 
-    this.configs || (this.configs = []);
-
     initializer = {
       configure: (function(_this) {
         return function(env, settings) {
+          _this.configs || (_this.configs = []);
           return _this.configs[env] = settings;
         };
       })(this),
@@ -35,6 +34,8 @@ define("ember-insights",
       sendEvent: function(category, action) {
         if (this.hasGA()) {
           return ga('send', 'event', category, action);
+        } else {
+          return Ember.debug("Can't tsend event due to the `window.ga` is not a 'function'");
         }
       },
       trackPageView: function(path) {
@@ -45,6 +46,8 @@ define("ember-insights",
             path = loc.hash ? loc.hash.substring(1) : loc.pathname + loc.search;
           }
           return ga('send', 'pageview', path);
+        } else {
+          return Ember.debug("Can't track page view due to the `window.ga` is not a 'function'");
         }
       }
     };

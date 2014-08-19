@@ -24,7 +24,9 @@ initializer =
                 actions: ['transition', 'fullPageSave']
       })
 
-    GoogleAnalyticInsights.start('staging')
+    runtime = GoogleAnalyticInsights.start('staging')
+
+    runtime.trackPageView()
 
 `export default initializer`
 ```

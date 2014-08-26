@@ -30,13 +30,14 @@ initializer =
     else
       Ember.debug("Can't tsend event due to the `window.ga` is not a 'function'")
 
-  trackPageView: (path) ->
+  trackPageView: (path, fieldNameObj) ->
     if @hasGA()
+      fieldNameObj = {} unless fieldNameObj
       unless path
         loc  = window.location
         path = if loc.hash then loc.hash.substring(1) else loc.pathname + loc.search
 
-      ga('send', 'pageview', path)
+      ga('send', 'pageview', path, fieldNameObj)
     else
       Ember.debug("Can't track page view due to the `window.ga` is not a 'function'")
 

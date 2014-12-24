@@ -9,6 +9,7 @@ export default {
     GoogleAnalyticInsights.configure('staging', {
       debug: true,
       gaGlobalFuncName: 'ga',
+      // gaTrackerName: 'customTracker',
       insights: {
         transitions: ['outer.inner'],
         actions: ['testAction1'],

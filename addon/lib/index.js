@@ -14,6 +14,14 @@ var initializer = (function() {
       return window[Addon.settings.gaGlobalFuncName];
     };
 
+    // private function that returns prefix for current GA tracker
+    var gaTrackerPrefix = function() {
+      if (Addon.settings.gaTrackerName) {
+        return Addon.settings.gaTrackerName + '.';
+      }
+      return '';
+    };
+
     // Some convenience as wrappers for extending the GA global function
     this.utils = {
       hasGA: function() {
@@ -21,7 +29,7 @@ var initializer = (function() {
       },
       sendEvent: function(category, action) {
         if (this.hasGA()) {
-          (gaGlobFunc())('send', 'event', category, action);
+          (gaGlobFunc())(gaTrackerPrefix() + 'send', 'event', category, action);
         }
         else {
           Ember.debug("Can't send event due to the `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
@@ -34,7 +42,7 @@ var initializer = (function() {
             var loc = window.location;
             path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
           }
-          (gaGlobFunc())('send', 'pageview', path, fieldNameObj);
+          (gaGlobFunc())(gaTrackerPrefix() + 'send', 'pageview', path, fieldNameObj);
         }
         else {
           Ember.debug("Can't track page view due to the `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");

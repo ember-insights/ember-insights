@@ -23,3 +23,7 @@ Ember CLI addon for tracking users activities via Google Analytics.
 * `ember build`
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
+
+## Acknowledgement
+
+Product of [Roundscope LLC](http://roundscope.com). HEAD is https://github.com/roundscope/ember-insights. Based on https://github.com/roundscope/web-engineering mastery.

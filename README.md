@@ -1,6 +1,6 @@
 # Ember-insights
 
-This README outlines the details of collaborating on this Ember addon.
+Ember CLI addon for tracking users activities via Google Analytics.
 
 ## Installation
 

@@ -6,6 +6,9 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.resource('outer', function() {
+    this.resource('outer.inner', {path: '/inner'});
+  });
 });
 
 export default Router;

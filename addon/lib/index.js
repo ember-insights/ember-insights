@@ -1,25 +1,30 @@
 /* global Ember */
 
 var initializer = (function() {
-  var Insghts = {
+  var Addon = new (function() { // jshint ignore:line
 
     // configs for different envs
-    configs: {},
+    this.configs = {};
 
     // current config
-    settings: null,
+    this.settings = null;
 
-    // Some convenience as wrappers for extending the `window.ga` function
-    utils: {
+    // private function that returns GA global function
+    var gaGlobFunc = function() {
+      return window[Addon.settings.gaGlobalFuncName];
+    };
+
+    // Some convenience as wrappers for extending the GA global function
+    this.utils = {
       hasGA: function() {
-        return (window.ga && typeof window.ga === 'function');
+        return (gaGlobFunc() && typeof gaGlobFunc() === 'function');
       },
       sendEvent: function(category, action) {
         if (this.hasGA()) {
-          window.ga('send', 'event', category, action);
+          (gaGlobFunc())('send', 'event', category, action);
         }
         else {
-          Ember.debug("Can't send event due to the `window.ga` is not a 'function'");
+          Ember.debug("Can't send event due to the `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
         }
       },
       trackPageView: function(path, fieldNameObj) {
@@ -29,16 +34,16 @@ var initializer = (function() {
             var loc = window.location;
             path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
           }
-          window.ga('send', 'pageview', path, fieldNameObj);
+          (gaGlobFunc())('send', 'pageview', path, fieldNameObj);
         }
         else {
-          Ember.debug("Can't track page view due to the `window.ga` is not a 'function'");
+          Ember.debug("Can't track page view due to the `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
         }
       }
-    },
+    };
 
     // middleware that replaces/extends default ActionHandler.send method
-    middleware: function(actionName) {
+    this.middleware = function(actionName) {
       var router, routeName, routeNameNoIndex,
           matches, matchFound = false, context;
 
@@ -52,7 +57,7 @@ var initializer = (function() {
 
         // try to find out particular insight declaration
         var match = function(path, entity) {
-          return (Insghts.settings.insights.getWithDefault(path, []).indexOf(entity) > -1);
+          return (Addon.settings.insights.getWithDefault(path, []).indexOf(entity) > -1);
         };
         var matchAny = function(arr) {
           for (var i=0, len=arr.length; i<len; i++) {
@@ -85,12 +90,12 @@ var initializer = (function() {
         if (matchAny(matches)) {
           matchFound = true;
           // pass matched event to Google Analytic service
-          Insghts.utils.sendEvent(context.category, context.action);
+          Addon.utils.sendEvent(context.category, context.action);
         }
       }
 
       // drop a line to the developers console
-      if (Insghts.settings.debug) {
+      if (Addon.settings.debug) {
         var msg = "TRAP" + (matchFound ? ' (MATCHED)' : '') + ": '" + actionName + "' action";
         if (routeName) {
           msg += " from '" + routeName + "' route";
@@ -100,28 +105,29 @@ var initializer = (function() {
 
       // bubble event back to the Ember engine
       this._super.apply(this, arguments);
-    }
+    };
 
-  };
+  })();
 
   return {
     configure: function(env, settings) {
       // 0. assert settings
       // X. assign settings by particular environment
-      Insghts.configs[env] = settings;
+      settings.gaGlobalFuncName = settings.gaGlobalFuncName || 'ga';
+      Addon.configs[env] = settings;
     },
     start: function(env) {
-      Insghts.settings = Insghts.configs[env];
-      Ember.assert("can't find settings for '" + env + "' environment", Insghts.settings);
+      Addon.settings = Addon.configs[env];
+      Ember.assert("can't find settings for '" + env + "' environment", Addon.settings);
       // assert insights map
-      Ember.assert("can't find 'insights' map for '" + env + "' environment", Insghts.settings.insights);
-      Insghts.settings.insights = Ember.Object.create(Insghts.settings.insights);
+      Ember.assert("can't find 'insights' map for '" + env + "' environment", Addon.settings.insights);
+      Addon.settings.insights = Ember.Object.create(Addon.settings.insights);
       // start catching events from ActionHandler and apply them w/ specified insights map
       Ember.ActionHandler.reopen({
-        send: Insghts.middleware
+        send: Addon.middleware
       });
 
-      return Insghts.utils;
+      return Addon.utils;
     }
   };
 

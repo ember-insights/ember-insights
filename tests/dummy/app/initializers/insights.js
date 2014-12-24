@@ -8,6 +8,7 @@ export default {
   initialize: function (container, application) {
     GoogleAnalyticInsights.configure('staging', {
       debug: true,
+      gaGlobalFuncName: 'ga',
       insights: {
         transitions: ['outer.inner'],
         actions: ['testAction1'],

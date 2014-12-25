@@ -50,69 +50,86 @@ var initializer = (function() {
       }
     };
 
-    // middleware that replaces/extends default ActionHandler.send method
-    this.middleware = function(actionName) {
-      var router, routeName, routeNameNoIndex,
-          matches, matchFound = false, context;
-
-      // get active router
-      router = this.container.lookup('router:main').router;
-
-      if (router) {
-        // get the from route name
-        routeName = router.currentHandlerInfos[router.currentHandlerInfos.length - 1].name;
-        routeNameNoIndex = routeName.replace('.index', '');
-
-        // try to find out particular insight declaration
-        var match = function(path, entity) {
-          return (Addon.settings.insights.getWithDefault(path, []).indexOf(entity) > -1);
-        };
-        var matchAny = function(arr) {
-          for (var i=0, len=arr.length; i<len; i++) {
-            if ( match(arr[i][0], arr[i][1]) ) { return true; }
-          }
-          return false;
-        };
-
-        // look for the insight declaration
-        if (actionName === 'transition') {
-          // TODO: Legacy code. Check if transition to route can trigger action with
-          //   actionName equal to 'transition'
-          context = { category: 'transition', action: routeName };
-          matches = [
-            ['transitions', routeName       ],
-            ['transitions', routeNameNoIndex],
-            ["map." + routeName        + ".actions", 'transition'],
-            ["map." + routeNameNoIndex + ".actions", 'transition']
-          ];
+    this.sendToGAIfMatched = function(type, options) {
+      // try to find out particular insight declaration
+      var match = function(path, entity) {
+        return (Addon.settings.insights.getWithDefault(path, []).indexOf(entity) > -1);
+      };
+      var matchAny = function(arr) {
+        for (var i=0, len=arr.length; i<len; i++) {
+          if ( match(arr[i][0], arr[i][1]) ) { return true; }
         }
-        else {
-          context = { category: 'action', action: actionName };
-          matches = [
-            ['actions', actionName],
-            ["map." + routeName        + ".actions", actionName],
-            ["map." + routeNameNoIndex + ".actions", actionName]
-          ];
-        }
+        return false;
+      };
 
-        if (matchAny(matches)) {
-          matchFound = true;
-          // pass matched event to Google Analytic service
-          Addon.utils.sendEvent(context.category, context.action);
-        }
+      var actionName, matches, matchFound = false,
+          context = { category: type },
+          oldRouteName = options.oldRouteName,
+          routeName = options.routeName,
+          routeNameNoIndex = routeName.replace('.index', '');
+
+      if (type === 'transition') {
+        actionName = 'transition';
+        context.action = JSON.stringify({from: oldRouteName, to: routeName});
+        matches = [
+          ['transitions', routeName       ],
+          ['transitions', routeNameNoIndex],
+          ["map." + routeName        + ".actions", 'transition'],
+          ["map." + routeNameNoIndex + ".actions", 'transition']
+        ];
+      }
+      else if (type === 'action') {
+        actionName = options.actionName;
+        context.action = actionName;
+        matches = [
+          ['actions', actionName],
+          ["map." + routeName        + ".actions", actionName],
+          ["map." + routeNameNoIndex + ".actions", actionName]
+        ];
+      }
+
+      // look for the insight declaration
+      if (matchAny(matches)) {
+        matchFound = true;
+        // pass matched event to Google Analytic service
+        Addon.utils.sendEvent(context.category, context.action);
       }
 
       // drop a line to the developers console
       if (Addon.settings.debug) {
         var msg = "TRAP" + (matchFound ? ' (MATCHED)' : '') + ": '" + actionName + "' action";
-        if (routeName) {
-          msg += " from '" + routeName + "' route";
-        }
+        var word = (type === 'action') ? " on '" : " to '";
+        if (oldRouteName) { msg += " from '" + oldRouteName + "' route"; }
+        if (   routeName) { msg += word      +    routeName + "' route"; }
         Ember.debug(msg);
       }
+    };
+
+    // middleware for actions
+    this.actionMiddleware = function(actionName) {
+      var appController = this.container.lookup('controller:application');
+
+      Addon.sendToGAIfMatched('action', {
+        actionName: actionName,
+        routeName: appController.get('currentRouteName')
+      });
 
       // bubble event back to the Ember engine
       this._super.apply(this, arguments);
+    };
+
+    // middleware for transitions
+    this.transitionMiddleware = function(infos) {
+      var appController = this.container.lookup('controller:application');
+
+      var oldRouteName = appController.get('currentRouteName');
+      this._super.apply(this, arguments); // bubble event back to the Ember engine
+      var newRouteName = appController.get('currentRouteName');
+
+      Addon.sendToGAIfMatched('transition', {
+        routeName:    newRouteName,
+        oldRouteName: oldRouteName
+      });
     };
 
   })();
@@ -126,13 +143,17 @@ var initializer = (function() {
     },
     start: function(env) {
       Addon.settings = Addon.configs[env];
-      Ember.assert("can't find settings for '" + env + "' environment", Addon.settings);
-      // assert insights map
+      Ember.assert("can't find settings for '"       + env + "' environment", Addon.settings         );
       Ember.assert("can't find 'insights' map for '" + env + "' environment", Addon.settings.insights);
       Addon.settings.insights = Ember.Object.create(Addon.settings.insights);
+
       // start catching events from ActionHandler and apply them w/ specified insights map
       Ember.ActionHandler.reopen({
-        send: Addon.middleware
+        send: Addon.actionMiddleware
+      });
+      // start catching transitions
+      Ember.Router.reopen({
+        didTransition: Addon.transitionMiddleware
       });
 
       return Addon.utils;

@@ -3,6 +3,9 @@
 var initializer = (function() {
   var Addon = new (function() { // jshint ignore:line
 
+    // if Addon is currently active
+    this.isActivated = false;
+
     // configs for different envs
     this.configs = {};
 
@@ -107,6 +110,9 @@ var initializer = (function() {
 
     // middleware for actions
     this.actionMiddleware = function(actionName) {
+      // use original implementation if addon is not activated
+      if (!Addon.isActivated) { this._super.apply(this, arguments); return; }
+
       var appController = this.container.lookup('controller:application');
 
       Addon.sendToGAIfMatched('action', {
@@ -120,6 +126,9 @@ var initializer = (function() {
 
     // middleware for transitions
     this.transitionMiddleware = function(infos) {
+      // use original implementation if addon is not activated
+      if (!Addon.isActivated) { this._super.apply(this, arguments); return; }
+
       var appController = this.container.lookup('controller:application');
 
       var oldRouteName = appController.get('currentRouteName');
@@ -134,6 +143,15 @@ var initializer = (function() {
 
   })();
 
+  // start catching actions from ActionHandler
+  Ember.ActionHandler.reopen({
+    send: Addon.actionMiddleware
+  });
+  // start catching transitions
+  Ember.Router.reopen({
+    didTransition: Addon.transitionMiddleware
+  });
+
   return {
     configure: function(env, settings) {
       // 0. assert settings
@@ -147,16 +165,12 @@ var initializer = (function() {
       Ember.assert("can't find 'insights' map for '" + env + "' environment", Addon.settings.insights);
       Addon.settings.insights = Ember.Object.create(Addon.settings.insights);
 
-      // start catching events from ActionHandler and apply them w/ specified insights map
-      Ember.ActionHandler.reopen({
-        send: Addon.actionMiddleware
-      });
-      // start catching transitions
-      Ember.Router.reopen({
-        didTransition: Addon.transitionMiddleware
-      });
+      Addon.isActivated = true;
 
       return Addon.utils;
+    },
+    stop: function() {
+      Addon.isActivated = false;
     }
   };
 

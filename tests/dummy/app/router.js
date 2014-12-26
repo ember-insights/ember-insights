@@ -6,8 +6,13 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.resource('main', function() {
+    this.route('record', {path: ':ident'});
+  });
   this.resource('outer', function() {
-    this.resource('outer.inner', {path: '/inner'});
+    this.resource('outer.inner', {path: '/inner'}, function() {
+      this.route('nested', {path: ':idd'});
+    });
   });
 });
 

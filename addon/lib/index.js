@@ -53,28 +53,46 @@ var initializer = (function() {
       }
     };
 
-    this.sendToGAIfMatched = function(type, options) {
-      // try to find out particular insight declaration
-      var match = function(path, entity) {
-        return (Addon.settings.insights.getWithDefault(path, []).indexOf(entity) > -1);
-      };
-      var matchAny = function(arr) {
-        for (var i=0, len=arr.length; i<len; i++) {
-          if ( match(arr[i][0], arr[i][1]) ) { return true; }
-        }
-        return false;
-      };
+    var defaultHandler = function(type, options, addonUtils) {
+      var action;
+      if (type === 'transition') {
+        action = JSON.stringify({
+          from: options.oldRouteName,
+          to: options.routeName
+        });
+      }
+      else if (type === 'action') {
+        action = options.actionName;
+      }
 
-      var actionName, matches, matchFound = false,
-          context = { category: type },
+      // pass matched event to Google Analytic service
+      addonUtils.sendEvent(type, action);
+    };
+
+    var firstMatchedHandler = function(toMatch) {
+      var groups = Addon.settings.groups;
+      for (var i=0, len1=groups.length; i<len1; i++) {
+        var group = groups[i];
+        for (var j=0, len2=toMatch.length; j<len2; j++) {
+          var path   = toMatch[j][0],
+              entity = toMatch[j][1];
+          if (group.insights.getWithDefault(path, []).indexOf(entity) > -1) {
+            return group.handler || defaultHandler;
+          }
+        }
+      }
+      return false;
+    };
+
+    this.sendToGAIfMatched = function(type, options) {
+      var actionName, toMatch,
           oldRouteName = options.oldRouteName,
           routeName = options.routeName,
           routeNameNoIndex = routeName.replace('.index', '');
 
       if (type === 'transition') {
         actionName = 'transition';
-        context.action = JSON.stringify({from: oldRouteName, to: routeName});
-        matches = [
+        toMatch = [
           ['transitions', routeName       ],
           ['transitions', routeNameNoIndex],
           ["map." + routeName        + ".actions", 'transition'],
@@ -83,8 +101,7 @@ var initializer = (function() {
       }
       else if (type === 'action') {
         actionName = options.actionName;
-        context.action = actionName;
-        matches = [
+        toMatch = [
           ['actions', actionName],
           ["map." + routeName        + ".actions", actionName],
           ["map." + routeNameNoIndex + ".actions", actionName]
@@ -92,15 +109,15 @@ var initializer = (function() {
       }
 
       // look for the insight declaration
-      if (matchAny(matches)) {
-        matchFound = true;
-        // pass matched event to Google Analytic service
-        Addon.utils.sendEvent(context.category, context.action);
+      var matchedHandler = firstMatchedHandler(toMatch);
+
+      if (matchedHandler) {
+        matchedHandler(type, options, Addon.utils);
       }
 
       // drop a line to the developers console
       if (Addon.settings.debug) {
-        var msg = "TRAP" + (matchFound ? ' (MATCHED)' : '') + ": '" + actionName + "' action";
+        var msg = "TRAP" + (matchedHandler ? ' (MATCHED)' : '') + ": '" + actionName + "' action";
         var word = (type === 'action') ? " on '" : " to '";
         if (oldRouteName) { msg += " from '" + oldRouteName + "' route"; }
         if (   routeName) { msg += word      +    routeName + "' route"; }
@@ -114,10 +131,12 @@ var initializer = (function() {
       if (!Addon.isActivated) { this._super.apply(this, arguments); return; }
 
       var appController = this.container.lookup('controller:application');
+      var routeName = appController.get('currentRouteName');
 
       Addon.sendToGAIfMatched('action', {
         actionName: actionName,
-        routeName: appController.get('currentRouteName')
+        route: this.container.lookup('route:' + routeName),
+        routeName: routeName
       });
 
       // bubble event back to the Ember engine
@@ -135,9 +154,12 @@ var initializer = (function() {
       this._super.apply(this, arguments); // bubble event back to the Ember engine
       var newRouteName = appController.get('currentRouteName');
 
-      Addon.sendToGAIfMatched('transition', {
-        routeName:    newRouteName,
-        oldRouteName: oldRouteName
+      Ember.run.scheduleOnce('routerTransitions', this, function() {
+        Addon.sendToGAIfMatched('transition', {
+          route: this.container.lookup('route:' + newRouteName),
+          routeName:    newRouteName,
+          oldRouteName: oldRouteName
+        });
       });
     };
 
@@ -158,12 +180,25 @@ var initializer = (function() {
       // X. assign settings by particular environment
       settings.gaGlobalFuncName = settings.gaGlobalFuncName || 'ga';
       Addon.configs[env] = settings;
+      Addon.configs[env].groups = [];
+    },
+    addGroup: function(env, cfg) {
+      cfg.insights = Ember.Object.create(cfg.insights);
+      Addon.configs[env].groups.push(cfg);
+    },
+    removeGroup: function(env, name) {
+      var groups = Addon.configs[env].groups;
+
+      for (var i=groups.length-1; i>=0; i--) {
+        if (groups[i].name === name) {
+          groups.splice(i, 1);
+          return;
+        }
+      }
     },
     start: function(env) {
       Addon.settings = Addon.configs[env];
-      Ember.assert("can't find settings for '"       + env + "' environment", Addon.settings         );
-      Ember.assert("can't find 'insights' map for '" + env + "' environment", Addon.settings.insights);
-      Addon.settings.insights = Ember.Object.create(Addon.settings.insights);
+      Ember.assert("can't find settings for '" + env + "' environment", Addon.settings);
 
       Addon.isActivated = true;
 

@@ -30,9 +30,22 @@ var initializer = (function() {
       hasGA: function() {
         return (gaGlobFunc() && typeof gaGlobFunc() === 'function');
       },
-      sendEvent: function(category, action) {
+      sendEvent: function(category, action, label, value) {
         if (this.hasGA()) {
-          (gaGlobFunc())(gaTrackerPrefix() + 'send', 'event', category, action);
+          var fieldNameObj = {
+            'hitType':       'event',  // Required
+            'eventCategory': category, // Required
+            'eventAction':   action    // Required
+          };
+
+          if (label != null) {
+            fieldNameObj.eventLabel = label;
+            if (value != null) {
+              fieldNameObj.eventValue = value;
+            }
+          }
+
+          (gaGlobFunc())(gaTrackerPrefix() + 'send', fieldNameObj);
         }
         else {
           Ember.debug("Can't send event due to the `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
@@ -54,19 +67,30 @@ var initializer = (function() {
     };
 
     var defaultHandler = function(type, options, addonUtils) {
-      var action;
+      var args = ['ember_' + type];
+
       if (type === 'transition') {
-        action = JSON.stringify({
+        args[1] = JSON.stringify({
           from: options.oldRouteName,
           to: options.routeName
         });
       }
       else if (type === 'action') {
-        action = options.actionName;
+        args[1] = options.actionName;
+
+        var actionLabel = options.actionArguments[0],
+            actionValue = options.actionArguments[1];
+
+        if (actionLabel != null) {
+          args[2] = actionLabel;
+          if (actionValue != null) {
+            args[3] = actionValue;
+          }
+        }
       }
 
       // pass matched event to Google Analytic service
-      addonUtils.sendEvent(type, action);
+      addonUtils.sendEvent.apply(addonUtils, args);
     };
 
     var firstMatchedHandler = function(toMatch) {
@@ -135,6 +159,7 @@ var initializer = (function() {
 
       Addon.sendToGAIfMatched('action', {
         actionName: actionName,
+        actionArguments: [].slice.call(arguments, 1),
         route: this.container.lookup('route:' + routeName),
         routeName: routeName
       });

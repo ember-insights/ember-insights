@@ -7,6 +7,9 @@ export default Ember.Route.extend({
     },
     testAction2: function() {
       console.log('LOGGED: testAction2');
+    },
+    testAction3: function() {
+      console.log('LOGGED: testAction3');
     }
   }
 });

@@ -23,7 +23,7 @@ export default {
           outer: {
             actions: ['transition'],
             inner: {
-              actions: ['transition', 'testAction2']
+              actions: ['transition', 'testAction2', 'testAction3']
             }
           }
         }

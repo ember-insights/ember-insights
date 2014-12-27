@@ -74,6 +74,15 @@ var initializer = (function() {
           from: options.oldRouteName,
           to: options.routeName
         });
+
+        var trackType = Addon.settings.trackTransitionsAs;
+
+        if (trackType === 'event'    || trackType === 'both') {
+          addonUtils.sendEvent.apply(addonUtils, args);
+        }
+        if (trackType === 'pageview' || trackType === 'both') {
+          addonUtils.trackPageView(options.url);
+        }
       }
       else if (type === 'action') {
         args[1] = options.actionName;
@@ -87,10 +96,9 @@ var initializer = (function() {
             args[3] = actionValue;
           }
         }
-      }
 
-      // pass matched event to Google Analytic service
-      addonUtils.sendEvent.apply(addonUtils, args);
+        addonUtils.sendEvent.apply(addonUtils, args);
+      }
     };
 
     var firstMatchedHandler = function(toMatch) {
@@ -110,6 +118,8 @@ var initializer = (function() {
 
     this.sendToGAIfMatched = function(type, options) {
       var actionName, toMatch,
+          oldUrl = options.oldUrl,
+          url = options.url,
           oldRouteName = options.oldRouteName,
           routeName = options.routeName,
           routeNameNoIndex = routeName.replace('.index', '');
@@ -143,8 +153,8 @@ var initializer = (function() {
       if (Addon.settings.debug) {
         var msg = "TRAP" + (matchedHandler ? ' (MATCHED)' : '') + ": '" + actionName + "' action";
         var word = (type === 'action') ? " on '" : " to '";
-        if (oldRouteName) { msg += " from '" + oldRouteName + "' route"; }
-        if (   routeName) { msg += word      +    routeName + "' route"; }
+        if (oldRouteName) { msg += " from '" + oldRouteName + "' route (" + oldUrl + ")"; }
+        if (   routeName) { msg += word      +    routeName + "' route (" +    url + ")"; }
         Ember.debug(msg);
       }
     };
@@ -176,14 +186,18 @@ var initializer = (function() {
       var appController = this.container.lookup('controller:application');
 
       var oldRouteName = appController.get('currentRouteName');
+      var oldUrl = oldRouteName ? this.get('url') : '';
       this._super.apply(this, arguments); // bubble event back to the Ember engine
       var newRouteName = appController.get('currentRouteName');
 
       Ember.run.scheduleOnce('routerTransitions', this, function() {
+        var newUrl = this.get('url');
         Addon.sendToGAIfMatched('transition', {
           route: this.container.lookup('route:' + newRouteName),
           routeName:    newRouteName,
-          oldRouteName: oldRouteName
+          oldRouteName: oldRouteName,
+          url:    newUrl,
+          oldUrl: oldUrl
         });
       });
     };
@@ -204,6 +218,7 @@ var initializer = (function() {
       // 0. assert settings
       // X. assign settings by particular environment
       settings.gaGlobalFuncName = settings.gaGlobalFuncName || 'ga';
+      settings.trackTransitionsAs = settings.trackTransitionsAs || 'pageview';
       Addon.configs[env] = settings;
       Addon.configs[env].groups = [];
     },

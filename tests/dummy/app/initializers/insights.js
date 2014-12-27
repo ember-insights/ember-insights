@@ -11,7 +11,8 @@ export default {
     Insights.configure('staging', {
       debug: true,
       gaGlobalFuncName: 'ga',
-      gaTrackerName: 'customTracker'
+      gaTrackerName: 'customTracker',
+      trackTransitionsAs: 'pageview' // 'pageview' (default) OR 'event' OR 'both'
     });
 
     Insights.addGroup('staging', {

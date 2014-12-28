@@ -101,7 +101,7 @@ var initializer = (function() {
       }
     };
 
-    var firstMatchedHandler = function(toMatch) {
+    var firstMatchedGroup = function(toMatch) {
       var groups = Addon.settings.groups;
       for (var i=0, len1=groups.length; i<len1; i++) {
         var group = groups[i];
@@ -109,7 +109,11 @@ var initializer = (function() {
           var path   = toMatch[j][0],
               entity = toMatch[j][1];
           if (group.insights.getWithDefault(path, []).indexOf(entity) > -1) {
-            return group.handler || defaultHandler;
+            return {
+              name:     group.name,
+              insights: group.insights,
+              handler:  group.handler || defaultHandler
+            };
           }
         }
       }
@@ -117,15 +121,15 @@ var initializer = (function() {
     };
 
     this.sendToGAIfMatched = function(type, options) {
-      var actionName, toMatch,
-          oldUrl = options.oldUrl,
+      var actionName, toMatch, oldRouteName, oldUrl,
           url = options.url,
-          oldRouteName = options.oldRouteName,
           routeName = options.routeName,
           routeNameNoIndex = routeName.replace('.index', '');
 
       if (type === 'transition') {
         actionName = 'transition';
+        oldRouteName = options.oldRouteName;
+        oldUrl = options.oldUrl;
         toMatch = [
           ['TRANSITIONS', routeName       ],
           ['TRANSITIONS', routeNameNoIndex],
@@ -143,15 +147,15 @@ var initializer = (function() {
       }
 
       // look for the insight declaration
-      var matchedHandler = firstMatchedHandler(toMatch);
+      var matchedGroup = firstMatchedGroup(toMatch);
 
-      if (matchedHandler) {
-        matchedHandler(type, options, Addon.utils);
+      if (matchedGroup) {
+        matchedGroup.handler(type, options, Addon.utils);
       }
 
       // drop a line to the developers console
       if (Addon.settings.debug) {
-        var msg = "TRAP" + (matchedHandler ? ' (MATCHED)' : '') + ": '" + actionName + "' action";
+        var msg = "TRAP" + (matchedGroup ? " (MATCHED - group '" + matchedGroup.name + "')" : '') + ": '" + actionName + "' action";
         var word = (type === 'action') ? " on '" : " to '";
         if (oldRouteName) { msg += " from '" + oldRouteName + "' route (" + oldUrl + ")"; }
         if (   routeName) { msg += word      +    routeName + "' route (" +    url + ")"; }
@@ -171,7 +175,8 @@ var initializer = (function() {
         actionName: actionName,
         actionArguments: [].slice.call(arguments, 1),
         route: this.container.lookup('route:' + routeName),
-        routeName: routeName
+        routeName: routeName,
+        url: this.container.lookup('router:main').get('url')
       });
 
       // bubble event back to the Ember engine

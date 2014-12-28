@@ -19,13 +19,13 @@ export default {
     Insights.addGroup('staging', {
       name: 'first',
       insights: {
-        transitions: ['index', 'outer.inner.nested'],
-        actions: ['testAction1'],
-        map: {
+        TRANSITIONS: ['index', 'outer.inner.nested'],
+        ACTIONS: ['testAction1'],
+        MAP: {
           outer: {
-            actions: ['transition'],
+            ACTIONS: ['TRANSITION'],
             inner: {
-              actions: ['transition', 'testAction2', 'testAction3']
+              ACTIONS: ['TRANSITION', 'testAction2', 'testAction3']
             }
           }
         }
@@ -35,9 +35,9 @@ export default {
     Insights.addGroup('staging', {
       name: 'experiment2',
       insights: {
-        map: {
+        MAP: {
           outer: {
-            actions: ['testAction2']
+            ACTIONS: ['testAction2']
           }
         }
       }
@@ -57,7 +57,7 @@ export default {
     Insights.addGroup('staging', {
       name: 'forMainRecords',
       insights: {
-        transitions: ['main.record'],
+        TRANSITIONS: ['main.record'],
       },
       // example of custom handler for matched events
       handler: function(type, options, addonUtils) {

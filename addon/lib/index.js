@@ -127,18 +127,18 @@ var initializer = (function() {
       if (type === 'transition') {
         actionName = 'transition';
         toMatch = [
-          ['transitions', routeName       ],
-          ['transitions', routeNameNoIndex],
-          ["map." + routeName        + ".actions", 'transition'],
-          ["map." + routeNameNoIndex + ".actions", 'transition']
+          ['TRANSITIONS', routeName       ],
+          ['TRANSITIONS', routeNameNoIndex],
+          ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
+          ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
         ];
       }
       else if (type === 'action') {
         actionName = options.actionName;
         toMatch = [
-          ['actions', actionName],
-          ["map." + routeName        + ".actions", actionName],
-          ["map." + routeNameNoIndex + ".actions", actionName]
+          ['ACTIONS', actionName],
+          ['MAP.' + routeName        + '.ACTIONS', actionName],
+          ['MAP.' + routeNameNoIndex + '.ACTIONS', actionName]
         ];
       }
 

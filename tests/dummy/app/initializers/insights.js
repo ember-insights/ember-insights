@@ -12,13 +12,14 @@ export default {
       debug: true,
       gaGlobalFuncName: 'ga',
       gaTrackerName: 'customTracker',
-      trackTransitionsAs: 'pageview' // 'pageview' (default) OR 'event' OR 'both'
+      trackTransitionsAs: 'pageview', // 'pageview' (default) OR 'event' OR 'both'
+      updateDocumentLocationOnTransitions: true // true is default
     });
 
     Insights.addGroup('staging', {
       name: 'first',
       insights: {
-        transitions: ['index'],
+        transitions: ['index', 'outer.inner.nested'],
         actions: ['testAction1'],
         map: {
           outer: {

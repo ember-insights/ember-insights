@@ -192,6 +192,13 @@ var initializer = (function() {
 
       Ember.run.scheduleOnce('routerTransitions', this, function() {
         var newUrl = this.get('url');
+
+        if (Addon.settings.updateDocumentLocationOnTransitions) {
+          var loc = window.location;
+          var dl = loc.protocol + '//' + loc.hostname + loc.pathname + loc.search + loc.hash;
+          (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', dl);
+        }
+
         Addon.sendToGAIfMatched('transition', {
           route: this.container.lookup('route:' + newRouteName),
           routeName:    newRouteName,
@@ -217,8 +224,14 @@ var initializer = (function() {
     configure: function(env, settings) {
       // 0. assert settings
       // X. assign settings by particular environment
+
+      // defaults
       settings.gaGlobalFuncName = settings.gaGlobalFuncName || 'ga';
       settings.trackTransitionsAs = settings.trackTransitionsAs || 'pageview';
+      if (typeof settings.updateDocumentLocationOnTransitions === 'undefined') {
+        settings.updateDocumentLocationOnTransitions = true;
+      }
+
       Addon.configs[env] = settings;
       Addon.configs[env].groups = [];
     },

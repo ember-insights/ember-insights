@@ -19,7 +19,13 @@ export default {
     Insights.addGroup('staging', {
       name: 'first',
       insights: {
+        // ALL_TRANSITIONS: true,
+        ALL_TRANSITIONS: {
+          except: ['index', 'main.record', 'outer', 'outer.inner', 'outer.inner.nested']
+        },
         TRANSITIONS: ['index', 'outer.inner.nested'],
+        // ALL_ACTIONS: true,
+        // ALL_ACTIONS: { except: ['testAction2'] },
         ACTIONS: ['testAction1'],
         MAP: {
           outer: {

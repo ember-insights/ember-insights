@@ -118,19 +118,38 @@ var initializer = (function() {
       }
     };
 
-    var firstMatchedGroup = function(toMatch) {
+    var firstMatchedGroup = function(toMatchAll, toMatch) {
       var groups = Addon.settings.groups;
       for (var i=0, len1=groups.length; i<len1; i++) {
         var group = groups[i];
+        var resultGroup = {
+          name:     group.name,
+          insights: group.insights,
+          handler:  group.handler || defaultHandler
+        };
+
+        var matchAllType = toMatchAll[0];
+        var matchAllConfig = group.insights.getWithDefault(matchAllType, false);
+        if (matchAllConfig === true) {
+          return resultGroup;
+        }
+        else if (typeof matchAllConfig === 'object' && matchAllConfig.except) {
+          if (
+            (toMatchAll[1] && matchAllConfig.except.indexOf(toMatchAll[1]) > -1) ||
+            (toMatchAll[2] && matchAllConfig.except.indexOf(toMatchAll[2]) > -1)
+          ) {
+            // Do nothing! 'except' array contains checked route or action!
+          }
+          else {
+            return resultGroup;
+          }
+        }
+
         for (var j=0, len2=toMatch.length; j<len2; j++) {
           var path   = toMatch[j][0],
               entity = toMatch[j][1];
           if (group.insights.getWithDefault(path, []).indexOf(entity) > -1) {
-            return {
-              name:     group.name,
-              insights: group.insights,
-              handler:  group.handler || defaultHandler
-            };
+            return resultGroup;
           }
         }
       }
@@ -138,7 +157,7 @@ var initializer = (function() {
     };
 
     this.sendToGAIfMatched = function(type, options) {
-      var actionName, toMatch, oldRouteName, oldUrl,
+      var actionName, toMatchAll, toMatch, oldRouteName, oldUrl,
           url = options.url,
           routeName = options.routeName,
           routeNameNoIndex = routeName.replace('.index', '');
@@ -153,6 +172,7 @@ var initializer = (function() {
           ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
           ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
         ];
+        toMatchAll = ['ALL_TRANSITIONS', routeName, routeNameNoIndex];
       }
       else if (type === 'action') {
         actionName = options.actionName;
@@ -161,10 +181,11 @@ var initializer = (function() {
           ['MAP.' + routeName        + '.ACTIONS', actionName],
           ['MAP.' + routeNameNoIndex + '.ACTIONS', actionName]
         ];
+        toMatchAll = ['ALL_ACTIONS', actionName];
       }
 
       // look for the insight declaration
-      var matchedGroup = firstMatchedGroup(toMatch);
+      var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
 
       if (matchedGroup) {
         matchedGroup.handler(type, options, Addon.utils);

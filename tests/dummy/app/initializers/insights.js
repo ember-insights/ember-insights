@@ -1,12 +1,11 @@
-import Ember from 'ember';
-import GoogleAnalyticInsights from 'ember-insights/lib/index';
+import Ember    from 'ember';
+import Insights from 'ember-insights';
 
 export default {
 
   name: 'Google Analytics insights',
 
   initialize: function (container, application) {
-    var Insights = GoogleAnalyticInsights;
 
     Insights.configure('staging', {
       debug: true,

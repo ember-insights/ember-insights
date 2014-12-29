@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/roundscope/ember-insights.svg)](https://travis-ci.org/roundscope/ember-insights)
 # Ember-insights
 
 Ember CLI addon for tracking users activities via Google Analytics.

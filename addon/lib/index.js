@@ -30,6 +30,14 @@ var initializer = (function() {
       hasGA: function() {
         return (gaGlobFunc() && typeof gaGlobFunc() === 'function');
       },
+      getGAGlobalFunction: function() {
+        if (this.hasGA()) {
+          return gaGlobFunc();
+        }
+        else {
+          Ember.debug("`window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
+        }
+      },
       sendEvent: function(category, action, label, value) {
         if (this.hasGA()) {
           var fieldNameObj = {
@@ -201,7 +209,12 @@ var initializer = (function() {
         if (Addon.settings.updateDocumentLocationOnTransitions) {
           var loc = window.location;
           var dl = loc.protocol + '//' + loc.hostname + loc.pathname + loc.search + loc.hash;
-          (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', dl);
+          if (Addon.utils.hasGA()) {
+            (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', dl);
+          }
+          else {
+            Ember.debug("Can't set location: `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
+          }
         }
 
         Addon.sendToGAIfMatched('transition', {

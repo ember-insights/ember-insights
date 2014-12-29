@@ -237,20 +237,15 @@ var initializer = (function() {
         var newUrl = this.get('url');
 
         if (Addon.settings.updateDocumentLocationOnTransitions) {
-          if (Addon.utils.hasGA()) {
-            (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', document.URL);
-          }
-          else {
-            Ember.debug("Can't set location: `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
-          }
+          (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', document.URL);
         }
 
         Addon.sendToGAIfMatched('transition', {
-          route: this.container.lookup('route:' + newRouteName),
+          route:        this.container.lookup('route:' + newRouteName),
           routeName:    newRouteName,
           oldRouteName: oldRouteName,
-          url:    newUrl,
-          oldUrl: oldUrl
+          url:          newUrl,
+          oldUrl:       oldUrl
         });
       });
     };

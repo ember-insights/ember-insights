@@ -38,6 +38,15 @@ var initializer = (function() {
           Ember.debug("`window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
         }
       },
+      send: function(fieldNameObj) {
+        fieldNameObj = fieldNameObj || {};
+        if (this.hasGA()) {
+          (gaGlobFunc())(gaTrackerPrefix() + 'send', fieldNameObj);
+        }
+        else {
+          Ember.debug("Can't send: `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
+        }
+      },
       sendEvent: function(category, action, label, value) {
         if (this.hasGA()) {
           var fieldNameObj = {

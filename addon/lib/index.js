@@ -237,10 +237,8 @@ var initializer = (function() {
         var newUrl = this.get('url');
 
         if (Addon.settings.updateDocumentLocationOnTransitions) {
-          var loc = window.location;
-          var dl = loc.protocol + '//' + loc.hostname + loc.pathname + loc.search + loc.hash;
           if (Addon.utils.hasGA()) {
-            (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', dl);
+            (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', document.URL);
           }
           else {
             Ember.debug("Can't set location: `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");

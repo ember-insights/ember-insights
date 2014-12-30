@@ -246,7 +246,8 @@ var initializer = (function() {
       // defaults
       settings.gaGlobalFuncName   = settings.gaGlobalFuncName || 'ga';
       settings.trackTransitionsAs = settings.trackTransitionsAs || 'pageview';
-      if (! settings.updateDocumentLocationOnTransitions) {
+      // using typeof because checking boolean value !!!
+      if (typeof settings.updateDocumentLocationOnTransitions === 'undefined') {
         settings.updateDocumentLocationOnTransitions = true;
       }
 

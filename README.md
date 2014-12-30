@@ -189,8 +189,8 @@ insights: {
 NOTICE: All defined rules are combined all together. Look at the following example below to understand what kind of transitions/actions will be tracked or skipped.
 
 ```javascript
-// records all transitions (includes `fulltrack`) and except transitions to `outer`, `outer.index` routes
-// records all actions (includes `partialtrack` just only for routes such as `outer.inner` and `outer.inner.index`) and except `testAction3` action
+// records all transitions (includes `fulltrack` and `fulltrack.index`) except transitions to `outer`, `outer.index` routes
+// records all actions (includes `partialtrack` just only for routes such as `outer.inner` and `outer.inner.index`) except action such as `testAction3`
 insights: {
   TRANSITIONS: ['fulltrack'],
   ALL_TRANSITIONS: { except: ['fulltrack', 'outer'] },

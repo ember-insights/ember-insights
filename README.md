@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/roundscope/ember-insights.svg)](https://travis-ci.org/roundscope/ember-insights)
+
 # Ember-insights
 
-Ember CLI addon for tracking users activities via Google Analytics.
-
+Designed as Ember CLI addon and will be used for tracking user's behavior and interaction.
 
 
 ## Installation
@@ -10,9 +10,7 @@ Ember CLI addon for tracking users activities via Google Analytics.
 `npm install --save-dev ember-insights`
 
 
-
-## Usage
-* Add Google Analytics' tracking code to application's `index.html`. Tracking code should look like this:
+### Setup Google Analytics snippet
 
 ```html
 <script>
@@ -29,10 +27,11 @@ Ember CLI addon for tracking users activities via Google Analytics.
 </script>
 ```
 
-* Create initializer:
+### Drop an initializer
 
 ```javascript
 import Ember    from 'ember';
+import ENV      from '../config/environment'
 import Insights from 'ember-insights';
 
 export default {
@@ -40,22 +39,23 @@ export default {
   name: 'my-app-insights',
 
   initialize: function (container, application) {
-    // configure insights
-    Insights.configure('staging', {
+    // configure insights for certain environment
+    Insights.configure('production', {
       debug: true
     });
 
-    // describe group of transitions and/or actions to track
-    Insights.addGroup('staging', {
-      name: 'groupName',
+    // group 'overall' records all users actions and transitions
+    Insights.addGroup('production', {
+      name: 'overall',
       insights: {
-        ALL_TRANSITIONS: true, // track all transitions
-        ALL_ACTIONS: true      // track all actions
+        ALL_TRANSITIONS: true,
+        ALL_ACTIONS:     true
       }
     });
 
-    // start tracking...
-    var insightsUtils = Insights.start('staging');
+    if(ENV.envronment === 'production') {
+      Insights.start('production');
+    }
   }
 };
 ```
@@ -66,13 +66,13 @@ export default {
 
 #### Insights.configure(namespace, config)
 Configures namespace.
-* __namespace__ (string). Namespace to configure. You can name it as you wish.
+* __namespace__ (string). Environment specific settings. You can name it as you wish.
 * __config__ (object). Configuration object. This object can contain next parameters:
   * __*debug*__ (boolean). Set this to `true` to see debug messages in browsers console.
   * __*gaGlobalFuncName*__ (string, default - `ga`). Name of Google Analytics' global function.
   * __*gaTrackerName*__ (string). Set this parameter if Google Analytics' tracking object was created with custom name (`ga('create', 'UA-12345-6', 'auto', {'name': 'newTracker'});`)
   * __*trackTransitionsAs*__ (string `'pageview'`, `'event'` or `'both'`; default - `'pageview'`). Used only with default handler. Defines how to send matched transitions to Google Analytics. Use `'pageview'` to track transitions as hit with `'hitType': 'pageview'` or use `event` to track transitions as hit with `'hitType': 'event'`, `'eventCategory': 'ember_transition'` and `'eventAction'` similar to `'{"from":"main","to":"main.record"}'`
-  * __*updateDocumentLocationOnTransitions*__ - (boolean, default - `true`). It seems that transitions in ember does not force Google Analytics to update its `location` value (`dl` parameter). Ember-insights addon updates the `location` value on each transition setting it equal to `document.URL`. If you want to disable updating of the `location` value on each transition or want to handle this by yourself, you can set `updateDocumentLocationOnTransitions` to `false`.
+  * __*updateDocumentLocationOnTransitions*__ - (boolean, default - `true`). Google Analytics doesn't refresh `location` param. Ember-insights sets the `location` value each time after transition done.
 
 #### Insights.addGroup(namespace, group)
 Registers in the `namespace` new `group` of transitions and/or actions you want to track. Each added group can be later removed from namespace (use group's name to remove) and each group has its own handler - default or custom function that will send information about matched transition/action to Google Analytics.
@@ -114,7 +114,7 @@ insights: {
 ```
 
 ```javascript
-// track all transitions except of transitions to main.record, main.record.index, outer and outer.index routes
+// track all transitions except of transitions to `main.record`, `main.record.index`, `outer` and `outer.index` routes
 insights: {
   ALL_TRANSITIONS: {
     except: ['main.record', 'outer']
@@ -123,7 +123,7 @@ insights: {
 ```
 
 ```javascript
-// track all actions except of testAction2 and testAction3
+// track all actions except of `testAction2` and `testAction3`
 insights: {
   ALL_ACTIONS: {
     except: ['testAction2', 'testAction3']
@@ -132,21 +132,21 @@ insights: {
 ```
 
 ```javascript
-// track only transitions to index, outer.inner.nested, outer.inner.nested.index routes
+// track only transitions to `index`, `outer.inner.nested`, `outer.inner.nested.index` routes
 insights: {
   TRANSITIONS: ['index', 'outer.inner.nested']
 }
 ```
 
 ```javascript
-// track only testAction1 action
+// track only `testAction1` action
 insights: {
   ACTIONS: ['testAction1']
 }
 ```
 
 ```javascript
-// track only transitions to outer, outer.index, outer.inner, outer.inner.index routes
+// track only transitions to `outer`, `outer.index`, `outer.inner`, `outer.inner.index` routes
 insights: {
   MAP: {
     outer: {
@@ -160,8 +160,8 @@ insights: {
 ```
 
 ```javascript
-// track only action testAction3 fired on outer       or outer.index       routes
-//        and action testAction1 fired on outer.inner or outer.inner.index routes
+// track only action `testAction3` fired on `outer` or `outer.index` routes
+// and action `testAction1` fired on `outer.inner` or `outer.inner.index` routes
 insights: {
   MAP: {
     outer: {
@@ -175,8 +175,8 @@ insights: {
 ```
 
 ```javascript
-// track only action testAction3 fired on outer or outer.index routes
-//                      and transition to outer or outer.index routes
+// track only action `testAction3` fired on `outer` or `outer.index` routes
+// and transition to `outer` or `outer.index` routes
 insights: {
   MAP: {
     outer: {
@@ -186,10 +186,11 @@ insights: {
 }
 ```
 
-ATTENTION: Note that all rules in `insights` object are combined together. Look at the following example to understand what that means (read comments to understand what transitions/actions will be tracked):
+NOTICE: All defined rules are combined all together. Look at the following example below to understand what kind of transitions/actions will be tracked or skipped.
+
 ```javascript
-// track all transitions except outer, outer.index (but fulltrack, fulltrack.index will be tracked)
-//     and track all actions except testAction3 (partialtrack action will be tracked but only on outer.inner, outer.inner.index routes)
+// records `fulltrack` transition except transitions to `outer`, `outer.index` routes
+// records `partialtrack` just only for routes such as `outer.inner` and `outer.inner.index`
 insights: {
   TRANSITIONS: ['fulltrack'],
   ALL_TRANSITIONS: { except: ['fulltrack', 'outer'] },

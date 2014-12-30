@@ -3,87 +3,67 @@
 var initializer = (function() {
   var Addon = new (function() { // jshint ignore:line
 
-    // if Addon is currently active
-    this.isActivated = false;
+    this.isActivated  = false;
+    this.configs      = {};
+    this.settings     = null;
 
-    // configs for different envs
-    this.configs = {};
-
-    // current config
-    this.settings = null;
-
-    // private function that returns GA global function
-    var gaGlobFunc = function() {
+    var ga = function() {
       return window[Addon.settings.gaGlobalFuncName];
     };
 
-    // private function that returns prefix for current GA tracker
-    var gaTrackerPrefix = function() {
+    var tracker = function(action) {
+      var command = action;
       if (Addon.settings.gaTrackerName) {
-        return Addon.settings.gaTrackerName + '.';
+        command = Addon.settings.gaTrackerName + '.' + action;
       }
-      return '';
+      return command;
     };
 
-    // Some convenience as wrappers for extending the GA global function
-    this.utils = {
-      hasGA: function() {
-        return (gaGlobFunc() && typeof gaGlobFunc() === 'function');
+    // Runtime conveniences as wrapper for `ga` function
+    this.tracker = {
+      _hasGA: function() {
+        return (ga() && typeof ga() === 'function');
       },
-      getGAGlobalFunction: function() {
-        if (this.hasGA()) {
-          return gaGlobFunc();
+      _getGA: function() {
+        if (! this._hasGA()) {
+          Ember.debug("Can't find in `window` a `" + Addon.settings.gaGlobalFuncName + "` function definition");
         }
-        else {
-          Ember.debug("`window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
-        }
+        return ga();
       },
+
       send: function(fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
-        if (this.hasGA()) {
-          (gaGlobFunc())(gaTrackerPrefix() + 'send', fieldNameObj);
-        }
-        else {
-          Ember.debug("Can't send: `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
-        }
+        (this._getGA())(tracker('send'), fieldNameObj);
       },
       sendEvent: function(category, action, label, value) {
-        if (this.hasGA()) {
-          var fieldNameObj = {
-            'hitType':       'event',  // Required
-            'eventCategory': category, // Required
-            'eventAction':   action    // Required
-          };
+        var fieldNameObj = {
+          'hitType':       'event',  // Required
+          'eventCategory': category, // Required
+          'eventAction':   action    // Required
+        };
 
-          if (label != null) {
-            fieldNameObj.eventLabel = label;
-            if (value != null) {
-              fieldNameObj.eventValue = value;
-            }
+        if (label != null) {
+          fieldNameObj.eventLabel = label;
+          if (value != null) {
+            fieldNameObj.eventValue = value;
           }
+        }
 
-          (gaGlobFunc())(gaTrackerPrefix() + 'send', fieldNameObj);
-        }
-        else {
-          Ember.debug("Can't send event due to the `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
-        }
+        (this._getGA())(tracker('send'), fieldNameObj);
       },
       trackPageView: function(path, fieldNameObj) {
-        if (this.hasGA()) {
-          fieldNameObj = fieldNameObj || {};
-          if (!path) {
-            var loc = window.location;
-            path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
-          }
-          (gaGlobFunc())(gaTrackerPrefix() + 'send', 'pageview', path, fieldNameObj);
+        fieldNameObj = fieldNameObj || {};
+
+        if (!path) {
+          var loc = window.location;
+          path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
-        else {
-          Ember.debug("Can't track page view due to the `window." + Addon.settings.gaGlobalFuncName + "` is not a 'function'");
-        }
+
+        (this._getGA())(tracker('send'), 'pageview', path, fieldNameObj);
       }
     };
 
-    var defaultHandler = function(type, options, addonUtils) {
+    var defaultHandler = function(type, options, tracker) {
       var args = ['ember_' + type];
 
       if (type === 'transition') {
@@ -95,10 +75,10 @@ var initializer = (function() {
         var trackType = Addon.settings.trackTransitionsAs;
 
         if (trackType === 'event'    || trackType === 'both') {
-          addonUtils.sendEvent.apply(addonUtils, args);
+          tracker.sendEvent.apply(tracker, args);
         }
         if (trackType === 'pageview' || trackType === 'both') {
-          addonUtils.trackPageView(options.url);
+          tracker.trackPageView(options.url);
         }
       }
       else if (type === 'action') {
@@ -114,7 +94,7 @@ var initializer = (function() {
           }
         }
 
-        addonUtils.sendEvent.apply(addonUtils, args);
+        tracker.sendEvent.apply(tracker, args);
       }
     };
 
@@ -188,10 +168,10 @@ var initializer = (function() {
       var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
 
       if (matchedGroup) {
-        matchedGroup.handler(type, options, Addon.utils);
+        matchedGroup.handler(type, options, Addon.tracker);
       }
 
-      // drop a line to the developers console
+      // drop a line to the developer console
       if (Addon.settings.debug) {
         var msg = "TRAP" + (matchedGroup ? " (MATCHED - group '" + matchedGroup.name + "')" : '') + ": '" + actionName + "' action";
         var word = (type === 'action') ? " on '" : " to '";
@@ -237,7 +217,7 @@ var initializer = (function() {
         var newUrl = this.get('url');
 
         if (Addon.settings.updateDocumentLocationOnTransitions) {
-          (gaGlobFunc())(gaTrackerPrefix() + 'set', 'location', document.URL);
+          (ga())(tracker('set'), 'location', document.URL);
         }
 
         Addon.sendToGAIfMatched('transition', {
@@ -263,13 +243,10 @@ var initializer = (function() {
 
   return {
     configure: function(env, settings) {
-      // 0. assert settings
-      // X. assign settings by particular environment
-
       // defaults
-      settings.gaGlobalFuncName = settings.gaGlobalFuncName || 'ga';
+      settings.gaGlobalFuncName   = settings.gaGlobalFuncName || 'ga';
       settings.trackTransitionsAs = settings.trackTransitionsAs || 'pageview';
-      if (typeof settings.updateDocumentLocationOnTransitions === 'undefined') {
+      if (! settings.updateDocumentLocationOnTransitions) {
         settings.updateDocumentLocationOnTransitions = true;
       }
 
@@ -296,7 +273,7 @@ var initializer = (function() {
 
       Addon.isActivated = true;
 
-      return Addon.utils;
+      return Addon.tracker;
     },
     stop: function() {
       Addon.isActivated = false;

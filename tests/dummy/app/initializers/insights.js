@@ -9,10 +9,10 @@ export default {
 
     Insights.configure('staging', {
       debug: true,
-      gaGlobalFuncName: 'ga',
-      gaTrackerName: 'customTracker',
+      // gaGlobalFuncName: 'ga',
+      // gaTrackerName: 'customTracker',
       trackTransitionsAs: 'pageview', // 'pageview' (default) OR 'event' OR 'both'
-      updateDocumentLocationOnTransitions: true // true is default
+      // updateDocumentLocationOnTransitions: true
     });
 
     Insights.addGroup('staging', {
@@ -65,7 +65,7 @@ export default {
         TRANSITIONS: ['main.record'],
       },
       // example of custom handler for matched events
-      handler: function(type, options, addonUtils) {
+      handler: function(type, options, tracker) {
         if (type !== 'transition') {
           // Something is wrong! This group is for transitions only!
           return;
@@ -76,7 +76,7 @@ export default {
         action = options.routeName + " (record #" + model.get('recordData') + ")";
 
         // pass matched event to Google Analytic service
-        addonUtils.sendEvent(type, action);
+        tracker.sendEvent(type, action);
       }
     });
 

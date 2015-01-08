@@ -1,5 +1,7 @@
 /* global Ember */
 
+import Utils from './lib/utils';
+
 var initializer = (function() {
   var Addon = new (function() { // jshint ignore:line
 
@@ -11,12 +13,10 @@ var initializer = (function() {
       return window[Addon.settings.gaGlobalFuncName];
     };
 
-    var tracker = function(action) {
-      var command = action;
-      if (Addon.settings.gaTrackerName) {
-        command = Addon.settings.gaTrackerName + '.' + action;
-      }
-      return command;
+    var trackerPrefixedCommand = function(action) {
+      return Utils.trackerPrefixedCommand(action, {
+        trackerName: Addon.settings.gaTrackerName
+      });
     };
 
     // Runtime conveniences as wrapper for `ga` function
@@ -33,7 +33,7 @@ var initializer = (function() {
 
       send: function(fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
-        (this._getGA())(tracker('send'), fieldNameObj);
+        (this._getGA())(trackerPrefixedCommand('send'), fieldNameObj);
       },
       sendEvent: function(category, action, label, value) {
         var fieldNameObj = {
@@ -49,7 +49,7 @@ var initializer = (function() {
           }
         }
 
-        (this._getGA())(tracker('send'), fieldNameObj);
+        (this._getGA())(trackerPrefixedCommand('send'), fieldNameObj);
       },
       trackPageView: function(path, fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
@@ -59,7 +59,7 @@ var initializer = (function() {
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
 
-        (this._getGA())(tracker('send'), 'pageview', path, fieldNameObj);
+        (this._getGA())(trackerPrefixedCommand('send'), 'pageview', path, fieldNameObj);
       }
     };
 
@@ -217,7 +217,7 @@ var initializer = (function() {
         var newUrl = this.get('url');
 
         if (Addon.settings.updateDocumentLocationOnTransitions) {
-          (ga())(tracker('set'), 'location', document.URL);
+          (ga())(trackerPrefixedCommand('set'), 'location', document.URL);
         }
 
         Addon.sendToGAIfMatched('transition', {

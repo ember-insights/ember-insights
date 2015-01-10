@@ -63,38 +63,14 @@ var initializer = (function() {
       }
     };
 
-    var defaultHandler = function(type, options, tracker) {
-      var args = ['ember_' + type];
-
+    var defaultHandler = function(type, data, tracker) {
       if (type === 'transition') {
-        args[1] = JSON.stringify({
-          from: options.oldRouteName,
-          to: options.routeName
+        Utils.defaultTransitionHandler(data, tracker, {
+          trackTransitionsAs: Addon.settings.trackTransitionsAs
         });
-
-        var trackType = Addon.settings.trackTransitionsAs;
-
-        if (trackType === 'event'    || trackType === 'both') {
-          tracker.sendEvent.apply(tracker, args);
-        }
-        if (trackType === 'pageview' || trackType === 'both') {
-          tracker.trackPageView(options.url);
-        }
       }
       else if (type === 'action') {
-        args[1] = options.actionName;
-
-        var actionLabel = options.actionArguments[0],
-            actionValue = options.actionArguments[1];
-
-        if (actionLabel != null) {
-          args[2] = actionLabel;
-          if (actionValue != null) {
-            args[3] = actionValue;
-          }
-        }
-
-        tracker.sendEvent.apply(tracker, args);
+        Utils.defaultActionHandler(data, tracker);
       }
     };
 

@@ -1,15 +1,10 @@
-import Ember    from 'ember';
-import { test } from 'ember-qunit';
+import handlers from 'ember-insights/handlers';
 
-import Utils from 'ember-insights/lib/utils';
 
-var handler = Utils.defaultActionHandler;
-
-module('Default handler for matched actions');
+module('Main handler for matched actions');
+var handler = handlers.main.actionHandler;
 
 test('Action without label and value', function() {
-  expect(3);
-
   var data = {
         actionName: 'btnClick',
         actionArguments: []
@@ -26,8 +21,6 @@ test('Action without label and value', function() {
 });
 
 test('Action with label', function() {
-  expect(4);
-
   var data = {
         actionName: 'btnClick',
         actionArguments: ['aLabel']
@@ -45,8 +38,6 @@ test('Action with label', function() {
 });
 
 test('Action with label and value', function() {
-  expect(5);
-
   var data = {
         actionName: 'btnClick',
         actionArguments: ['aLabel', 'aValue']

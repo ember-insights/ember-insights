@@ -1,6 +1,7 @@
 /* global Ember */
 
-import Utils from './lib/utils';
+import Utils    from './lib/utils';
+import handlers from './handlers';
 
 var initializer = (function() {
   var Addon = new (function() { // jshint ignore:line
@@ -63,17 +64,6 @@ var initializer = (function() {
       }
     };
 
-    var defaultHandler = function(type, data, tracker) {
-      if (type === 'transition') {
-        Utils.defaultTransitionHandler(data, tracker, {
-          trackTransitionsAs: Addon.settings.trackTransitionsAs
-        });
-      }
-      else if (type === 'action') {
-        Utils.defaultActionHandler(data, tracker);
-      }
-    };
-
     var firstMatchedGroup = function(toMatchAll, toMatch) {
       var groups = Addon.settings.groups;
       for (var i=0, len1=groups.length; i<len1; i++) {
@@ -81,7 +71,7 @@ var initializer = (function() {
         var resultGroup = {
           name:     group.name,
           insights: group.insights,
-          handler:  group.handler || defaultHandler
+          handler:  group.handler || handlers.main.handler
         };
 
         var matchAllType = toMatchAll[0];

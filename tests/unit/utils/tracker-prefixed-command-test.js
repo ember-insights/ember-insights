@@ -6,7 +6,6 @@ import Utils from 'ember-insights/lib/utils';
 module('Command prefixed by tracker name');
 
 test('named tracker', function() {
-  expect(1);
   var command, options = {};
 
   options.trackerName = 'customTrack';
@@ -15,7 +14,6 @@ test('named tracker', function() {
 });
 
 test('default tracker', function() {
-  expect(1);
   var command, options = {};
 
   command = Utils.trackerPrefixedCommand('set', options);

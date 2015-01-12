@@ -1,15 +1,10 @@
-import Ember    from 'ember';
-import { test } from 'ember-qunit';
+import handlers from 'ember-insights/handlers';
 
-import Utils from 'ember-insights/lib/utils';
 
-var handler = Utils.defaultTransitionHandler;
-
-module('Default handler for matched transitions');
+module('Main handler for matched transitions');
+var handler = handlers.main.transitionHandler;
 
 test('Transition as event', function() {
-  expect(3);
-
   var trackAs = 'event',
       data = {
         oldRouteName: 'outer.inner.nested',
@@ -28,8 +23,6 @@ test('Transition as event', function() {
 });
 
 test('Transition as pageview', function() {
-  expect(1);
-
   var trackAs = 'pageview',
       data = { url: '/outer/inner' },
       tracker = {
@@ -42,8 +35,6 @@ test('Transition as pageview', function() {
 });
 
 test('Transition only as event', function() {
-  expect(1);
-
   var trackAs = 'event',
       tracker = {
         sendEvent: function() {
@@ -58,8 +49,6 @@ test('Transition only as event', function() {
 });
 
 test('Transition only as pageview', function() {
-  expect(1);
-
   var trackAs = 'pageview',
       tracker = {
         sendEvent: function() {
@@ -74,8 +63,6 @@ test('Transition only as pageview', function() {
 });
 
 test('Transition both as pageview and as event', function() {
-  expect(2);
-
   var trackAs = 'both',
       tracker = {
         sendEvent:     function() { ok(true,     'sendEvent called'); },

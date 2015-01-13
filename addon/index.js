@@ -71,7 +71,7 @@ var initializer = (function() {
         var resultGroup = {
           name:     group.name,
           insights: group.insights,
-          handler:  group.handler || handlers.main.handler
+          handler:  group.handler || handlers.main.handler(Addon.settings)
         };
 
         var matchAllType = toMatchAll[0];

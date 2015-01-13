@@ -2,6 +2,7 @@
 
 import Utils    from './lib/utils';
 import handlers from './handlers';
+import runtime  from './runtime';
 
 var initializer = (function() {
   var Addon = new (function() { // jshint ignore:line
@@ -207,45 +208,7 @@ var initializer = (function() {
     didTransition: Addon.transitionMiddleware
   });
 
-  return {
-    configure: function(env, settings) {
-      // defaults
-      settings.gaGlobalFuncName   = settings.gaGlobalFuncName || 'ga';
-      settings.trackTransitionsAs = settings.trackTransitionsAs || 'pageview';
-      // using typeof because checking boolean value !!!
-      if (typeof settings.updateDocumentLocationOnTransitions === 'undefined') {
-        settings.updateDocumentLocationOnTransitions = true;
-      }
-
-      Addon.configs[env] = settings;
-      Addon.configs[env].groups = [];
-    },
-    addGroup: function(env, cfg) {
-      cfg.insights = Ember.Object.create(cfg.insights);
-      Addon.configs[env].groups.push(cfg);
-    },
-    removeGroup: function(env, name) {
-      var groups = Addon.configs[env].groups;
-
-      for (var i=groups.length-1; i>=0; i--) {
-        if (groups[i].name === name) {
-          groups.splice(i, 1);
-          return;
-        }
-      }
-    },
-    start: function(env) {
-      Addon.settings = Addon.configs[env];
-      Ember.assert("can't find settings for '" + env + "' environment", Addon.settings);
-
-      Addon.isActivated = true;
-
-      return Addon.tracker;
-    },
-    stop: function() {
-      Addon.isActivated = false;
-    }
-  };
+  return runtime(Addon);
 
 })();
 

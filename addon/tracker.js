@@ -1,19 +1,11 @@
 /* global Ember */
 
-import Utils from './lib/utils';
 
 export default {
   build: function(addon) {
 
-    var tracker = function() {
-      return window[addon.settings.gaGlobalFuncName];
-    };
-
-    var trackerPrefixedCommand = function(action) {
-      return Utils.trackerPrefixedCommand(action, {
-        trackerName: addon.settings.gaTrackerName
-      });
-    };
+    var tracker           = this.tracker(addon.settings.gaGlobalFuncName);
+    var trackingNamespace = this.trackerPrefixedCommand(addon.settings.gaTrackerName);
 
     // Runtime conveniences as a wrapper for tracker function
     var wrapper = {
@@ -28,12 +20,12 @@ export default {
       },
 
       set: function(key, value) {
-        (tracker())(trackerPrefixedCommand('set'), 'location', document.URL);
+        (tracker())(trackingNamespace('set'), 'location', document.URL);
       },
 
       send: function(fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
-        (tracker())(trackerPrefixedCommand('send'), fieldNameObj);
+        (tracker())(trackingNamespace('send'), fieldNameObj);
       },
       sendEvent: function(category, action, label, value) {
         var fieldNameObj = {
@@ -49,7 +41,7 @@ export default {
           }
         }
 
-        (tracker())(trackerPrefixedCommand('send'), fieldNameObj);
+        (tracker())(trackingNamespace('send'), fieldNameObj);
       },
       trackPageView: function(path, fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
@@ -59,11 +51,22 @@ export default {
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
 
-        (tracker())(trackerPrefixedCommand('send'), 'pageview', path, fieldNameObj);
+        (tracker())(trackingNamespace('send'), 'pageview', path, fieldNameObj);
       }
     };
 
 
     return wrapper;
+  },
+
+
+  tracker: function(gaGlobalFuncName) {
+    return window[gaGlobalFuncName];
+  },
+
+  trackerPrefixedCommand: function(trackerName) {
+    return function(action) {
+      return (trackerName ? trackerName + '.' : '') + action;
+    };
   }
 };

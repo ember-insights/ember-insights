@@ -69,8 +69,8 @@ Configures namespace.
 * __namespace__ (string). Environment specific settings. You can name it as you wish.
 * __config__ (object). Configuration object. This object can contain next parameters:
   * __*debug*__ (boolean). Set this to `true` to see debug messages in browsers console.
-  * __*gaGlobalFuncName*__ (string, default - `ga`). Name of Google Analytics' global function.
-  * __*gaTrackerName*__ (string). Set this parameter if Google Analytics' tracking object was created with custom name (`ga('create', 'UA-12345-6', 'auto', {'name': 'newTracker'});`)
+  * __*trackerFun*__ (string, default - `ga`). Name of Google Analytics' global function.
+  * __*trackingNamespace*__ (string). Set this parameter if Google Analytics' tracking object was created with custom name (`ga('create', 'UA-12345-6', 'auto', {'name': 'newTracker'});`)
   * __*trackTransitionsAs*__ (string `'pageview'`, `'event'` or `'both'`; default - `'pageview'`). Used only with default handler. Defines how to send matched transitions to Google Analytics. Use `'pageview'` to track transitions as hit with `'hitType': 'pageview'` or use `event` to track transitions as hit with `'hitType': 'event'`, `'eventCategory': 'ember_transition'` and `'eventAction'` similar to `'{"from":"main","to":"main.record"}'`
   * __*updateDocumentLocationOnTransitions*__ - (boolean, default - `true`). Google Analytics doesn't refresh `location` param. Ember-insights sets the `location` value each time after transition done.
 

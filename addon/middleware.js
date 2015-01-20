@@ -78,7 +78,7 @@ export default {
       var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
 
       if (matchedGroup) {
-        matchedGroup.handler(type, data, addon.tracker);
+        matchedGroup.handler(type, data, tracker);
       }
 
       // drop a line to the developer console

@@ -3,14 +3,28 @@ import { test } from 'ember-qunit';
 import tracker  from 'ember-insights/tracker';
 
 
-module('Command prefixed by tracker name');
+module('Tracker');
 
-test('named tracker', function() {
-  var command = tracker.trackingNamespace('customTrack')('send');
-  equal(command, 'customTrack.send', 'Computes command for named tracker');
+test('tracking namespace', function() {
+  var command = tracker.trackingNamespace('namespace')('send');
+  equal(command, 'namespace.send');
 });
 
-test('default tracker', function() {
+test('w/ out predefined namespace', function() {
   var command = tracker.trackingNamespace()('set');
-  equal(command, 'set', 'Computes command for default tracker');
+  equal(command, 'set');
+
+  command = tracker.trackingNamespace('')('set');
+  equal(command, 'set');
+});
+
+test('tracker function as a global property', function() {
+  var actual   = tracker.trackerFun('global', { global: true });
+  ok(actual);
+});
+
+test('tracker function as a custom function', function() {
+  var expected = function() {};
+  var actual   = tracker.trackerFun(expected);
+  equal(actual, expected);
 });

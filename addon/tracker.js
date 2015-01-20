@@ -1,11 +1,10 @@
 /* global Ember */
 
-
 export default {
-  build: function(addon) {
+  build: function(settings) {
 
-    var tracker           = this.tracker(addon.settings.gaGlobalFuncName);
-    var trackingNamespace = this.trackingNamespace(addon.settings.gaTrackerName);
+    var tracker           = this.trackerFun(settings.trackerFun);
+    var trackingNamespace = this.trackingNamespace(settings.trackingNamespace);
 
     // Runtime conveniences as a wrapper for tracker function
     var wrapper = {
@@ -14,7 +13,7 @@ export default {
       },
       getTracker: function() {
         if (! this.isTracker()) {
-          Ember.debug("Can't find in `window` a `" + addon.settings.gaGlobalFuncName + "` function definition");
+          Ember.debug("Can't find in `window` a `" + settings.gaGlobalFuncName + "` function definition");
         }
         return tracker();
       },
@@ -60,8 +59,11 @@ export default {
   },
 
 
-  tracker: function(gaGlobalFuncName) {
-    return window[gaGlobalFuncName];
+  trackerFun: function(trackerFun, global) {
+    global = (global || window);
+    if (typeof trackerFun === 'string')
+      trackerFun = global[trackerFun];
+    return trackerFun;
   },
 
   trackingNamespace: function(name) {

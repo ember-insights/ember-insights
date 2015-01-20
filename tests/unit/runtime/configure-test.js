@@ -17,7 +17,7 @@ test('configuration by default', function() {
   settings = addon.configs['test'];
 
   ok(settings);
-  equal(settings.gaGlobalFuncName, 'ga');
+  equal(settings.trackerFun, 'ga');
   equal(settings.trackTransitionsAs, 'pageview');
   equal(settings.updateDocumentLocationOnTransitions, true);
   equal(settings.groups.length, 0);

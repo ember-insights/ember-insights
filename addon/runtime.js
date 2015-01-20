@@ -1,16 +1,15 @@
 /* global Ember */
+import optparse from './optparse';
 
 export default function(addon) {
   var runtime = {
     configure: function(env, settings) {
-      env      = env || 'default';
-      settings = settings || {};
+      env      = (env || 'default');
+      settings = (settings || {});
+
       // apply defaults
-      settings.gaGlobalFuncName   = settings.gaGlobalFuncName   || 'ga';
-      settings.trackTransitionsAs = settings.trackTransitionsAs || 'pageview';
-      if (typeof settings.updateDocumentLocationOnTransitions === 'undefined') {
-        settings.updateDocumentLocationOnTransitions = true;
-      }
+      optparse.mainOpts(settings);
+      optparse.trackerOpts(settings);
 
       addon.configs[env]        = settings;
       addon.configs[env].groups = [];

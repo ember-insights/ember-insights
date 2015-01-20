@@ -5,7 +5,7 @@ export default {
   build: function(addon) {
 
     var tracker           = this.tracker(addon.settings.gaGlobalFuncName);
-    var trackingNamespace = this.trackerPrefixedCommand(addon.settings.gaTrackerName);
+    var trackingNamespace = this.trackingNamespace(addon.settings.gaTrackerName);
 
     // Runtime conveniences as a wrapper for tracker function
     var wrapper = {
@@ -64,9 +64,9 @@ export default {
     return window[gaGlobalFuncName];
   },
 
-  trackerPrefixedCommand: function(trackerName) {
+  trackingNamespace: function(name) {
     return function(action) {
-      return (trackerName ? trackerName + '.' : '') + action;
+      return (name ? name + '.' : '') + action;
     };
   }
 };

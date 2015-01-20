@@ -44,33 +44,32 @@ export default {
       return false;
     }
 
-    function _handle(type, options) {
+    function _handle(type, data) {
       var actionName, toMatchAll, toMatch, oldRouteName, oldUrl,
 
-      url               = options.url,
-      routeName         = options.routeName,
+      url               = data.url,
+      routeName         = data.routeName,
       routeNameNoIndex  = routeName.replace('.index', '');
 
       if (type === 'transition') {
         actionName    = 'transition';
-        oldRouteName  = options.oldRouteName;
-        oldUrl        = options.oldUrl;
+        oldRouteName  = data.oldRouteName;
+        oldUrl        = data.oldUrl;
 
         toMatch = [
-        ['TRANSITIONS', routeName       ],
-        ['TRANSITIONS', routeNameNoIndex],
-        ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
-        ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
+          ['TRANSITIONS', routeName       ],
+          ['TRANSITIONS', routeNameNoIndex],
+          ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
+          ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
         ];
 
         toMatchAll = ['ALL_TRANSITIONS', routeName, routeNameNoIndex];
-      }
-      else if (type === 'action') {
-        actionName = options.actionName;
+      } else if (type === 'action') {
+        actionName = data.actionName;
         toMatch = [
-        ['ACTIONS', actionName],
-        ['MAP.' + routeName        + '.ACTIONS', actionName],
-        ['MAP.' + routeNameNoIndex + '.ACTIONS', actionName]
+          ['ACTIONS', actionName],
+          ['MAP.' + routeName        + '.ACTIONS', actionName],
+          ['MAP.' + routeNameNoIndex + '.ACTIONS', actionName]
         ];
         toMatchAll = ['ALL_ACTIONS', actionName];
       }
@@ -79,7 +78,7 @@ export default {
       var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
 
       if (matchedGroup) {
-        matchedGroup.handler(type, options, addon.tracker);
+        matchedGroup.handler(type, data, addon.tracker);
       }
 
       // drop a line to the developer console

@@ -14,13 +14,13 @@ test('basic insights', function() {
   var settings = addon.configs['default'];
   ok(settings);
   ok(settings.mappings);
-  equal(settings.trackerFun, 'ga');
+  equal(mapping.trackerFun, 'ga');
   equal(settings.trackingNamespace, '');
-  equal(typeof settings.trackerFactory === 'function');
-  equal(typeof settings.tracker === 'object');
+  ok(typeof mapping.trackerFactory === 'function');
+  ok(typeof mapping.tracker === 'object');
   equal(settings.mappings.length, 1);
-  ok(settings.mappings[0].insights.get('ALL_TRANSITIONS'));
-  ok(settings.mappings[0].insights.get('ALL_ACTIONS'));
+  ok(mapping.insights.get('ALL_TRANSITIONS'));
+  ok(mapping.insights.get('ALL_ACTIONS'));
 });
 
 test('custom tracking options', function() {
@@ -35,14 +35,15 @@ test('custom tracking options', function() {
   var settings = addon.configs['default'];
   ok(settings);
   ok(settings.mappings);
-  equal(settings.trackerFun, 'trackerFun');
-  equal(settings.trackingNamespace, 'trackingNamespace');
-  equal(typeof settings.trackerFactory === 'function');
-  equal(typeof settings.tracker === 'object');
+  equal(mapping.trackerFun, 'trackerFun');
+  equal(mapping.trackingNamespace, 'trackingNamespace');
+  ok(typeof mapping.trackerFactory === 'function');
+  ok(typeof mapping.tracker === 'object');
   equal(settings.mappings.length, 1);
-  ok(settings.mappings[0].insights.get('ALL_TRANSITIONS'));
-  ok(settings.mappings[0].insights.get('ALL_ACTIONS'));
+  ok(mapping.insights.get('ALL_TRANSITIONS'));
+  ok(mapping.insights.get('ALL_ACTIONS'));
 });
+
 test('main tracking options', function() {
   var addon    = { configs: [] };
   var settings = {
@@ -56,11 +57,11 @@ test('main tracking options', function() {
   settings = addon.configs['test'];
   ok(settings);
   ok(settings.mappings);
-  equal(settings.trackerFun, 'trackerFun');
-  equal(settings.trackingNamespace, 'trackingNamespace');
-  equal(typeof settings.trackerFactory === 'function');
-  equal(typeof settings.tracker === 'object');
+  equal(mapping.trackerFun, 'trackerFun');
+  equal(mapping.trackingNamespace, 'trackingNamespace');
+  ok(typeof mapping.trackerFactory === 'function');
+  ok(typeof mapping.tracker === 'object');
   equal(settings.mappings.length, 1);
-  ok(settings.mappings[0].insights.get('ALL_TRANSITIONS'));
-  ok(settings.mappings[0].insights.get('ALL_ACTIONS'));
+  ok(mapping.insights.get('ALL_TRANSITIONS'));
+  ok(mapping.insights.get('ALL_ACTIONS'));
 });

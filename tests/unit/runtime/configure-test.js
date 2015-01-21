@@ -19,8 +19,8 @@ test('configuration by default', function() {
   ok(settings);
   equal(settings.trackerFun, 'ga');
   equal(settings.trackingNamespace, '');
-  equal(typeof settings.trackerFactory === 'function');
-  equal(typeof settings.tracker === 'object');
+  ok(typeof settings.trackerFactory === 'function');
+  ok(typeof settings.tracker === 'object');
   equal(settings.trackTransitionsAs, 'pageview');
   equal(settings.updateDocumentLocationOnTransitions, true);
   equal(settings.mappings.length, 0);

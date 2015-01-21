@@ -14,6 +14,11 @@ export default {
     assert = (typeOf === 'function' || typeOf === 'string');
     Ember.assert("'trackerFun' should be either a function or string option", assert);
 
+    opts.trackingNamespace = (opts.trackingNamespace || basicOpts.trackingNamespace || '');
+    typeOf = typeof opts.trackingNamespace;
+    assert = (typeOf === 'string');
+    Ember.assert("'trackingNamespace' should be a string option", assert);
+
     opts.trackerFactory = (opts.trackerFactory || basicOpts.trackerFactory || tracker.build);
     assert = (typeof opts.trackerFactory === 'function');
     Ember.assert("'trackerFactory' should be a function", assert);

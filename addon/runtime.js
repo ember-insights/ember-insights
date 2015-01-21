@@ -2,11 +2,12 @@
 import optparse from './optparse';
 
 export default function(addon) {
-  var env, settings; // current configuration stage
+  var _settings; // current configuration stage
   var runtime = {
     configure: function(env, settings) {
-      env      = (env || 'default');
-      settings = (settings || {});
+      env       = (env || 'default');
+      settings  = (settings || {});
+      _settings = settings;
 
       // apply defaults
       optparse.basicOpts(settings);
@@ -21,9 +22,9 @@ export default function(addon) {
       Ember.assert("Can't find `insights` property inside", mapping.insights);
       mapping.insights = Ember.Object.create(mapping.insights);
       // apply defaults
-      optparse.mergeTrackerOpts(mapping, settings);
+      optparse.mergeTrackerOpts(mapping, _settings);
       // setup tracking mapping
-      settings.mappings.push(mapping);
+      _settings.mappings.push(mapping);
 
       return this;
     },

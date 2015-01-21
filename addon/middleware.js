@@ -1,18 +1,16 @@
 /* global Ember */
 import handlers from './handlers';
-import tracker  from './tracker';
 
 export default {
   use: function(addon) {
-    var tracker = tracker.build(addon);
-
     function firstMatchedGroup(toMatchAll, toMatch) {
       var groups = addon.settings.mappings;
       for (var i=0, len1=groups.length; i<len1; i++) {
         var group = groups[i];
         var resultGroup = {
           insights: group.insights,
-          handler:  group.handler || handlers.main.handler(addon.settings)
+          handler:  group.handler || handlers.main.handler(addon.settings),
+          tracker:  group.tracker
         };
 
         var matchAllType = toMatchAll[0];
@@ -77,7 +75,7 @@ export default {
       var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
 
       if (matchedGroup) {
-        matchedGroup.handler(type, data, tracker);
+        matchedGroup.handler(type, data, matchedGroup.tracker);
       }
 
       // drop a line to the developer console

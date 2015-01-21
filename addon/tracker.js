@@ -13,7 +13,7 @@ export default {
       },
       getTracker: function() {
         if (! this.isTracker()) {
-          Ember.debug("Can't find in `window` a `" + settings.gaGlobalFuncName + "` function definition");
+          Ember.debug("Can't find in `window` a `" + settings.trackerFun + "` function definition");
         }
         return tracker();
       },

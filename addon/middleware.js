@@ -7,11 +7,10 @@ export default {
     var tracker = tracker.build(addon);
 
     function firstMatchedGroup(toMatchAll, toMatch) {
-      var groups = addon.settings.groups;
+      var groups = addon.settings.mappings;
       for (var i=0, len1=groups.length; i<len1; i++) {
         var group = groups[i];
         var resultGroup = {
-          name:     group.name,
           insights: group.insights,
           handler:  group.handler || handlers.main.handler(addon.settings)
         };

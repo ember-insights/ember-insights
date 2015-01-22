@@ -31,8 +31,8 @@ Designed as Ember CLI addon and will be used for tracking user's behavior and in
 
 ```javascript
 import Ember    from 'ember';
-import ENV      from '../config/environment'
 import Insights from 'ember-insights';
+import ENV      from '../config/environment'
 
 export default {
 
@@ -42,16 +42,12 @@ export default {
     // configure insights for certain environment
     Insights.configure('production', {
       debug: true
-    });
-
-    // group 'overall' records all users actions and transitions
-    Insights.addGroup('production', {
-      name: 'overall',
+    }).track({
       insights: {
-        ALL_TRANSITIONS: true,
-        ALL_ACTIONS:     true
+        ALL_TRANSITIONS: true, ALL_ACTIONS: true
       }
     });
+
 
     if(ENV.environment === 'production') {
       Insights.start('production');

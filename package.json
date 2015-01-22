@@ -1,7 +1,7 @@
 {
   "name": "ember-insights",
-  "version": "0.0.1",
-  "description": "Ember CLI addon for tracking users activities via Google Analytics",
+  "version": "0.0.2",
+  "description": "Ember CLI addon for tracking users activities and push them to Google Analytics",
   "scripts": {
     "test": "ember test"
   },
@@ -20,7 +20,6 @@
     "ember-addon",
     "insights",
     "analytics.js",
-    "ga.js",
     "google"
   ],
   "ember-addon": {

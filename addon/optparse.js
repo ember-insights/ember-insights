@@ -1,5 +1,5 @@
 /* global Ember */
-import tracker from './tracker';
+import DefaultTracker from './tracker';
 
 export default {
   trackerOpts: function(opts) {
@@ -19,7 +19,7 @@ export default {
     assert = (typeOf === 'string');
     Ember.assert("'trackingNamespace' should be a string option", assert);
 
-    opts.trackerFactory = (opts.trackerFactory || basicOpts.trackerFactory || tracker.build);
+    opts.trackerFactory = (opts.trackerFactory || basicOpts.trackerFactory || DefaultTracker.factory);
     assert = (typeof opts.trackerFactory === 'function');
     Ember.assert("'trackerFactory' should be a function", assert);
 

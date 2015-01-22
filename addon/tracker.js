@@ -15,7 +15,7 @@ function trackingNamespace(name) {
 
 
 export default {
-  build: function(settings) {
+  factory: function(settings) {
 
     var tracker   = trackerFun(settings.trackerFun);
     var namespace = trackingNamespace(settings.trackingNamespace);

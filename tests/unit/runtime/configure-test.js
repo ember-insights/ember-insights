@@ -17,10 +17,13 @@ test('configuration by default', function() {
   settings = addon.configs['test'];
 
   ok(settings);
-  equal(settings.gaGlobalFuncName, 'ga');
+  equal(settings.trackerFun, 'ga');
+  equal(settings.trackingNamespace, '');
+  ok(typeof settings.trackerFactory === 'function');
+  ok(typeof settings.tracker === 'object');
   equal(settings.trackTransitionsAs, 'pageview');
   equal(settings.updateDocumentLocationOnTransitions, true);
-  equal(settings.groups.length, 0);
+  equal(settings.mappings.length, 0);
 });
 
 test('setting configuration params', function() {
@@ -32,5 +35,5 @@ test('setting configuration params', function() {
 
   ok(settings);
   equal(settings.updateDocumentLocationOnTransitions, false);
-  equal(settings.groups.length, 0);
+  equal(settings.mappings.length, 0);
 });

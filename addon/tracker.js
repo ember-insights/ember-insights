@@ -1,11 +1,24 @@
 /* global Ember */
 
+function trackerFun(trackerFun, global) {
+  global = (global || window);
+  if (typeof trackerFun === 'string')
+    trackerFun = global[trackerFun];
+  return trackerFun;
+}
+
+function trackingNamespace(name) {
+  return function(action) {
+    return (name ? name + '.' : '') + action;
+  };
+}
+
 
 export default {
-  build: function(addon) {
+  build: function(settings) {
 
-    var tracker           = this.tracker(addon.settings.gaGlobalFuncName);
-    var trackingNamespace = this.trackerPrefixedCommand(addon.settings.gaTrackerName);
+    var tracker   = trackerFun(settings.trackerFun);
+    var namespace = trackingNamespace(settings.trackingNamespace);
 
     // Runtime conveniences as a wrapper for tracker function
     var wrapper = {
@@ -14,18 +27,18 @@ export default {
       },
       getTracker: function() {
         if (! this.isTracker()) {
-          Ember.debug("Can't find in `window` a `" + addon.settings.gaGlobalFuncName + "` function definition");
+          Ember.debug("Can't find in `window` a `" + settings.trackerFun + "` function definition");
         }
         return tracker();
       },
 
       set: function(key, value) {
-        (tracker())(trackingNamespace('set'), 'location', document.URL);
+        (tracker())(namespace('set'), 'location', document.URL);
       },
 
       send: function(fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
-        (tracker())(trackingNamespace('send'), fieldNameObj);
+        (tracker())(namespace('send'), fieldNameObj);
       },
       sendEvent: function(category, action, label, value) {
         var fieldNameObj = {
@@ -41,7 +54,7 @@ export default {
           }
         }
 
-        (tracker())(trackingNamespace('send'), fieldNameObj);
+        (tracker())(namespace('send'), fieldNameObj);
       },
       trackPageView: function(path, fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
@@ -51,7 +64,7 @@ export default {
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
 
-        (tracker())(trackingNamespace('send'), 'pageview', path, fieldNameObj);
+        (tracker())(namespace('send'), 'pageview', path, fieldNameObj);
       }
     };
 
@@ -59,14 +72,6 @@ export default {
     return wrapper;
   },
 
-
-  tracker: function(gaGlobalFuncName) {
-    return window[gaGlobalFuncName];
-  },
-
-  trackerPrefixedCommand: function(trackerName) {
-    return function(action) {
-      return (trackerName ? trackerName + '.' : '') + action;
-    };
-  }
+  trackerFun: trackerFun,
+  trackingNamespace: trackingNamespace
 };

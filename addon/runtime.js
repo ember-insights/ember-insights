@@ -1,35 +1,32 @@
 /* global Ember */
+import optparse from './optparse';
 
 export default function(addon) {
+  var _settings; // current configuration stage
   var runtime = {
     configure: function(env, settings) {
-      env      = env || 'default';
-      settings = settings || {};
-      // apply defaults
-      settings.gaGlobalFuncName   = settings.gaGlobalFuncName   || 'ga';
-      settings.trackTransitionsAs = settings.trackTransitionsAs || 'pageview';
-      if (typeof settings.updateDocumentLocationOnTransitions === 'undefined') {
-        settings.updateDocumentLocationOnTransitions = true;
-      }
+      env       = (env || 'default');
+      settings  = (settings || {});
+      _settings = settings;
 
-      addon.configs[env]        = settings;
-      addon.configs[env].groups = [];
+      // apply defaults
+      optparse.basicOpts(settings);
+      optparse.trackerOpts(settings);
+
+      settings.mappings  = [];
+      addon.configs[env] = settings;
 
       return this;
     },
-    addGroup: function(env, cfg) {
-      cfg.insights = Ember.Object.create(cfg.insights);
-      addon.configs[env].groups.push(cfg);
-    },
-    removeGroup: function(env, name) {
-      var groups = addon.configs[env].groups;
+    track: function(mapping) {
+      Ember.assert("Can't find `insights` property inside", mapping.insights);
+      mapping.insights = Ember.Object.create(mapping.insights);
+      // apply defaults
+      optparse.mergeTrackerOpts(mapping, _settings);
+      // setup tracking mapping
+      _settings.mappings.push(mapping);
 
-      for (var i=groups.length-1; i>=0; i--) {
-        if (groups[i].name === name) {
-          groups.splice(i, 1);
-          return;
-        }
-      }
+      return this;
     },
     start: function(env) {
       addon.settings = addon.configs[env];
@@ -37,7 +34,7 @@ export default function(addon) {
 
       addon.isActivated = true;
 
-      return addon.tracker;
+      return addon.settings.tracker;
     },
     stop: function() {
       addon.isActivated = false;

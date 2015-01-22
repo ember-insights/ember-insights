@@ -71,10 +71,13 @@ export default {
         toMatchAll = ['ALL_ACTIONS', actionName];
       }
 
-      // look for the insight declaration
+      // look up for the insight mapping
       var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
 
       if (matchedGroup) {
+        if (type === 'transition' && addon.settings.updateDocumentLocationOnTransitions)
+          matchedGroup.tracker.set('location', document.URL);
+        // handle particular (matched) insight
         matchedGroup.handler(type, data, matchedGroup.tracker);
       }
 
@@ -123,11 +126,6 @@ export default {
 
       Ember.run.scheduleOnce('routerTransitions', this, function() {
         var newUrl = this.get('url');
-
-        if (addon.settings.updateDocumentLocationOnTransitions) {
-          tracker.set('location', document.URL);
-        }
-
         _handle('transition', {
           route:        this.container.lookup('route:' + newRouteName),
           routeName:    newRouteName,

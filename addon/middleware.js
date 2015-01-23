@@ -1,5 +1,4 @@
 /* global Ember */
-import handlers from './handlers';
 
 export default {
   use: function(addon) {
@@ -7,16 +6,10 @@ export default {
       var groups = addon.settings.mappings;
       for (var i=0, len1=groups.length; i<len1; i++) {
         var group = groups[i];
-        var resultGroup = {
-          insights: group.insights,
-          handler:  group.handler || handlers.main.handler(addon.settings),
-          tracker:  group.tracker
-        };
-
         var matchAllType = toMatchAll[0];
         var matchAllConfig = group.insights.getWithDefault(matchAllType, false);
         if (matchAllConfig === true) {
-          return resultGroup;
+          return group;
         }
         else if (typeof matchAllConfig === 'object' && matchAllConfig.except) {
           if (
@@ -26,7 +19,7 @@ export default {
             // Do nothing! 'except' array which contains exact route or action
           }
           else {
-            return resultGroup;
+            return group;
           }
         }
 
@@ -34,7 +27,7 @@ export default {
           var path   = toMatch[j][0],
           entity = toMatch[j][1];
           if (group.insights.getWithDefault(path, []).indexOf(entity) > -1) {
-            return resultGroup;
+            return group;
           }
         }
       }

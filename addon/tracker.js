@@ -23,22 +23,22 @@ export default {
     // Runtime conveniences as a wrapper for tracker function
     var wrapper = {
       isTracker: function() {
-        return (tracker() && typeof tracker() === 'function');
+        return (tracker && typeof tracker === 'function');
       },
       getTracker: function() {
         if (! this.isTracker()) {
           Ember.debug("Can't find in `window` a `" + settings.trackerFun + "` function definition");
         }
-        return tracker();
+        return tracker;
       },
 
       set: function(key, value) {
-        (tracker())(namespace('set'), 'location', document.URL);
+        tracker(namespace('set'), 'location', document.URL);
       },
 
       send: function(fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
-        (tracker())(namespace('send'), fieldNameObj);
+        tracker(namespace('send'), fieldNameObj);
       },
       sendEvent: function(category, action, label, value) {
         var fieldNameObj = {
@@ -54,7 +54,7 @@ export default {
           }
         }
 
-        (tracker())(namespace('send'), fieldNameObj);
+        tracker(namespace('send'), fieldNameObj);
       },
       trackPageView: function(path, fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
@@ -64,7 +64,7 @@ export default {
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
 
-        (tracker())(namespace('send'), 'pageview', path, fieldNameObj);
+        tracker(namespace('send'), 'pageview', path, fieldNameObj);
       }
     };
 

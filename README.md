@@ -31,8 +31,8 @@ Designed as Ember CLI addon and will be used for tracking user's behavior and in
 
 ```javascript
 import Ember    from 'ember';
-import ENV      from '../config/environment'
 import Insights from 'ember-insights';
+import ENV      from '../config/environment'
 
 export default {
 
@@ -42,16 +42,12 @@ export default {
     // configure insights for certain environment
     Insights.configure('production', {
       debug: true
-    });
-
-    // group 'overall' records all users actions and transitions
-    Insights.addGroup('production', {
-      name: 'overall',
+    }).track({
       insights: {
-        ALL_TRANSITIONS: true,
-        ALL_ACTIONS:     true
+        ALL_TRANSITIONS: true, ALL_ACTIONS: true
       }
     });
+
 
     if(ENV.environment === 'production') {
       Insights.start('production');
@@ -69,21 +65,20 @@ Configures namespace.
 * __namespace__ (string). Environment specific settings. You can name it as you wish.
 * __config__ (object). Configuration object. This object can contain next parameters:
   * __*debug*__ (boolean). Set this to `true` to see debug messages in browsers console.
-  * __*gaGlobalFuncName*__ (string, default - `ga`). Name of Google Analytics' global function.
-  * __*gaTrackerName*__ (string). Set this parameter if Google Analytics' tracking object was created with custom name (`ga('create', 'UA-12345-6', 'auto', {'name': 'newTracker'});`)
+  * __*trackerFun*__ (string, default - `ga` or function). Name of Google Analytics' global function.
+  * __*trackingNamespace*__ (string). Set this parameter if Google Analytics' tracking object was created with custom name (`ga('create', 'UA-12345-6', 'auto', {'name': 'newTracker'});`)
+  * __*trackerFactory*__ (function). Factory function that returns custom tracker instance
   * __*trackTransitionsAs*__ (string `'pageview'`, `'event'` or `'both'`; default - `'pageview'`). Used only with default handler. Defines how to send matched transitions to Google Analytics. Use `'pageview'` to track transitions as hit with `'hitType': 'pageview'` or use `event` to track transitions as hit with `'hitType': 'event'`, `'eventCategory': 'ember_transition'` and `'eventAction'` similar to `'{"from":"main","to":"main.record"}'`
   * __*updateDocumentLocationOnTransitions*__ - (boolean, default - `true`). Google Analytics doesn't refresh `location` param. Ember-insights sets the `location` value each time after transition done.
 
-#### Insights.addGroup(namespace, group)
+#### #track(mapping)
 Registers in the `namespace` new `group` of transitions and/or actions you want to track. Each added group can be later removed from namespace (use group's name to remove) and each group has its own handler - default or custom function that will send information about matched transition/action to Google Analytics.
-* __namespace__ (string). Namespace to add `group` to.
-* __group__ (object). Configure added group:
-  * __*name*__ (string). Name of the group. You can use this name to remove group.
+* __mapping__ (object). Configure added group:
+  * __*trackerFun*__ (string, default - `ga`). Name of Google Analytics' global function.
+  * __*trackingNamespace*__ (string). Set this parameter if Google Analytics' tracking object was created with custom name (`ga('create', 'UA-12345-6', 'auto', {'name': 'newTracker'});`)
+  * __*trackerFactory*__ (function). Factory function that returns custom tracker instance
   * __*insights*__ (object). Describes transitions and/or actions to track. More detailed description below.
   * __*handler*__ (function). Function that sends information about matched transition/action to Google Analytics. More detailed description below.
-
-#### Insights.removeGroup(namespace, groupName)
-Removes group with name equal to `groupName` from `namespace`.
 
 #### Insights.start(namespace)
 Starts tracking of transitions and/or actions registered in `namespace`. Returns 'Tracker' object that you can use for custom operations in your code (More detailed description of 'Tracker' object below).
@@ -94,7 +89,7 @@ Stops tracking of all transitions/actions.
 
 
 ## Describing groups
-When calling addGroup you should pass `insights` object and can pass `handler` function as the part of configuration object. `insights` object describes insights (transitions and/or actions) you want to track and `handler` function is responsible for sending of information about matched transition/action to Google Analytics.
+When calling `track` you should pass `insights` object and can pass `handler` function as the part of configuration object. `insights` object describes insights (transitions and/or actions) you want to track and `handler` function is responsible for sending of information about matched transition/action to Google Analytics.
 
 #### insights object
 Examples of defining rules:
@@ -244,8 +239,7 @@ You can use your own custom handler to define how to send information about matc
 
 Example of custom handler function:
 ```javascript
-Insights.addGroup('staging', {
-  name: 'grpName',
+Insights.configure('staging').track({
   insights: { ALL_TRANSITIONS: true },
   // example of custom handler for matched events
   handler: function(type, options, tracker) {

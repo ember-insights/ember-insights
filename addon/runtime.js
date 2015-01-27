@@ -23,6 +23,7 @@ export default function(addon) {
       mapping.insights = Ember.Object.create(mapping.insights);
       // apply defaults
       optparse.mergeTrackerOpts(mapping, _settings);
+      optparse.handlerOpts(mapping);
       // setup tracking mapping
       _settings.mappings.push(mapping);
 

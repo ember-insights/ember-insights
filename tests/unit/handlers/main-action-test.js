@@ -1,8 +1,8 @@
-import handlers from 'ember-insights/handlers';
+import DefaultHandler from 'ember-insights/handler';
 
 
 module('Main handler for matched actions');
-var handler = handlers.main.actionHandler;
+var handler = DefaultHandler.actionHandler;
 
 test('Action without label and value', function() {
   var data = {

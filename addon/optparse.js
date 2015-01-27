@@ -1,5 +1,6 @@
 /* global Ember */
 import DefaultTracker from './tracker';
+import DefaultHandler from './handler';
 
 export default {
   trackerOpts: function(opts) {
@@ -35,6 +36,16 @@ export default {
   basicOpts: function(opts) {
     if (typeof opts.updateDocumentLocationOnTransitions === 'undefined')
       opts.updateDocumentLocationOnTransitions = true;
+
+    return opts;
+  },
+
+  handlerOpts: function(opts) {
+    var assert;
+
+    opts.handler = (opts.handler || DefaultHandler.factory(opts));
+    assert = (typeof opts.handler === 'function');
+    Ember.assert("'handler' should be a function", assert);
 
     return opts;
   }

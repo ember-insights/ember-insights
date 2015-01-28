@@ -1,86 +1,51 @@
 /* global Ember */
 
+import {
+  getMatchedGroups
+} from './matcher';
+
 export default {
   use: function(addon) {
-    function firstMatchedGroup(toMatchAll, toMatch) {
-      var groups = addon.settings.mappings;
-      for (var i=0, len1=groups.length; i<len1; i++) {
-        var group = groups[i];
-        var matchAllType = toMatchAll[0];
-        var matchAllConfig = group.insights.getWithDefault(matchAllType, false);
-        if (matchAllConfig === true) {
-          return group;
-        }
-        else if (typeof matchAllConfig === 'object' && matchAllConfig.except) {
-          if (
-            (toMatchAll[1] && matchAllConfig.except.indexOf(toMatchAll[1]) > -1) ||
-            (toMatchAll[2] && matchAllConfig.except.indexOf(toMatchAll[2]) > -1)
-          ) {
-            // Do nothing! 'except' array which contains exact route or action
-          }
-          else {
-            return group;
-          }
-        }
-
-        for (var j=0, len2=toMatch.length; j<len2; j++) {
-          var path   = toMatch[j][0],
-          entity = toMatch[j][1];
-          if (group.insights.getWithDefault(path, []).indexOf(entity) > -1) {
-            return group;
-          }
-        }
-      }
-      return false;
-    }
-
     function _handle(type, data) {
-      var actionName, toMatchAll, toMatch, oldRouteName, oldUrl,
-
-      url               = data.url,
-      routeName         = data.routeName,
-      routeNameNoIndex  = routeName.replace('.index', '');
+      var eventName, oldRouteName, oldUrl, valueToMatch;
+      var url       = data.url;
+      var routeName = data.routeName;
 
       if (type === 'transition') {
-        actionName    = 'transition';
+        eventName    = 'transition';
         oldRouteName  = data.oldRouteName;
         oldUrl        = data.oldUrl;
-
-        toMatch = [
-          ['TRANSITIONS', routeName       ],
-          ['TRANSITIONS', routeNameNoIndex],
-          ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
-          ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
-        ];
-
-        toMatchAll = ['ALL_TRANSITIONS', routeName, routeNameNoIndex];
+        valueToMatch = routeName;
       } else if (type === 'action') {
-        actionName = data.actionName;
-        toMatch = [
-          ['ACTIONS', actionName],
-          ['MAP.' + routeName        + '.ACTIONS', actionName],
-          ['MAP.' + routeNameNoIndex + '.ACTIONS', actionName]
-        ];
-        toMatchAll = ['ALL_ACTIONS', actionName];
+        eventName = data.actionName;
+        valueToMatch = eventName;
       }
 
-      // look up for the insight mapping
-      var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
+      // look up for all matching insight mappings
+      var matchedGroups = getMatchedGroups(addon.settings.mappings, routeName, type, valueToMatch);
 
-      if (matchedGroup) {
+      // drop a line to the developer console
+      if (addon.settings.debug) {
+        var msg = "TRAP: '" + eventName + "' action";
+        var word = (type === 'action') ? " on '" : " to '";
+        if (oldRouteName) { msg += " from '" + oldRouteName + "' route (" + oldUrl + ")"; }
+        if (   routeName) { msg += word      +    routeName + "' route (" +    url + ")"; }
+        msg += matchedGroups.length ? '. Matches:' : '. No matches!';
+        Ember.debug(msg);
+      }
+
+      for (var i = 0, len = matchedGroups.length; i < len; i++) {
+        var matchedGroup = matchedGroups[i];
+
+        // drop a line to the developer console
+        if (addon.settings.debug) {
+          Ember.debug("TRAP: ---- MATCHED GROUP: '" + matchedGroup.name + "'");
+        }
+
         if (type === 'transition' && addon.settings.updateDocumentLocationOnTransitions)
           matchedGroup.tracker.set('location', document.URL);
         // handle particular (matched) insight
         matchedGroup.handler(type, data, matchedGroup.tracker);
-      }
-
-      // drop a line to the developer console
-      if (addon.settings.debug) {
-        var msg = "TRAP" + (matchedGroup ? " (MATCHED - group '" + matchedGroup.name + "')" : '') + ": '" + actionName + "' action";
-        var word = (type === 'action') ? " on '" : " to '";
-        if (oldRouteName) { msg += " from '" + oldRouteName + "' route (" + oldUrl + ")"; }
-        if (   routeName) { msg += word      +    routeName + "' route (" +    url + ")"; }
-        Ember.debug(msg);
       }
     }
 

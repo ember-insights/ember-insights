@@ -5,6 +5,7 @@ module('Main handler for matched transitions');
 var handler = DefaultHandler.transitionHandler;
 
 test('Transition as event', function() {
+  expect(3);
   var settings = { trackTransitionsAs: 'event'},
       data = {
         oldRouteName: 'outer.inner.nested',
@@ -23,6 +24,7 @@ test('Transition as event', function() {
 });
 
 test('Transition as pageview', function() {
+  expect(1);
   var settings = { trackTransitionsAs: 'pageview'},
       data = { url: '/outer/inner' },
       tracker = {
@@ -35,6 +37,7 @@ test('Transition as pageview', function() {
 });
 
 test('Transition only as event', function() {
+  expect(1);
   var settings = { trackTransitionsAs: 'event'},
       tracker = {
         sendEvent: function() {
@@ -49,6 +52,7 @@ test('Transition only as event', function() {
 });
 
 test('Transition only as pageview', function() {
+  expect(1);
   var settings = { trackTransitionsAs: 'pageview'},
       tracker = {
         sendEvent: function() {
@@ -63,6 +67,7 @@ test('Transition only as pageview', function() {
 });
 
 test('Transition both as pageview and as event', function() {
+  expect(2);
   var settings = { trackTransitionsAs: 'both'},
       tracker = {
         sendEvent:     function() { ok(true,     'sendEvent called'); },

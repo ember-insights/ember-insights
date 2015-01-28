@@ -35,11 +35,12 @@ export default {
       }
 
       for (var i = 0, len = matchedGroups.length; i < len; i++) {
-        var matchedGroup = matchedGroups[i];
+        var matchedGroup = matchedGroups[i].group;
+        var matchedKey   = matchedGroups[i].keyMatched;
 
         // drop a line to the developer console
         if (addon.settings.debug) {
-          Ember.debug("TRAP: ---- MATCHED GROUP: '" + matchedGroup.name + "'");
+          Ember.debug("TRAP: ---- MATCHED key '" + matchedKey + "' in group '" + matchedGroup.name + "'");
         }
 
         if (type === 'transition' && addon.settings.updateDocumentLocationOnTransitions)

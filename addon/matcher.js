@@ -7,7 +7,7 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
   var matchAllConfig = group.insights.getWithDefault(matchAllKey, false);
 
   if (matchAllConfig === true) {
-    return true;
+    return matchAllKey;
   }
   else if (typeof matchAllConfig === 'object' && matchAllConfig.except) {
     var listOfExcepted = matchAllConfig.except;
@@ -17,7 +17,7 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
     }
 
     if (Ember.EnumerableUtils.intersection(valuesToMatch, listOfExcepted).length === 0) {
-      return true;
+      return matchAllKey;
     }
   }
 
@@ -41,7 +41,7 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
     var path   = toMatch[i][0];
     var entity = toMatch[i][1];
     if (group.insights.getWithDefault(path, []).indexOf(entity) > -1) {
-      return true;
+      return path;
     }
   }
 
@@ -52,8 +52,12 @@ function getMatchedGroups(groups, routeName, eventType, eventValueToMatch) {
   var matches = [];
   for (var i = 0, len = groups.length; i < len; i++) {
     var group = groups[i];
-    if ( groupMatches(group, routeName, eventType, eventValueToMatch) ) {
-      matches.push(group);
+    var keyMatched = groupMatches(group, routeName, eventType, eventValueToMatch);
+    if (keyMatched) {
+      matches.push({
+        group: group,
+        keyMatched: keyMatched
+      });
     }
   }
   return matches;

@@ -2,7 +2,7 @@
 
 function trackerFun() {
   return function(){
-    console.log('Ember-insigts event');
+    console.log('Ember-Insights event');
     console.log('\tAction: ', arguments[0]);
     console.log('\tAction argument: ', arguments[1]);
     if(arguments.length > 2){

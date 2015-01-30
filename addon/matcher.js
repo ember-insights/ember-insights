@@ -21,21 +21,7 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
     }
   }
 
-  var toMatch;
-  if (eventType === 'transition') {
-    toMatch = [
-      ['TRANSITIONS', routeName       ],
-      ['TRANSITIONS', routeNameNoIndex],
-      ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
-      ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
-    ];
-  } else if (eventType === 'action') {
-    toMatch = [
-      ['ACTIONS', eventValueToMatch],
-      ['MAP.' + routeName        + '.ACTIONS', eventValueToMatch],
-      ['MAP.' + routeNameNoIndex + '.ACTIONS', eventValueToMatch]
-    ];
-  }
+  var toMatch = getEventDefinitions(eventType, routeName, routeNameNoIndex, eventValueToMatch);
 
   for (var i = 0, len = toMatch.length; i < len; i++) {
     var path   = toMatch[i][0];
@@ -46,6 +32,23 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
   }
 
   return false;
+}
+
+function getEventDefinitions(eventType, routeName, routeNameNoIndex, eventValueToMatch) {
+  if (eventType === 'transition') {
+    return [
+      ['TRANSITIONS', routeName       ],
+      ['TRANSITIONS', routeNameNoIndex],
+      ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
+      ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
+    ];
+  } else if (eventType === 'action') {
+    return [
+      ['ACTIONS', eventValueToMatch],
+      ['MAP.' + routeName        + '.ACTIONS', eventValueToMatch],
+      ['MAP.' + routeNameNoIndex + '.ACTIONS', eventValueToMatch]
+    ];
+  }
 }
 
 function getMatchedGroups(groups, routeName, eventType, eventValueToMatch) {
@@ -69,5 +72,6 @@ function pushIfMatches(keyMatched, group, matches) {
 
 export {
   getMatchedGroups,
-  pushIfMatches
+  pushIfMatches,
+  getEventDefinitions
 };

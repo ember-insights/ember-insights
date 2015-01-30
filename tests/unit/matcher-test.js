@@ -63,32 +63,32 @@ test('match all config', function() {
 
   var res, matchAllConfig;
 
-  // match all config is not found or it is false
+  // matchAllConfig is not found or is set to false
   matchAllConfig = false;
   res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
   equal(res, false);
 
-  // match all config is set to true
+  // matchAllConfig is set to true
   matchAllConfig = true;
   res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
   equal(res, true);
 
-  // match all config is set to true
+  // matchAllConfig has except value
   matchAllConfig = { except: ['main'] };
   res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
   equal(res, true);
 
-  // match all config is set to true
+  // matchAllConfig has except values
   matchAllConfig = { except: ['index', 'published'] };
   res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
   equal(res, false);
 
-  // match all config is set to true
+  // current event value is excepted
   matchAllConfig = { except: ['published'] };
   res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
   equal(res, false);
 
-  // match all config is set to true
+  // matchAllConfig has except value
   eventValueToMatch = 'main';
   routeNameNoIndex = 'main';
   matchAllConfig = { except: ['published'] };

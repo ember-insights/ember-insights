@@ -2,15 +2,15 @@
 
 function trackerFun() {
   return function(){
-    console.log('Ember-insigts event')
+    console.log('Ember-insigts event');
     console.log('\tAction: ', arguments[0]);
     console.log('\tAction argument: ', arguments[1]);
     if(arguments.length > 2){
       console.log('\tAdditional arguments: ');
       for(var i=2; i < arguments.length; i++){
          console.log('\t\t', arguments[i]);
-      };
-    };
+      }
+    }
   };
 }
 

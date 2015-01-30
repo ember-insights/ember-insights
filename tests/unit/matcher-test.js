@@ -4,7 +4,8 @@ import {
 } from 'ember-qunit';
 import {
   pushIfMatches,
-  getEventDefinitions
+  getEventDefinitions,
+  findInMatchAllConfig
 } from 'ember-insights/matcher';
 
 
@@ -51,5 +52,47 @@ test('should return array of definitions to match by type', function() {
     ['MAP.' + routeName        + '.ACTIONS', eventValueToMatch],
     ['MAP.' + routeNameNoIndex + '.ACTIONS', eventValueToMatch]
   ]);
+
+});
+
+test('match all config', function() {
+  var eventType = 'transition';
+  var eventValueToMatch = 'published.index';
+  var routeNameNoIndex = 'published';
+  var matchAllKey = 'ALL_TRANSITIONS';
+
+  var res, matchAllConfig;
+
+  // match all config is not found or it is false
+  matchAllConfig = false;
+  res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  // match all config is set to true
+  matchAllConfig = true;
+  res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
+
+  // match all config is set to true
+  matchAllConfig = { except: ['main'] };
+  res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
+
+  // match all config is set to true
+  matchAllConfig = { except: ['index', 'published'] };
+  res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  // match all config is set to true
+  matchAllConfig = { except: ['published'] };
+  res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  // match all config is set to true
+  eventValueToMatch = 'main';
+  routeNameNoIndex = 'main';
+  matchAllConfig = { except: ['published'] };
+  res = findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
 
 });

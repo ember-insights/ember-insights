@@ -6,19 +6,8 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
   var matchAllKey = 'ALL_' + eventType.toUpperCase() + 'S';
   var matchAllConfig = group.insights.getWithDefault(matchAllKey, false);
 
-  if (matchAllConfig === true) {
+  if ( findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex) ) {
     return matchAllKey;
-  }
-  else if (typeof matchAllConfig === 'object' && matchAllConfig.except) {
-    var listOfExcepted = matchAllConfig.except;
-    var valuesToMatch = [ eventValueToMatch ];
-    if (eventType === 'transition' && routeNameNoIndex !== routeName) {
-      valuesToMatch.push(routeNameNoIndex);
-    }
-
-    if (Ember.EnumerableUtils.intersection(valuesToMatch, listOfExcepted).length === 0) {
-      return matchAllKey;
-    }
   }
 
   var toMatch = getEventDefinitions(eventType, routeName, routeNameNoIndex, eventValueToMatch);
@@ -70,8 +59,27 @@ function pushIfMatches(keyMatched, group, matches) {
   }
 }
 
+function findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex) {
+  if (matchAllConfig === true) {
+    return true;
+  }
+  else if (typeof matchAllConfig === 'object' && matchAllConfig.except) {
+    var listOfExcepted = matchAllConfig.except;
+    var valuesToMatch = [ eventValueToMatch ];
+    if (eventType === 'transition' && routeNameNoIndex !== eventValueToMatch) {
+      valuesToMatch.push(routeNameNoIndex);
+    }
+
+    if (Ember.EnumerableUtils.intersection(valuesToMatch, listOfExcepted).length === 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export {
   getMatchedGroups,
   pushIfMatches,
-  getEventDefinitions
+  getEventDefinitions,
+  findInMatchAllConfig
 };

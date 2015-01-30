@@ -53,14 +53,21 @@ function getMatchedGroups(groups, routeName, eventType, eventValueToMatch) {
   for (var i = 0, len = groups.length; i < len; i++) {
     var group = groups[i];
     var keyMatched = groupMatches(group, routeName, eventType, eventValueToMatch);
-    if (keyMatched) {
-      matches.push({
-        group: group,
-        keyMatched: keyMatched
-      });
-    }
+    pushIfMatches(keyMatched, group, matches);
   }
   return matches;
 }
 
-export { getMatchedGroups };
+function pushIfMatches(keyMatched, group, matches) {
+  if (keyMatched) {
+    matches.push({
+      group: group,
+      keyMatched: keyMatched
+    });
+  }
+}
+
+export {
+  getMatchedGroups,
+  pushIfMatches
+};

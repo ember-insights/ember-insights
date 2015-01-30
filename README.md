@@ -56,14 +56,15 @@ export default {
 };
 ```
 
-### You can use custom trackers, such as console tracker
+### You can use custom trackers, such as included console tracker(userful for development), or build your own
 
 ```javascript
-import ConsoleTracker from 'ember-insights/console-tracker';
+...
+import Insights from 'ember-insights';
 ...
       Insights.configure('production', {
         debug: true,
-        trackerFactory: ConsoleTracker.factory
+        trackerFactory: Insights.ConsoleTracker.factory
       }).track({
         insights: {
           ALL_TRANSITIONS: true, ALL_ACTIONS: true

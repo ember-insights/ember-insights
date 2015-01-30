@@ -1,5 +1,7 @@
 /* global Ember */
 import optparse from './optparse';
+import ConsoleTracker from './console-tracker';
+
 
 export default function(addon) {
   var _settings; // current configuration stage
@@ -39,7 +41,8 @@ export default function(addon) {
     },
     stop: function() {
       addon.isActivated = false;
-    }
+    },
+    ConsoleTracker: ConsoleTracker
   };
 
   return runtime;

@@ -73,8 +73,26 @@ function checkInAll(matchAllConfig, eventType, eventValueToMatch, routeNameNoInd
   return false;
 }
 
+function processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams){
+    for (var i = 0, len = matchedGroups.length; i < len; i++) {
+      var matchedGroup = matchedGroups[i].group;
+      var matchedKey   = matchedGroups[i].keyMatched;
+
+      // drop a line to the developer console
+      if (addonSettings.debug) {
+        Ember.debug("TRAP: ---- MATCHED key '" + matchedKey + "' in group '" + matchedGroup.name + "'");
+      }
+
+      if (eventType === 'transition' && addonSettings.updateDocumentLocationOnTransitions)
+        matchedGroup.tracker.set('location', document.URL);
+      // handle particular (matched) insight
+      matchedGroup.handler(eventType, eventParams, matchedGroup.tracker);
+    }
+}
+
 export {
   getMatchedGroups,
+  processMatchedGroups,
   pushToResult,
   getSearchingPaths,
   checkInAll

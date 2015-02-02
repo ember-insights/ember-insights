@@ -5,7 +5,8 @@ import {
 import {
   pushToResult,
   getSearchingPaths,
-  checkInAll
+  checkInAll,
+  processMatchedGroups
 } from 'ember-insights/matcher';
 
 
@@ -50,7 +51,40 @@ test('returns an array of searching paths', function() {
     ['MAP.' + routeName        + '.ACTIONS', eventValueToMatch],
     ['MAP.' + routeNameNoIndex + '.ACTIONS', eventValueToMatch]
   ]);
+});
 
+test('should execute handler for all matched groups', function(){
+    var testTracker = {
+      set: function(fieldName, fieldValue){
+        equal(fieldName, 'location');
+        ok(fieldValue);
+      }
+    };
+    var matchedGroups = [{
+        keyMatched: 'ALL_TRANSITIONS',
+        group: {
+          name: 'testName',
+          tracker: testTracker,
+          handler: function(eventType, eventParams, tracker){
+            equal(eventType, 'transition');
+            deepEqual(eventParams, { testProperty: 'testValue' });
+            deepEqual(tracker, testTracker);
+          }
+        }}];
+    var addonSettings = {
+      debug: true,
+      updateDocumentLocationOnTransitions: true
+    };
+    var eventType = 'transition';
+    var eventParams = { testProperty: 'testValue' };
+
+    processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams);
+
+    //checks set function not firing when updateDocumentLocationOnTransitions is false
+    testTracker.set = function(){ ok(false); };
+    addonSettings.updateDocumentLocationOnTransitions = false;
+
+    processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams);
 });
 
 test('checks particular event in case of ALL_TRANSITIONS option', function() {

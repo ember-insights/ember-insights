@@ -82,5 +82,6 @@ export default {
   },
 
   trackerFun: trackerFun,
-  trackingNamespace: trackingNamespace
+  trackingNamespace: trackingNamespace,
+  setFields: setFields
 };

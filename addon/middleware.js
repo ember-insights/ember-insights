@@ -1,7 +1,8 @@
 /* global Ember */
 
 import {
-  getMatchedGroups
+  getMatchedGroups,
+  processMatchedGroups
 } from './matcher';
 
 export default {
@@ -33,22 +34,9 @@ export default {
         msg += matchedGroups.length ? '. Matches:' : '. No matches!';
         Ember.debug(msg);
       }
-
-      for (var i = 0, len = matchedGroups.length; i < len; i++) {
-        var matchedGroup = matchedGroups[i].group;
-        var matchedKey   = matchedGroups[i].keyMatched;
-
-        // drop a line to the developer console
-        if (addon.settings.debug) {
-          Ember.debug("TRAP: ---- MATCHED key '" + matchedKey + "' in group '" + matchedGroup.name + "'");
-        }
-
-        if (type === 'transition' && addon.settings.updateDocumentLocationOnTransitions)
-          matchedGroup.tracker.set('location', document.URL);
-        // handle particular (matched) insight
-        matchedGroup.handler(type, data, matchedGroup.tracker);
-      }
+      processMatchedGroups(matchedGroups, addon.settings, type, data);
     }
+
 
     // middleware for actions
     function actionMiddleware(actionName) {

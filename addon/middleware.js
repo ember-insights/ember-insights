@@ -8,29 +8,28 @@ import {
 export default {
   use: function(addon) {
     function _handle(type, data) {
-      var eventName, oldRouteName, oldUrl, valueToMatch;
-      var url       = data.url;
-      var routeName = data.routeName;
+      var eventName, valueToMatch;
 
-      if (type === 'transition') {
-        eventName    = 'transition';
-        oldRouteName  = data.oldRouteName;
-        oldUrl        = data.oldUrl;
-        valueToMatch = routeName;
-      } else if (type === 'action') {
-        eventName = data.actionName;
-        valueToMatch = eventName;
+      switch (type) {
+        case 'transition':
+          eventName     = type;
+          valueToMatch  = data.routeName;
+          break;
+        case 'action':
+          eventName     = data.actionName;
+          valueToMatch  = data.actionName;
+          break;
       }
 
       // look up for all matching insight mappings
-      var matchedGroups = getMatchedGroups(addon.settings.mappings, routeName, type, valueToMatch);
+      var matchedGroups = getMatchedGroups(addon.settings.mappings, data.routeName, type, valueToMatch);
 
-      // drop a line to the developer console
+      // drop a line to the console log
       if (addon.settings.debug) {
         var msg = "TRAP: '" + eventName + "' action";
         var word = (type === 'action') ? " on '" : " to '";
-        if (oldRouteName) { msg += " from '" + oldRouteName + "' route (" + oldUrl + ")"; }
-        if (   routeName) { msg += word      +    routeName + "' route (" +    url + ")"; }
+        if (data.oldRouteName) { msg += " from '" + data.oldRouteName + "' route (" + data.oldUrl + ")"; }
+        if (data.routeName)    { msg += word      + data.routeName    + "' route (" +    data.url + ")"; }
         msg += matchedGroups.length ? '. Matches:' : '. No matches!';
         Ember.debug(msg);
       }
@@ -50,7 +49,7 @@ export default {
         actionName:       actionName,
         actionArguments:  [].slice.call(arguments, 1),
         route:            this.container.lookup('route:' + routeName),
-        routeName:        routeName,
+        routeName:        this.container.lookup('controller:application').get('currentRouteName'),
         url:              this.container.lookup('router:main').get('url')
       });
 

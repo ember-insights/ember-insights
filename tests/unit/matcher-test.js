@@ -3,40 +3,38 @@ import {
   test
 } from 'ember-qunit';
 import {
-  pushIfMatches,
-  getEventDefinitions,
+  pushToResult,
+  getSearchingPaths,
+  checkInAll,
   processMatchedGroups
 } from 'ember-insights/matcher';
 
 
 module('Matcher');
 
-test('should push only matching groups to matches array', function() {
-  var matches;
+test('adds mached groups to searching result', function() {
+  var holder;
 
   // match found
-  matches = ['stub'];
-  pushIfMatches('testKey', 'grp', matches);
-  deepEqual(
-    matches,
-    ['stub', { group: 'grp', keyMatched: 'testKey' }],
-    'mathed group pushed to array'
-  );
+  holder = [];
+  pushToResult(true, 'group', holder);
+  deepEqual(holder, [{ group: 'group', keyMatched: true }]);
 
   // match not found
-  matches = ['stub'];
-  pushIfMatches(false, 'grp2', matches);
-  deepEqual(matches, ['stub'], 'not mathed group not pushed to array');
+  holder = [];
+  pushToResult(false, 'group', holder);
+  deepEqual(holder, []);
 });
 
-test('should return array of definitions to match by type', function() {
+test('returns an array of searching paths', function() {
   var eventType = 'transition';
   var routeName = 'mainpage.index';
   var routeNameNoIndex = 'mainpage';
   var eventValueToMatch = 'mainpage.index';
-  //Transition test
-  var result = getEventDefinitions(eventType,routeName,routeNameNoIndex,eventValueToMatch);
-  deepEqual(result, [
+
+  //In case of Transition
+  var paths = getSearchingPaths(eventType,routeName,routeNameNoIndex,eventValueToMatch);
+  deepEqual(paths, [
     ['TRANSITIONS', routeName       ],
     ['TRANSITIONS', routeNameNoIndex],
     ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
@@ -45,9 +43,10 @@ test('should return array of definitions to match by type', function() {
 
   eventType = 'action';
   eventValueToMatch = '_bestGAEver';
-  //Action test
-  result = getEventDefinitions(eventType,routeName,routeNameNoIndex,eventValueToMatch);
-  deepEqual(result, [
+
+  //In case of Action
+  paths = getSearchingPaths(eventType,routeName,routeNameNoIndex,eventValueToMatch);
+  deepEqual(paths, [
     ['ACTIONS', eventValueToMatch],
     ['MAP.' + routeName        + '.ACTIONS', eventValueToMatch],
     ['MAP.' + routeNameNoIndex + '.ACTIONS', eventValueToMatch]
@@ -81,9 +80,43 @@ test('should execute handler for all matched groups', function(){
 
     processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams);
 
-    //checks set function not firing when updateDocumentLocationOnTransitions is false 
+    //checks set function not firing when updateDocumentLocationOnTransitions is false
     testTracker.set = function(){ ok(false); };
     addonSettings.updateDocumentLocationOnTransitions = false;
 
     processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams);
+});
+
+test('checks particular event in case of ALL_TRANSITIONS option', function() {
+  var eventType         = 'transition';
+  var eventValueToMatch = 'published.index';
+  var routeNameNoIndex  = 'published';
+
+  var res, all;
+
+  all = false;
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  all = true;
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
+
+  all = { except: ['main'] };
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
+
+  all = { except: ['index', 'published'] };
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  all = { except: ['published'] };
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  eventValueToMatch = 'main';
+  routeNameNoIndex  = 'main';
+  all = { except: ['published'] };
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
 });

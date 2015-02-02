@@ -120,4 +120,23 @@ test('checks particular event in case of ALL_TRANSITIONS option', function() {
   all = { except: ['published'] };
   res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
   equal(res, true);
+
+  //tests for "action" event type
+  eventType = 'action';
+  eventValueToMatch = 'testAction';
+  all = true;
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
+
+  all = false;
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  all = { except: ['testAction']};
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  all = { except: ['testAction1']};
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
 });

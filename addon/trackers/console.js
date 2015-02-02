@@ -1,10 +1,17 @@
 /* global Ember */
 
-function trackerFun(trackerFun, global) {
-  global = (global || window);
-  if (typeof trackerFun === 'string')
-    trackerFun = global[trackerFun];
-  return trackerFun;
+function trackerFun() {
+  return function(){
+    console.log('Ember-Insights event');
+    console.log('\tAction: ', arguments[0]);
+    console.log('\tAction argument: ', arguments[1]);
+    if(arguments.length > 2){
+      console.log('\tAdditional arguments: ');
+      for(var i=2; i < arguments.length; i++){
+         console.log('\t\t', arguments[i]);
+      }
+    }
+  };
 }
 
 function trackingNamespace(name) {
@@ -13,11 +20,6 @@ function trackingNamespace(name) {
   };
 }
 
-function setFields(tracker, namespace, fields) {
-  for (var propName in fields) {
-    tracker(namespace('set'), propName, fields[propName]);
-  }
-}
 
 export default {
   factory: function(settings) {
@@ -27,10 +29,6 @@ export default {
 
     // Runtime conveniences as a wrapper for tracker function
     var wrapper = {
-      _setFields: function() {
-        setFields(tracker, namespace, settings.fields);
-      },
-
       isTracker: function() {
         return (tracker && typeof tracker === 'function');
       },
@@ -42,7 +40,7 @@ export default {
       },
 
       set: function(key, value) {
-        tracker(namespace('set'), 'location', document.URL);
+        tracker(namespace('set'), key, value);
       },
 
       send: function(fieldNameObj) {
@@ -82,6 +80,5 @@ export default {
   },
 
   trackerFun: trackerFun,
-  trackingNamespace: trackingNamespace,
-  setFields: setFields
+  trackingNamespace: trackingNamespace
 };

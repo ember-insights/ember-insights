@@ -1,31 +1,31 @@
-import Ember    from 'ember';
-import { test } from 'ember-qunit';
-import tracker  from 'ember-insights/tracker';
+import Ember              from 'ember';
+import { test }           from 'ember-qunit';
+import { GoogleTracker }  from 'ember-insights/trackers';
 
 
 module('Tracker');
 
 test('tracking namespace', function() {
-  var command = tracker.trackingNamespace('namespace')('send');
+  var command = GoogleTracker.trackingNamespace('namespace')('send');
   equal(command, 'namespace.send');
 });
 
 test('w/ out predefined namespace', function() {
-  var command = tracker.trackingNamespace()('set');
+  var command = GoogleTracker.trackingNamespace()('set');
   equal(command, 'set');
 
-  command = tracker.trackingNamespace('')('set');
+  command = GoogleTracker.trackingNamespace('')('set');
   equal(command, 'set');
 });
 
 test('tracker function as a global property', function() {
-  var actual   = tracker.trackerFun('global', { global: true });
+  var actual   = GoogleTracker.trackerFun('global', { global: true });
   ok(actual);
 });
 
 test('tracker function as a custom function', function() {
   var expected = function() {};
-  var actual   = tracker.trackerFun(expected);
+  var actual   = GoogleTracker.trackerFun(expected);
   equal(actual, expected);
 });
 
@@ -47,5 +47,5 @@ test('setFields function', function() {
     screenResolution: '999x600'
   };
 
-  tracker.setFields(_tracker, _namespace, fields);
+  GoogleTracker.setFields(_tracker, _namespace, fields);
 });

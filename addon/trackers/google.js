@@ -33,7 +33,7 @@ export default {
       },
 
       set: function(key, value) {
-        tracker(namespace('set'), 'location', document.URL);
+        tracker(namespace('set'), key, value);
       },
 
       send: function(fieldNameObj) {

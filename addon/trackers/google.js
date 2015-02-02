@@ -13,6 +13,11 @@ function trackingNamespace(name) {
   };
 }
 
+function setFields(tracker, namespace, fields) {
+  for (var propName in fields) {
+    tracker(namespace('set'), propName, fields[propName]);
+  }
+}
 
 export default {
   factory: function(settings) {
@@ -22,6 +27,10 @@ export default {
 
     // Runtime conveniences as a wrapper for tracker function
     var wrapper = {
+      _setFields: function() {
+        setFields(tracker, namespace, settings.fields);
+      },
+
       isTracker: function() {
         return (tracker && typeof tracker === 'function');
       },
@@ -73,5 +82,6 @@ export default {
   },
 
   trackerFun: trackerFun,
-  trackingNamespace: trackingNamespace
+  trackingNamespace: trackingNamespace,
+  setFields: setFields
 };

@@ -3,14 +3,14 @@ import Ember from 'ember';
 function groupMatches(group, routeName, eventType, eventValueToMatch) {
   var routeNameNoIndex = routeName.replace('.index', '');
 
-  var matchAllKey = 'ALL_' + eventType.toUpperCase() + 'S';
-  var matchAllConfig = group.insights.getWithDefault(matchAllKey, false);
+  var allKey = 'ALL_' + eventType.toUpperCase() + 'S';
+  var all = group.insights.getWithDefault(allKey, false);
 
-  if ( findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex) ) {
-    return matchAllKey;
+  if ( checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex) ) {
+    return allKey;
   }
 
-  var toMatch = getEventDefinitions(eventType, routeName, routeNameNoIndex, eventValueToMatch);
+  var toMatch = getSearchingPaths(eventType, routeName, routeNameNoIndex, eventValueToMatch);
 
   for (var i = 0, len = toMatch.length; i < len; i++) {
     var path   = toMatch[i][0];
@@ -23,7 +23,7 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
   return false;
 }
 
-function getEventDefinitions(eventType, routeName, routeNameNoIndex, eventValueToMatch) {
+function getSearchingPaths(eventType, routeName, routeNameNoIndex, eventValueToMatch) {
   if (eventType === 'transition') {
     return [
       ['TRANSITIONS', routeName       ],
@@ -41,25 +41,21 @@ function getEventDefinitions(eventType, routeName, routeNameNoIndex, eventValueT
 }
 
 function getMatchedGroups(groups, routeName, eventType, eventValueToMatch) {
-  var matches = [];
+  var result = [];
   for (var i = 0, len = groups.length; i < len; i++) {
     var group = groups[i];
-    var keyMatched = groupMatches(group, routeName, eventType, eventValueToMatch);
-    pushIfMatches(keyMatched, group, matches);
+    var keys  = groupMatches(group, routeName, eventType, eventValueToMatch);
+    pushToResult(keys, group, result);
   }
-  return matches;
+  return result;
 }
 
-function pushIfMatches(keyMatched, group, matches) {
-  if (keyMatched) {
-    matches.push({
-      group: group,
-      keyMatched: keyMatched
-    });
-  }
+function pushToResult(keyMatched, group, holder) {
+  if (keyMatched)
+    holder.push({ group: group, keyMatched: keyMatched });
 }
 
-function findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex) {
+function checkInAll(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex) {
   if (matchAllConfig === true) {
     return true;
   }
@@ -79,7 +75,7 @@ function findInMatchAllConfig(matchAllConfig, eventType, eventValueToMatch, rout
 
 export {
   getMatchedGroups,
-  pushIfMatches,
-  getEventDefinitions,
-  findInMatchAllConfig
+  pushToResult,
+  getSearchingPaths,
+  checkInAll
 };

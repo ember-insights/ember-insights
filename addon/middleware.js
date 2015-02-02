@@ -1,88 +1,41 @@
 /* global Ember */
 
+import {
+  getMatchedGroups,
+  processMatchedGroups
+} from './matcher';
+
 export default {
   use: function(addon) {
-    function firstMatchedGroup(toMatchAll, toMatch) {
-      var groups = addon.settings.mappings;
-      for (var i=0, len1=groups.length; i<len1; i++) {
-        var group = groups[i];
-        var matchAllType = toMatchAll[0];
-        var matchAllConfig = group.insights.getWithDefault(matchAllType, false);
-        if (matchAllConfig === true) {
-          return group;
-        }
-        else if (typeof matchAllConfig === 'object' && matchAllConfig.except) {
-          if (
-            (toMatchAll[1] && matchAllConfig.except.indexOf(toMatchAll[1]) > -1) ||
-            (toMatchAll[2] && matchAllConfig.except.indexOf(toMatchAll[2]) > -1)
-          ) {
-            // Do nothing! 'except' array which contains exact route or action
-          }
-          else {
-            return group;
-          }
-        }
-
-        for (var j=0, len2=toMatch.length; j<len2; j++) {
-          var path   = toMatch[j][0],
-          entity = toMatch[j][1];
-          if (group.insights.getWithDefault(path, []).indexOf(entity) > -1) {
-            return group;
-          }
-        }
-      }
-      return false;
-    }
-
     function _handle(type, data) {
-      var actionName, toMatchAll, toMatch, oldRouteName, oldUrl,
+      var eventName, valueToMatch;
 
-      url               = data.url,
-      routeName         = data.routeName,
-      routeNameNoIndex  = routeName.replace('.index', '');
-
-      if (type === 'transition') {
-        actionName    = 'transition';
-        oldRouteName  = data.oldRouteName;
-        oldUrl        = data.oldUrl;
-
-        toMatch = [
-          ['TRANSITIONS', routeName       ],
-          ['TRANSITIONS', routeNameNoIndex],
-          ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
-          ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
-        ];
-
-        toMatchAll = ['ALL_TRANSITIONS', routeName, routeNameNoIndex];
-      } else if (type === 'action') {
-        actionName = data.actionName;
-        toMatch = [
-          ['ACTIONS', actionName],
-          ['MAP.' + routeName        + '.ACTIONS', actionName],
-          ['MAP.' + routeNameNoIndex + '.ACTIONS', actionName]
-        ];
-        toMatchAll = ['ALL_ACTIONS', actionName];
+      switch (type) {
+        case 'transition':
+          eventName     = type;
+          valueToMatch  = data.routeName;
+          break;
+        case 'action':
+          eventName     = data.actionName;
+          valueToMatch  = data.actionName;
+          break;
       }
 
-      // look up for the insight mapping
-      var matchedGroup = firstMatchedGroup(toMatchAll, toMatch);
+      // look up for all matching insight mappings
+      var matchedGroups = getMatchedGroups(addon.settings.mappings, data.routeName, type, valueToMatch);
 
-      if (matchedGroup) {
-        if (type === 'transition' && addon.settings.updateDocumentLocationOnTransitions)
-          matchedGroup.tracker.set('location', document.URL);
-        // handle particular (matched) insight
-        matchedGroup.handler(type, data, matchedGroup.tracker);
-      }
-
-      // drop a line to the developer console
+      // drop a line to the console log
       if (addon.settings.debug) {
-        var msg = "TRAP" + (matchedGroup ? " (MATCHED - group '" + matchedGroup.name + "')" : '') + ": '" + actionName + "' action";
+        var msg = "TRAP: '" + eventName + "' action";
         var word = (type === 'action') ? " on '" : " to '";
-        if (oldRouteName) { msg += " from '" + oldRouteName + "' route (" + oldUrl + ")"; }
-        if (   routeName) { msg += word      +    routeName + "' route (" +    url + ")"; }
+        if (data.oldRouteName) { msg += " from '" + data.oldRouteName + "' route (" + data.oldUrl + ")"; }
+        if (data.routeName)    { msg += word      + data.routeName    + "' route (" +    data.url + ")"; }
+        msg += matchedGroups.length ? '. Matches:' : '. No matches!';
         Ember.debug(msg);
       }
+      processMatchedGroups(matchedGroups, addon.settings, type, data);
     }
+
 
     // middleware for actions
     function actionMiddleware(actionName) {
@@ -96,7 +49,7 @@ export default {
         actionName:       actionName,
         actionArguments:  [].slice.call(arguments, 1),
         route:            this.container.lookup('route:' + routeName),
-        routeName:        routeName,
+        routeName:        this.container.lookup('controller:application').get('currentRouteName'),
         url:              this.container.lookup('router:main').get('url')
       });
 

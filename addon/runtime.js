@@ -13,6 +13,8 @@ export default function(addon) {
       optparse.basicOpts(settings);
       optparse.trackerOpts(settings);
 
+      settings.tracker._setFields();
+
       settings.mappings  = [];
       addon.configs[env] = settings;
 
@@ -20,6 +22,9 @@ export default function(addon) {
     },
     track: function(mapping) {
       Ember.assert("Can't find `insights` property inside", mapping.insights);
+      // fields object is not allowed in track,
+      //   for more visit https://github.com/roundscope/ember-insights/issues/56
+      delete mapping.fields;
       mapping.insights = Ember.Object.create(mapping.insights);
       // apply defaults
       optparse.mergeTrackerOpts(mapping, _settings);

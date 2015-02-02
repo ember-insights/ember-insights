@@ -24,13 +24,17 @@ export default function(addon) {
     },
     track: function(mapping) {
       Ember.assert("Can't find `insights` property inside", mapping.insights);
-      // fields object is not allowed in track,
-      //   for more visit https://github.com/roundscope/ember-insights/issues/56
+
+      // fields params are not yet implemented,
+      // - https://github.com/roundscope/ember-insights/issues/56
       delete mapping.fields;
+
       mapping.insights = Ember.Object.create(mapping.insights);
+
       // apply defaults
       optparse.mergeTrackerOpts(mapping, _settings);
       optparse.handlerOpts(mapping);
+
       // setup tracking mapping
       _settings.mappings.push(mapping);
 

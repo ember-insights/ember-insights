@@ -20,4 +20,8 @@ script:
   - npm test
 
 notifications:
-  slack: goroundscope:3uAcoRPk3TZkvMXJTCEcQYS7
+  email: false
+  slack:
+    rooms:
+      - goroundscope:3uAcoRPk3TZkvMXJTCEcQYS7#ember-insights
+    on_success: change

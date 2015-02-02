@@ -1,10 +1,11 @@
-import handlers from 'ember-insights/handlers';
+import DefaultHandler from 'ember-insights/handler';
 
 
 module('Main handler for matched actions');
-var handler = handlers.main.actionHandler;
+var handler = DefaultHandler.actionHandler;
 
 test('Action without label and value', function() {
+  expect(3);
   var data = {
         actionName: 'btnClick',
         actionArguments: []
@@ -21,6 +22,7 @@ test('Action without label and value', function() {
 });
 
 test('Action with label', function() {
+  expect(4);
   var data = {
         actionName: 'btnClick',
         actionArguments: ['aLabel']
@@ -38,6 +40,7 @@ test('Action with label', function() {
 });
 
 test('Action with label and value', function() {
+  expect(5);
   var data = {
         actionName: 'btnClick',
         actionArguments: ['aLabel', 'aValue']

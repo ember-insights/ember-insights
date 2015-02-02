@@ -56,6 +56,21 @@ export default {
 };
 ```
 
+### You can use custom trackers, such as included console tracker(userful for development), or build your own
+
+```javascript
+...
+import Insights from 'ember-insights';
+...
+      Insights.configure('production', {
+        debug: true,
+        trackerFactory: Insights.ConsoleTracker.factory
+      }).track({
+        insights: {
+          ALL_TRANSITIONS: true, ALL_ACTIONS: true
+        }
+      });
+```
 
 
 ## Insights
@@ -70,6 +85,7 @@ Configures namespace.
   * __*trackerFactory*__ (function). Factory function that returns custom tracker instance
   * __*trackTransitionsAs*__ (string `'pageview'`, `'event'` or `'both'`; default - `'pageview'`). Used only with default handler. Defines how to send matched transitions to Google Analytics. Use `'pageview'` to track transitions as hit with `'hitType': 'pageview'` or use `event` to track transitions as hit with `'hitType': 'event'`, `'eventCategory': 'ember_transition'` and `'eventAction'` similar to `'{"from":"main","to":"main.record"}'`
   * __*updateDocumentLocationOnTransitions*__ - (boolean, default - `true`). Google Analytics doesn't refresh `location` param. Ember-insights sets the `location` value each time after transition done.
+  * __*fields*__ - (object). Google Analytics fields. Example: `{ appName: 'My Appp 1001', screenResolution: '999x600' }`
 
 #### #track(mapping)
 Registers in the `namespace` new `group` of transitions and/or actions you want to track. Each added group can be later removed from namespace (use group's name to remove) and each group has its own handler - default or custom function that will send information about matched transition/action to Google Analytics.

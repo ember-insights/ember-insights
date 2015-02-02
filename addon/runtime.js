@@ -1,5 +1,7 @@
 /* global Ember */
 import optparse from './optparse';
+import { ConsoleTracker, GoogleTracker } from './trackers';
+
 
 export default function(addon) {
   var _settings; // current configuration stage
@@ -13,6 +15,8 @@ export default function(addon) {
       optparse.basicOpts(settings);
       optparse.trackerOpts(settings);
 
+      settings.tracker._setFields();
+
       settings.mappings  = [];
       addon.configs[env] = settings;
 
@@ -20,9 +24,17 @@ export default function(addon) {
     },
     track: function(mapping) {
       Ember.assert("Can't find `insights` property inside", mapping.insights);
+
+      // fields params are not yet implemented,
+      // - https://github.com/roundscope/ember-insights/issues/56
+      delete mapping.fields;
+
       mapping.insights = Ember.Object.create(mapping.insights);
+
       // apply defaults
       optparse.mergeTrackerOpts(mapping, _settings);
+      optparse.handlerOpts(mapping);
+
       // setup tracking mapping
       _settings.mappings.push(mapping);
 
@@ -38,7 +50,12 @@ export default function(addon) {
     },
     stop: function() {
       addon.isActivated = false;
-    }
+    },
+
+    // Custom trackers
+    ConsoleTracker: ConsoleTracker,
+    GoogleTracker:  GoogleTracker
+
   };
 
   return runtime;

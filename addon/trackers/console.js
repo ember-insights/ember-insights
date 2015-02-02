@@ -1,10 +1,17 @@
 /* global Ember */
 
-function trackerFun(trackerFun, global) {
-  global = (global || window);
-  if (typeof trackerFun === 'string')
-    trackerFun = global[trackerFun];
-  return trackerFun;
+function trackerFun() {
+  return function(){
+    console.log('Ember-Insights event');
+    console.log('\tAction: ', arguments[0]);
+    console.log('\tAction argument: ', arguments[1]);
+    if(arguments.length > 2){
+      console.log('\tAdditional arguments: ');
+      for(var i=2; i < arguments.length; i++){
+         console.log('\t\t', arguments[i]);
+      }
+    }
+  };
 }
 
 function trackingNamespace(name) {
@@ -33,7 +40,7 @@ export default {
       },
 
       set: function(key, value) {
-        tracker(namespace('set'), 'location', document.URL);
+        tracker(namespace('set'), key, value);
       },
 
       send: function(fieldNameObj) {

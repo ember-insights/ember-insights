@@ -53,7 +53,7 @@ test('returns an array of searching paths', function() {
   ]);
 });
 
-test('should execute handler for all matched groups', function(){
+test('processes matched groups', function(){
   expect(8);
   var testTracker = {
     set: function(fieldName, fieldValue){
@@ -81,7 +81,7 @@ test('should execute handler for all matched groups', function(){
 
   processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams);
 
-  //checks set function not firing when updateDocumentLocationOnTransitions is false
+  //checks set function that is not fired in case of `updateDocumentLocationOnTransitions` is false
   testTracker.set = function(){ ok(false); };
   addonSettings.updateDocumentLocationOnTransitions = false;
 
@@ -120,4 +120,8 @@ test('checks particular event in case of ALL_TRANSITIONS option', function() {
   all = { except: ['published'] };
   res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
   equal(res, true);
+});
+
+test('checks particular event in case of ALL_ACTIONS option', function() {
+  ok(false); // is pending
 });

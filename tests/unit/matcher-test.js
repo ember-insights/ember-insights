@@ -123,5 +123,24 @@ test('checks particular event in case of ALL_TRANSITIONS option', function() {
 });
 
 test('checks particular event in case of ALL_ACTIONS option', function() {
-  ok(false); // is pending
+  var routeNameNoIndex  = 'published';
+  var res, all;
+  var eventType = 'action';
+  var eventValueToMatch = 'testAction';
+
+  all = true;
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
+
+  all = false;
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  all = { except: ['testAction']};
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, false);
+
+  all = { except: ['testAction1']};
+  res = checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex);
+  equal(res, true);
 });

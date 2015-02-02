@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/roundscope/ember-insights.svg)](https://travis-ci.org/roundscope/ember-insights)
+[![Build Status](https://travis-ci.org/roundscope/ember-insights.svg?branch=master)](https://travis-ci.org/roundscope/ember-insights)
 
 # Ember-insights
 

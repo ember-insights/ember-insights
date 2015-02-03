@@ -1,5 +1,3 @@
-/* global Ember */
-
 import runtime    from './runtime';
 import middleware from './middleware';
 

@@ -58,7 +58,7 @@ export default {
     }
 
     // middleware for transitions
-    function transitionMiddleware(infos) {
+    function transitionMiddleware() {
       // use original implementation if addon is not activated
       if (!addon.isActivated) { this._super.apply(this, arguments); return; }
 

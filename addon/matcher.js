@@ -51,8 +51,9 @@ function getMatchedGroups(groups, routeName, eventType, eventValueToMatch) {
 }
 
 function pushToResult(keyMatched, group, holder) {
-  if (keyMatched)
+  if (keyMatched) {
     holder.push({ group: group, keyMatched: keyMatched });
+  }
 }
 
 function checkInAll(matchAllConfig, eventType, eventValueToMatch, routeNameNoIndex) {
@@ -83,8 +84,9 @@ function processMatchedGroups(matchedGroups, addonSettings, eventType, eventPara
         Ember.debug("TRAP: ---- MATCHED key '" + matchedKey + "' in group '" + matchedGroup.name + "'");
       }
 
-      if (eventType === 'transition' && addonSettings.updateDocumentLocationOnTransitions)
+      if (eventType === 'transition' && addonSettings.updateDocumentLocationOnTransitions) {
         matchedGroup.tracker.set('location', document.URL);
+      }
       // handle particular (matched) insight
       matchedGroup.handler(eventType, eventParams, matchedGroup.tracker);
     }

@@ -2,8 +2,9 @@
 
 function trackerFun(trackerFun, global) {
   global = (global || window);
-  if (typeof trackerFun === 'string')
+  if (typeof trackerFun === 'string') {
     trackerFun = global[trackerFun];
+  }
   return trackerFun;
 }
 

@@ -34,8 +34,9 @@ export default {
   },
 
   basicOpts: function(opts) {
-    if (typeof opts.updateDocumentLocationOnTransitions === 'undefined')
+    if (typeof opts.updateDocumentLocationOnTransitions === 'undefined') {
       opts.updateDocumentLocationOnTransitions = true;
+    }
 
     return opts;
   },

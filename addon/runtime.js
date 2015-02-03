@@ -15,7 +15,9 @@ export default function(addon) {
       optparse.basicOpts(settings);
       optparse.trackerOpts(settings);
 
-      settings.tracker._setFields();
+      if (settings.tracker._setFields) {
+        settings.tracker._setFields();
+      }
 
       settings.mappings  = [];
       addon.configs[env] = settings;

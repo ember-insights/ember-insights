@@ -329,4 +329,4 @@ For more information on using ember-cli, visit [http://www.ember-cli.com/](http:
 
 ## Acknowledgement
 
-Product of [Roundscope LLC](http://roundscope.com). HEAD is https://github.com/roundscope/ember-insights. Based on https://github.com/roundscope/web-engineering mastery.
+Product of Roundscope Ukraine LLC. HEAD is https://github.com/roundscope/ember-insights. Based on https://github.com/roundscope/web-engineering mastery.

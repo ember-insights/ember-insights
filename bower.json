@@ -1,0 +1,8 @@
+{
+  "name": "ember-insights",
+  "version": "v0.0.4",
+  "description": "ember-insights pages",
+  "dependencies": {
+    "ember": "1.8.1"
+  }
+}

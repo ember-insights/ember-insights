@@ -1,51 +1,55 @@
-import Ember              from 'ember';
-import { test }           from 'ember-qunit';
+import Ember from 'ember';
+import { it } from 'ember-mocha';
 import { GoogleTracker }  from 'ember-insights/trackers';
 
 
-module('Tracker');
+describe('Tracker', function() {
 
-test('tracking namespace', function() {
-  var command = GoogleTracker.trackingNamespace('namespace')('send');
-  equal(command, 'namespace.send');
-});
+  it('tracking namespace', function() {
+    var command = GoogleTracker.trackingNamespace('namespace')('send');
+    expect(command).to.equal('namespace.send');
+  });
 
-test('w/ out predefined namespace', function() {
-  var command = GoogleTracker.trackingNamespace()('set');
-  equal(command, 'set');
+  it('w/ out predefined namespace', function() {
+    var command = GoogleTracker.trackingNamespace()('set');
+    expect(command).to.equal('set');
 
-  command = GoogleTracker.trackingNamespace('')('set');
-  equal(command, 'set');
-});
+    command = GoogleTracker.trackingNamespace('')('set');
+    expect(command).to.equal('set');
+  });
 
-test('tracker function as a global property', function() {
-  var actual   = GoogleTracker.trackerFun('global', { global: true });
-  ok(actual);
-});
+  it('tracker function as a global property', function() {
+    var actual = GoogleTracker.trackerFun('global', { global: true });
+    expect(actual).to.be.ok();
+  });
 
-test('tracker function as a custom function', function() {
-  var expected = function() {};
-  var actual   = GoogleTracker.trackerFun(expected);
-  equal(actual, expected);
-});
+  it('tracker function as a custom function', function() {
+    var expected = function() {};
+    var actual   = GoogleTracker.trackerFun(expected);
+    expect(actual).to.equal(expected);
+  });
 
-test('setFields function', function() {
-  expect(6);
-  var _tracker = function(nmspace, propName, propVal) {
-    equal(nmspace, 'forTracker');
-    ok(
-      (propName === 'appName'          && propVal === 'My Appp !') ||
-      (propName === 'screenResolution' && propVal === '999x600'  )
-    );
-  };
-  var _namespace = function(commandName) {
-    equal(commandName, 'set');
-    return 'forTracker';
-  };
-  var fields = {
-    appName: 'My Appp !',
-    screenResolution: '999x600'
-  };
+  it('setFields function', function(done) {
+    var countCalled = 0;
+    var _tracker = function(nmspace, propName, propVal) {
+      expect(nmspace).to.equal('forTracker');
+      expect(
+        (propName === 'appName'          && propVal === 'My Appp !') ||
+        (propName === 'screenResolution' && propVal === '999x600'  )
+      ).to.be.ok();
+      countCalled++;
+      if (countCalled === 2) { done(); }
+    };
+    var _namespace = function(commandName) {
+      expect(commandName).to.equal('set');
+      return 'forTracker';
+    };
+    var fields = {
+      appName: 'My Appp !',
+      screenResolution: '999x600'
+    };
 
-  GoogleTracker.setFields(_tracker, _namespace, fields);
+    GoogleTracker.setFields(_tracker, _namespace, fields);
+  });
+
 });

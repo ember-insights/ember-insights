@@ -1,5 +1,11 @@
 {
   "predef": [
+    "describe",
+    "it",
+    "before",
+    "after",
+    "beforeEach",
+    "afterEach",
     "document",
     "window",
     "location",

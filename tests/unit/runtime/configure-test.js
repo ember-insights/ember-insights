@@ -1,39 +1,41 @@
+import { it } from 'ember-mocha';
 import runtime from 'ember-insights/runtime';
 
 
-module('Runtime configuration');
+describe('Runtime configuration', function() {
 
+  it('configuration by default', function() {
+    // case #1
+    var addon = { configs: [] };
+    runtime(addon).configure();
+    var settings = addon.configs['default'];
+    expect(settings).to.be.ok();
 
-test('configuration by default', function() {
-  // case #1
-  var addon = { configs: [] };
-  runtime(addon).configure();
-  var settings = addon.configs['default'];
-  ok(settings);
+    // case #2
+    addon = { configs: [] };
+    runtime(addon).configure('test');
+    settings = addon.configs['test'];
 
-  // case #2
-  addon = { configs: [] };
-  runtime(addon).configure('test');
-  settings = addon.configs['test'];
+    expect(settings).to.be.ok();
+    expect(settings.trackerFun).to.equal('ga');
+    expect(settings.trackingNamespace).to.equal('');
+    expect(typeof settings.trackerFactory === 'function').to.be.ok();
+    expect(typeof settings.tracker === 'object').to.be.ok();
+    expect(settings.trackTransitionsAs).to.equal('pageview');
+    expect(settings.updateDocumentLocationOnTransitions).to.equal(true);
+    expect(settings.mappings.length).to.equal(0);
+  });
 
-  ok(settings);
-  equal(settings.trackerFun, 'ga');
-  equal(settings.trackingNamespace, '');
-  ok(typeof settings.trackerFactory === 'function');
-  ok(typeof settings.tracker === 'object');
-  equal(settings.trackTransitionsAs, 'pageview');
-  equal(settings.updateDocumentLocationOnTransitions, true);
-  equal(settings.mappings.length, 0);
-});
+  it('setting configuration params', function() {
+    // case #1
+    var addon    = { configs: [] };
+    var settings = { updateDocumentLocationOnTransitions: false };
+    runtime(addon).configure('test', settings);
+    settings = addon.configs['test'];
 
-test('setting configuration params', function() {
-  // case #1
-  var addon    = { configs: [] };
-  var settings = { updateDocumentLocationOnTransitions: false };
-  runtime(addon).configure('test', settings);
-  settings = addon.configs['test'];
+    expect(settings).to.be.ok();
+    expect(settings.updateDocumentLocationOnTransitions).to.equal(false);
+    expect(settings.mappings.length).to.equal(0);
+  });
 
-  ok(settings);
-  equal(settings.updateDocumentLocationOnTransitions, false);
-  equal(settings.mappings.length, 0);
 });

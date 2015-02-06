@@ -1,14 +1,10 @@
+_Hey, listen! This is alpha-level software with incomplete features and planned future changes. Use at your own risk, expect some instability, disruption and source-level incompatibility for a while yet._
+
 [![Build Status](https://travis-ci.org/roundscope/ember-insights.svg?branch=master)](https://travis-ci.org/roundscope/ember-insights)
-
-# Ember-insights
-
-Designed as Ember CLI addon and will be used for tracking user's behavior and interaction.
-
 
 ## Installation
 
 `npm install --save-dev ember-insights`
-
 
 ### Setup Google Analytics snippet
 

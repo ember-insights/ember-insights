@@ -2,9 +2,9 @@ import { it } from 'ember-mocha';
 import runtime from 'ember-insights/runtime';
 
 
-describe('Runtime configuration', function() {
+describe('Runtime #configure', function() {
 
-  it('configuration by default', function() {
+  it('configures by default', function() {
     // case #1
     var addon = { configs: [] };
     runtime(addon).configure();
@@ -26,7 +26,7 @@ describe('Runtime configuration', function() {
     expect(settings.mappings.length).to.equal(0);
   });
 
-  it('setting configuration params', function() {
+  it('configures by params', function() {
     // case #1
     var addon    = { configs: [] };
     var settings = { updateDocumentLocationOnTransitions: false };

@@ -1,16 +1,9 @@
 import Ember from 'ember';
-import {
-  it
-} from 'ember-mocha';
-import {
-  pushToResult,
-  getSearchingPaths,
-  checkInAll,
-  processMatchedGroups
-} from 'ember-insights/matcher';
+import { it } from 'ember-mocha';
+import { pushToResult, getSearchingPaths, checkInAll, processMatchedGroups } from 'ember-insights/matcher';
 
 
-describe('Matcher', function(){
+describe('Matcher', function() {
 
   it('adds mached groups to searching result', function(){
     var holder;

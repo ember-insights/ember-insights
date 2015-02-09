@@ -2,9 +2,9 @@ import { it } from 'ember-mocha';
 import runtime from 'ember-insights/runtime';
 
 
-describe('Tracking configuration', function() {
+describe('Runtime #track', function() {
 
-  it('basic insights', function() {
+  it('sets tracking params by default', function() {
     var addon   = { configs: [] };
     var mapping = {
       insights: { ALL_TRANSITIONS:true, ALL_ACTIONS:true }
@@ -23,7 +23,7 @@ describe('Tracking configuration', function() {
     expect(mapping.insights.get('ALL_ACTIONS')).to.be.ok();
   });
 
-  it('custom tracking options', function() {
+  it('sets custom tracking params', function() {
     var addon   = { configs: [] };
     var mapping = {
       trackerFun: 'trackerFun',
@@ -44,7 +44,7 @@ describe('Tracking configuration', function() {
     expect(mapping.insights.get('ALL_ACTIONS')).to.be.ok();
   });
 
-  it('main tracking options', function() {
+  it('configures custom environment and sets custom tracking params', function() {
     var addon    = { configs: [] };
     var settings = {
       trackerFun: 'trackerFun', trackingNamespace: 'trackingNamespace'

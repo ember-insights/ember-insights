@@ -1,78 +1,89 @@
 import DefaultHandler from 'ember-insights/handler';
+import { it } from 'ember-mocha';
 
 
-module('Main handler for matched transitions');
-var handler = DefaultHandler.transitionHandler;
+describe('Main handler for matched transitions',function(){
+  var handler = DefaultHandler.transitionHandler;
 
-test('Transition as event', function() {
-  expect(3);
-  var settings = { trackTransitionsAs: 'event'},
-      data = {
-        oldRouteName: 'outer.inner.nested',
-        routeName: 'outer.inner.index',
-      },
-      tracker = {
-        sendEvent: function(type, json) {
-          var parsed = JSON.parse(json);
-          equal(type, 'ember_transition', 'sendEvent received correct type');
-          equal(parsed.from, 'outer.inner.nested', 'sendEvent received correct from route');
-          equal(parsed.to,   'outer.inner.index' , 'sendEvent received correct to route');
-        }
-      };
-
-  handler(data, tracker, settings);
-});
-
-test('Transition as pageview', function() {
-  expect(1);
-  var settings = { trackTransitionsAs: 'pageview'},
-      data = { url: '/outer/inner' },
-      tracker = {
-        trackPageView: function(url) {
-          equal(url, '/outer/inner', 'trackPageView received correct url');
-        }
-      };
-
-  handler(data, tracker, settings);
-});
-
-test('Transition only as event', function() {
-  expect(1);
-  var settings = { trackTransitionsAs: 'event'},
-      tracker = {
-        sendEvent: function() {
-          ok(true, 'sendEvent called');
+  it('tests Transition as event', function(done) {
+    var settings = { trackTransitionsAs: 'event'},
+        data = {
+          oldRouteName: 'outer.inner.nested',
+          routeName: 'outer.inner.index',
         },
-        trackPageView: function() {
-          ok(false, 'trackPageView method should not be called at all');
-        }
-      };
+        tracker = {
+          sendEvent: function(type, json) {
+            var parsed = JSON.parse(json);
+            expect(type).to.equal('ember_transition');
+            expect(parsed.from).to.equal('outer.inner.nested');
+            expect(parsed.to).to.equal('outer.inner.index');
+            done();
+          }
+        };
+    handler(data, tracker, settings);
+  });
 
-  handler({}, tracker, settings);
-});
+  it('tests Transition as pageview', function(done) {
+    var settings = { trackTransitionsAs: 'pageview'},
+        data = { url: '/outer/inner' },
+        tracker = {
+          trackPageView: function(url) {
+            expect(url).to.equal('/outer/inner');
+            done();
+          }
+        };
 
-test('Transition only as pageview', function() {
-  expect(1);
-  var settings = { trackTransitionsAs: 'pageview'},
-      tracker = {
-        sendEvent: function() {
-          ok(false, 'sendEvent method should not be called at all');
-        },
-        trackPageView: function() {
-          ok(true, 'trackPageView called');
-        }
-      };
+    handler(data, tracker, settings);
+  });
 
-  handler({}, tracker, settings);
-});
+  describe('Transitions handling functions called right by tracking type',function(){
+    var sendEventCalled;
+    var trackPageViewCalled;
 
-test('Transition both as pageview and as event', function() {
-  expect(2);
-  var settings = { trackTransitionsAs: 'both'},
-      tracker = {
-        sendEvent:     function() { ok(true,     'sendEvent called'); },
-        trackPageView: function() { ok(true, 'trackPageView called'); }
-      };
+    beforeEach(function(){
+      sendEventCalled = false;
+      trackPageViewCalled = false;
+    });
 
-  handler({}, tracker, settings);
+    it('Transition only as event calls only sendEvent', function() {
+      var settings = { trackTransitionsAs: 'event'},
+          tracker = {
+            sendEvent: function() {
+              sendEventCalled = true;
+            },
+            trackPageView: function() {
+              trackPageViewCalled = true;
+            }
+          };
+      handler({}, tracker, settings);
+      expect(sendEventCalled).to.be.ok();
+      expect(trackPageViewCalled).not.to.be.ok();
+    });
+
+    it('Transition only as pageview calls only trackPageView', function() {
+      var settings = { trackTransitionsAs: 'pageview'},
+          tracker = {
+            sendEvent: function() {
+              sendEventCalled = true;
+            },
+            trackPageView: function() {
+              trackPageViewCalled = true;
+            }
+          };
+      handler({}, tracker, settings);
+      expect(sendEventCalled).not.to.be.ok();
+      expect(trackPageViewCalled).to.be.ok();
+    });
+
+    it('Transition both as pageview and as event calls both functions', function() {
+      var settings = { trackTransitionsAs: 'both'},
+          tracker = {
+            sendEvent:     function() { sendEventCalled = true; },
+            trackPageView: function() { trackPageViewCalled = true; }
+          };
+      handler({}, tracker, settings);
+      expect(sendEventCalled).to.be.ok();
+      expect(trackPageViewCalled).to.be.ok();
+    });
+  });
 });

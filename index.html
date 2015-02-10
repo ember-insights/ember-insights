@@ -3,10 +3,54 @@
 <head>
   <meta charset="utf-8">
   <title>ember-insights in practice</title>
+  <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
+  <script type="text/x-handlebars">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <p class="navbar-text">Application</p>
+        </div>
+
+        <ul class="nav navbar-nav pull-right" role="tablist">
+          <li><button type="button" class="btn btn-primary navbar-btn" title="A">A</button></li>
+          <li><button type="button" class="btn btn-success navbar-btn"title="B">B</button></li>
+          <li><button type="button" class="btn btn-info navbar-btn" title="C">C</button></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">Task</a></li>
+        <li role="presentation"><a href="#">Execution</a></li>
+        <li role="presentation"><a href="#">Result</a></li>
+      </ul>
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade in active">
+          <p>Task: Tab content</p>
+          <p>Complete task by selecting (A, B, C)</p>
+          <button type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Start
+          </button>
+        </div>
+        <div role="tabpanel" class="tab-pane fade">
+          <p>Execution: Tab content</p>
+        </div>
+        <div role="tabpanel" class="tab-pane fade">
+          <p>Result: Tab content</p>
+        </div>
+      </div>
+    </div>
+
+    {{outlet}}
+  </script>
+
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
   <script src="bower_components/handlebars/handlebars.min.js"></script>
   <script src="bower_components/ember/ember.min.js"></script>
   <script src="app.js"></script>
 </body>
+</html>

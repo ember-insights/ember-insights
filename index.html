@@ -31,16 +31,104 @@
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade in active">
           <p>Task: Tab content</p>
-          <p>Complete task by selecting (A, B, C)</p>
+          <p>(Fill in a form with|Submit an application form):</p>
+          <blockquote>
+            <ol>
+              <li>Mnemonics as a Ticket ID</li>
+              <li>Choose a Should option</li>
+              <li>Check both S and L options</li>
+            </ol>
+          </blockquote>
           <button type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Start
+            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Proceed
           </button>
         </div>
         <div role="tabpanel" class="tab-pane fade">
           <p>Execution: Tab content</p>
+          <form>
+            <div class="form-group">
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                  Option Must is this and that&mdash;be sure to include why it's great
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                  Option Should can be something else and selecting it will deselect option Must
+                </label>
+              </div>
+              <div class="radio disabled">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
+                  Option Could is disabled
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optionsRadios" id="optionsRadios4" value="option4">
+                  Option Won't can be something else and selecting it will deselect option Should
+                </label>
+              </div>
+           </div>
+           <div class="form-group">
+              <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="s">
+                    Option S is this and that&mdash;be sure to include why it's great
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="o">
+                    Option O is this and that&mdash;be sure to include why it's great
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="l">
+                    Option L is this and that&mdash;be sure to include why it's great
+                </label>
+              </div>
+              <div class="checkbox disabled">
+                <label>
+                  <input type="checkbox" value="i" disabled>
+                  Option I is disabled
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="d">
+                    Option D is this and that&mdash;be sure to include why it's great
+                </label>
+              </div>
+           </div>
+           <div class="form-group">
+             <input type="text" class="form-control" placeholder="Task ID">
+           </div>
+           <button type="submit" class="btn btn-default">
+             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Submit
+           </button>
+           after fail
+           <button type="submit" class="btn btn-default">
+             <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Submit
+           </button>
+           <small>(Second|Third) attempt</small>
+          </form>
         </div>
         <div role="tabpanel" class="tab-pane fade">
           <p>Result: Tab content</p>
+          <blockquote>
+            <ol>
+              <li><span class="text-success">Mnemonics</span> as a Ticket ID</li>
+              <li>Choose a <span class="text-success">Should</span>(<span class="text-danger"><s>Could</s></span>) option</li>
+              <li>Check both <span class="text-success">S</span> and <span class="text-success">L</span> options</li>
+            </ol>
+          </blockquote>
+          <button type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Try Again
+          </button>
         </div>
       </div>
     </div>

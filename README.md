@@ -6,6 +6,12 @@ _Hey, listen! This is alpha-level software with incomplete features and planned 
 
 `npm install --save-dev ember-insights`
 
+### Add initializer
+
+Use generator to create basic configs and initializer. You can customize them to fit your needs. Replace `<initializer-name>` with name you want the initializer to have:
+
+`ember generate insights-basic-setup <initializer-name>`
+
 ### Setup Google Analytics snippet
 
 ```html
@@ -21,35 +27,6 @@ _Hey, listen! This is alpha-level software with incomplete features and planned 
     'cookieDomain': 'none'       // for development on localhost
   });
 </script>
-```
-
-### Drop an initializer
-
-```javascript
-import Ember    from 'ember';
-import Insights from 'ember-insights';
-import ENV      from '../config/environment'
-
-export default {
-
-  name: 'my-app-insights',
-
-  initialize: function (container, application) {
-    // configure insights for certain environment
-    Insights.configure('production', {
-      debug: true
-    }).track({
-      insights: {
-        ALL_TRANSITIONS: true, ALL_ACTIONS: true
-      }
-    });
-
-
-    if(ENV.environment === 'production') {
-      Insights.start('production');
-    }
-  }
-};
 ```
 
 ### You can use custom trackers, such as included console tracker(userful for development), or build your own

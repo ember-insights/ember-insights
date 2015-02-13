@@ -1,6 +1,6 @@
 {
   "name": "ember-insights",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Ember CLI addon for tracking users activities and push them to Google Analytics",
   "directories": {
     "doc": "doc",

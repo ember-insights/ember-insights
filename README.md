@@ -6,6 +6,11 @@ _Hey, listen! This is alpha-level software with incomplete features and planned 
 
 `npm install --save-dev ember-insights`
 
+also available as a Bower component
+
+`bower install roundscope/ember-insights`
+
+
 ### Setup Google Analytics snippet
 
 ```html

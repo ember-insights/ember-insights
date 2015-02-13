@@ -1,4 +1,4 @@
-import Ember from 'ember';
+/* global Ember */
 
 function groupMatches(group, routeName, eventType, eventValueToMatch) {
   var routeNameNoIndex = routeName.replace('.index', '');

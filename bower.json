@@ -1,5 +1,26 @@
 {
   "name": "ember-insights",
+  "version": "0.0.5",
+  "ignore": [
+    "addon",
+    "bower_components",
+    "config",
+    "node_modules",
+    "tasks",
+    "tests",
+    "tmp",
+    ".editorconfig",
+    ".ember-cli",
+    ".gitignore",
+    ".jshintrc",
+    ".npmignore",
+    "Brocfile.js",
+    "index.js",
+    ".travis.yml",
+    "Gruntfile.js",
+    "testem.json",
+    "package.json"
+  ],
   "dependencies": {
     "handlebars": "~1.3.0",
     "jquery": "^1.11.1",

@@ -1,5 +1,5 @@
-import devMappings from './ember-insights/development';
+import development from './ember-insights/development';
 
 export default {
-  development: devMappings.main
+  development: development
 };

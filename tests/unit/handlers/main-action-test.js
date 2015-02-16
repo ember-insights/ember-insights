@@ -13,7 +13,7 @@ describe('Main handler for matched actions',function(){
         tracker = {
           sendEvent: function(category, action, label, value) {
             expect(arguments.length).to.equal(2);
-            expect(category).to.equal('ember_action');
+            expect(category).to.equal('action');
             expect(action).to.equal('btnClick');
             done();
           }
@@ -30,7 +30,7 @@ describe('Main handler for matched actions',function(){
         tracker = {
           sendEvent: function(category, action, label, value) {
             expect(arguments.length).to.equal(3);
-            expect(category).to.equal('ember_action');
+            expect(category).to.equal('action');
             expect(action).to.equal('btnClick');
             expect(label).to.equal('aLabel');
             done();
@@ -48,7 +48,7 @@ describe('Main handler for matched actions',function(){
         tracker = {
           sendEvent: function(category, action, label, value) {
             expect(arguments.length).to.equal(4);
-            expect(category).to.equal('ember_action');
+            expect(category).to.equal('action');
             expect(action).to.equal('btnClick');
             expect(label).to.equal('aLabel');
             expect(value).to.equal('aValue');

@@ -2,15 +2,49 @@ _Hey, listen! This is alpha-level software with incomplete features and planned 
 
 [![Build Status](https://travis-ci.org/roundscope/ember-insights.svg?branch=master)](https://travis-ci.org/roundscope/ember-insights)
 
-## Installation
+## Getting started Ember-CLI addon
 
-`npm install --save-dev ember-insights`
+`$` `ember install:addon ember-insights`
 
-### Add initializer
+Use blueprint for generating configs and initializer.
 
-Use generator to create basic configs and initializer. You can customize them to fit your needs. Replace `<initializer-name>` with name you want the initializer to have:
+`$` `ember generate ember-insights-initializer ember-insights`
 
-`ember generate insights-basic-setup <initializer-name>`
+Or you could manually drop an initializer.
+
+```javascript
+import ENV           from '../config/environment'
+import EmberInsights from 'ember-insights';
+
+export default {
+
+  name: 'ember-insights',
+
+  initialize: function(/*container, application*/) {
+    EmberInsights.configure('development', {
+      // Pushes messages into console log.
+      debug: true,
+      // Factory that provides tracker instance.
+      trackerFactory: EmberInsights.ConsoleTracker.factory,
+      // Defines how to track transitions (available options are 'pageview', 'event').
+      //trackTransitionsAs: 'pageview',
+      // Sets application fields.
+      //fields: { appName: 'appName', appId: 'appId', appVersion: 'appVersion'},
+    }).track({
+      insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true }
+    });
+
+    if (ENV.environment === 'development') {
+      // Starts catching insights and return spicified tracker as an instance.
+      // You can manually suspend and resume catching with 'start'/'stop' functions
+      // any time during application runtime.
+      EmberInsights.start(ENV.environment);
+    }
+  }
+
+};
+
+```
 
 ### Setup Google Analytics snippet
 
@@ -29,21 +63,6 @@ Use generator to create basic configs and initializer. You can customize them to
 </script>
 ```
 
-### You can use custom trackers, such as included console tracker(userful for development), or build your own
-
-```javascript
-...
-import Insights from 'ember-insights';
-...
-      Insights.configure('production', {
-        debug: true,
-        trackerFactory: Insights.ConsoleTracker.factory
-      }).track({
-        insights: {
-          ALL_TRANSITIONS: true, ALL_ACTIONS: true
-        }
-      });
-```
 
 
 ## Tracker object

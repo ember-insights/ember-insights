@@ -1,5 +1,4 @@
-import Ember                from 'ember';
-import ENV                  from '../config/environment'
+import ENV                  from '../config/environment';
 import EmberInsights        from 'ember-insights';
 import EmberInsightsMapping from './../config/ember-insights';
 
@@ -7,7 +6,7 @@ export default {
 
   name: 'ember-insights',
 
-  initialize: function (container, application) {
+  initialize: function(/*container, application*/) {
     EmberInsights.configure('development', {
       // Pushes messages into console log.
       debug: true,

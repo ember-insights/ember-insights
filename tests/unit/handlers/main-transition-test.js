@@ -5,7 +5,7 @@ import { it } from 'ember-mocha';
 describe('Main handler for matched transitions',function(){
   var handler = DefaultHandler.transitionHandler;
 
-  it('tests Transition as event', function(done) {
+  it('tests Transition as "event"', function(done) {
     var settings = { trackTransitionsAs: 'event'},
         data = {
           oldRouteName: 'outer.inner.nested',
@@ -14,7 +14,7 @@ describe('Main handler for matched transitions',function(){
         tracker = {
           sendEvent: function(type, json) {
             var parsed = JSON.parse(json);
-            expect(type).to.equal('ember_transition');
+            expect(type).to.equal('transition');
             expect(parsed.from).to.equal('outer.inner.nested');
             expect(parsed.to).to.equal('outer.inner.index');
             done();
@@ -23,7 +23,7 @@ describe('Main handler for matched transitions',function(){
     handler(data, tracker, settings);
   });
 
-  it('tests Transition as pageview', function(done) {
+  it('tests Transition as "pageview"', function(done) {
     var settings = { trackTransitionsAs: 'pageview'},
         data = { url: '/outer/inner' },
         tracker = {
@@ -36,7 +36,7 @@ describe('Main handler for matched transitions',function(){
     handler(data, tracker, settings);
   });
 
-  describe('Transitions handling functions called right by tracking type',function(){
+  describe('trackTransitionsAs',function(){
     var sendEventCalled;
     var trackPageViewCalled;
 
@@ -45,7 +45,7 @@ describe('Main handler for matched transitions',function(){
       trackPageViewCalled = false;
     });
 
-    it('Transition only as event calls only sendEvent', function() {
+    it('calls sendEvent for "event" option', function() {
       var settings = { trackTransitionsAs: 'event'},
           tracker = {
             sendEvent: function() {
@@ -60,7 +60,7 @@ describe('Main handler for matched transitions',function(){
       expect(trackPageViewCalled).not.to.be.ok();
     });
 
-    it('Transition only as pageview calls only trackPageView', function() {
+    it('calls trackPageView for "pageview" option', function() {
       var settings = { trackTransitionsAs: 'pageview'},
           tracker = {
             sendEvent: function() {
@@ -72,17 +72,6 @@ describe('Main handler for matched transitions',function(){
           };
       handler({}, tracker, settings);
       expect(sendEventCalled).not.to.be.ok();
-      expect(trackPageViewCalled).to.be.ok();
-    });
-
-    it('Transition both as pageview and as event calls both functions', function() {
-      var settings = { trackTransitionsAs: 'both'},
-          tracker = {
-            sendEvent:     function() { sendEventCalled = true; },
-            trackPageView: function() { trackPageViewCalled = true; }
-          };
-      handler({}, tracker, settings);
-      expect(sendEventCalled).to.be.ok();
       expect(trackPageViewCalled).to.be.ok();
     });
   });

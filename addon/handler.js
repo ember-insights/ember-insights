@@ -1,20 +1,19 @@
 function transitionHandler(data, tracker, settings) {
-  var trackType = settings.trackTransitionsAs;
-
-  if (trackType === 'event'    || trackType === 'both') {
-    tracker.sendEvent(
-      'ember_transition',
-      JSON.stringify({ from: data.oldRouteName, to: data.routeName })
-    );
-  }
-  if (trackType === 'pageview' || trackType === 'both') {
-    tracker.trackPageView(data.url);
+  switch (settings.trackTransitionsAs) {
+    case 'event':
+      tracker.sendEvent(
+        'transition', JSON.stringify({ from: data.oldRouteName, to: data.routeName })
+      );
+      break;
+    case 'pageview':
+      tracker.trackPageView(data.url);
+      break;
   }
 }
 
 function actionHandler(data, tracker, settings) {
   settings = settings || {};
-  var args = ['ember_action', data.actionName];
+  var args = ['action', data.actionName];
 
   var actionLabel = data.actionArguments[0];
   var actionValue = data.actionArguments[1];

@@ -1,5 +1,7 @@
 /* global Ember */
 
+import { AbstractTracker } from './abstract-tracker';
+
 function trackerFun() {
   return function(){
     console.log('Ember-Insights event');
@@ -28,7 +30,10 @@ export default {
     var namespace = trackingNamespace(settings.trackingNamespace);
 
     // Runtime conveniences as a wrapper for tracker function
-    var wrapper = {
+    var Tracker = AbstractTracker.extend({
+      init: function() {
+      },
+
       isTracker: function() {
         return (tracker && typeof tracker === 'function');
       },
@@ -38,11 +43,9 @@ export default {
         }
         return tracker;
       },
-
       set: function(key, value) {
         tracker(namespace('set'), key, value);
       },
-
       send: function(fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
         tracker(namespace('send'), fieldNameObj);
@@ -73,10 +76,9 @@ export default {
 
         tracker(namespace('send'), 'pageview', path, fieldNameObj);
       }
-    };
+    });
 
-
-    return wrapper;
+    return new Tracker();
   },
 
   trackerFun: trackerFun,

@@ -1,7 +1,7 @@
 module.exports = {
-  dist: {
+  build: {
     src: 'tmp/ember-insights.amd.js',
-    dest: 'dist/ember-insights.amd.js',
+    dest: 'build/ember-insights.amd.js',
   },
   tmp: {
     src: 'addon/**',

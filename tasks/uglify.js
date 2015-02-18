@@ -5,11 +5,11 @@ module.exports = {
     report: 'min',
     wrap: true
   },
-  dist: {
+  build: {
     files: [
       {
-        src: 'dist/ember-insights.amd.js',
-        dest: 'dist/ember-insights.amd.min.js',
+        src: 'build/ember-insights.amd.js',
+        dest: 'build/ember-insights.amd.min.js',
       },
     ],
   },

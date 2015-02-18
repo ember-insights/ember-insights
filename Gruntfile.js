@@ -13,9 +13,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('dist', "Copy to dist, minify", [
-    'clean:dist',
-    'copy:dist',
-    'uglify:dist'
+    'clean:build',
+    'copy:build',
+    'uglify:build'
   ]);
 
 

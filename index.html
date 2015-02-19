@@ -6,120 +6,136 @@
   <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
   <script type="text/x-handlebars">
     <div class="container-fluid">
       <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">Task</a></li>
-        <li role="presentation"><a href="#">Execution</a></li>
-        <li role="presentation"><a href="#">Result</a></li>
-      </ul>
-      <div class="tab-content">
-        <div role="tabpanel" class="tab-pane fade in active">
-          <p>Task: Tab content</p>
-          <p>(Fill in a form with|Submit an application form):</p>
-          <blockquote>
-            <ol>
-              <li>Type 'Mnemonics' as a Ticket ID</li>
-              <li>Choose a Should option</li>
-              <li>Check both S and L options</li>
-            </ol>
-          </blockquote>
-          <button type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Proceed
-          </button>
-        </div>
-        <div role="tabpanel" class="tab-pane fade">
-          <p>Execution: Tab content</p>
-          <form>
-            <div class="form-group">
-              <div class="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                  Option Must is this and that&mdash;be sure to include why it's great
-                </label>
-              </div>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                  Option Should can be something else and selecting it will deselect option Must
-                </label>
-              </div>
-              <div class="radio disabled">
-                <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3" disabled>
-                  Option Could is disabled
-                </label>
-              </div>
-              <div class="radio">
-                <label>
-                  <input type="radio" name="optionsRadios" id="optionsRadios4" value="option4">
-                  Option Won't can be something else and selecting it will deselect option Should
-                </label>
-              </div>
-           </div>
-           <div class="form-group">
-              <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="s">
-                    Option S is this and that&mdash;be sure to include why it's great
-                </label>
-              </div>
-              <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="o">
-                    Option O is this and that&mdash;be sure to include why it's great
-                </label>
-              </div>
-              <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="l">
-                    Option L is this and that&mdash;be sure to include why it's great
-                </label>
-              </div>
-              <div class="checkbox disabled">
-                <label>
-                  <input type="checkbox" value="i" disabled>
-                  Option I is disabled
-                </label>
-              </div>
-              <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="d">
-                    Option D is this and that&mdash;be sure to include why it's great
-                </label>
-              </div>
-           </div>
-           <div class="form-group">
-             <input type="text" class="form-control" placeholder="Task ID">
-           </div>
-           <button type="submit" class="btn btn-default">
-             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Submit
-           </button>
-           after fail
-           <button type="submit" class="btn btn-default">
-             <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Submit
-           </button>
-           <small>(Second|Third) attempt</small>
-          </form>
-        </div>
-        <div role="tabpanel" class="tab-pane fade">
-          <p>Result: Tab content</p>
-          <blockquote>
-            <ol>
-              <li><span class="text-success">Mnemonics</span> as a Ticket ID</li>
-              <li>Choose a <span class="text-success">Should</span>(<span class="text-danger"><s>Must</s></span>) option</li>
-              <li>Check both <span class="text-success">S</span> and <span class="text-success">L</span> options</li>
-            </ol>
-          </blockquote>
-          <button type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Try Again
-          </button>
-        </div>
-      </div>
+      {{#link-to 'index'     tagName='li' disabled='true'}}<a>Task</a>{{/link-to}}
+      {{#link-to 'execution' tagName='li' disabled='true'}}<a>Execution</a>{{/link-to}}
+      {{#link-to 'result'    tagName='li' disabled='true'}}<a>Result</a>{{/link-to}}
+    </ul>
     </div>
+    <div class="tab-content">
+      {{outlet}}
+    </div>
+  </script>
 
-    {{outlet}}
+  <script type="text/x-handlebars" data-template-name="index">
+    <div role="tabpanel" class="tab-pane fade in active">
+      <p>Task:</p>
+      <p>(Fill in a form with|Submit an application form):</p>
+      <blockquote>
+        <ol>
+          <li>Type 'Mnemonics' as a Ticket ID</li>
+          <li>Choose a Should option</li>
+          <li>Check both S and L options</li>
+        </ol>
+      </blockquote>
+      <button type="button" class="btn btn-default" {{action 'next'}}>
+        <span class="glyphicon glyphicon-time" aria-hidden="true"></span> Proceed
+      </button>
+    </div>
+  </script>
+  <script type="text/x-handlebars" data-template-name="execution">
+    <div role="tabpanel" class="tab-pane fade in active">
+      <p>Execution:</p>
+      <form>
+        <div class="form-group">
+          <div class="radio">
+            <label>
+              {{ radio-button name='radio' value=radioButtons.must selectedRadio=model.selectedRadio}}
+              Option Must is this and that&mdash;be sure to include why it's great
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              {{ radio-button name='radio' value=radioButtons.should selectedRadio=model.selectedRadio}}
+              Option Should can be something else and selecting it will deselect option Must
+            </label>
+          </div>
+          <div class="radio disabled">
+            <label>
+              {{ radio-button name='radio' value=radioButtons.could selectedRadio=model.selectedRadio disabled='true'}}
+              Option Could is disabled
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              {{ radio-button name='radio' value=radioButtons.wont selectedRadio=model.selectedRadio}}
+              Option Won't can be something else and selecting it will deselect option Should
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="checkbox">
+            <label>
+              {{ input type="checkbox" checked=model.checkedOptions.s }}
+              Option S is this and that&mdash;be sure to include why it's great
+            </label>
+          </div>
+          <div class="checkbox">
+            <label>
+              {{ input type="checkbox" checked=model.checkedOptions.o }}
+              Option O is this and that&mdash;be sure to include why it's great
+            </label>
+          </div>
+          <div class="checkbox">
+            <label>
+              {{ input type="checkbox" checked=model.checkedOptions.l }}
+              Option L is this and that&mdash;be sure to include why it's great
+            </label>
+          </div>
+          <div class="checkbox disabled">
+            <label>
+              {{ input type="checkbox" disabled='' checked=model.checkedOptions.i }}
+              Option I is disabled
+            </label>
+          </div>
+          <div class="checkbox">
+            <label>
+              {{ input type="checkbox" checked=model.checkedOptions.d }}
+              Option D is this and that&mdash;be sure to include why it's great
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          {{input value=model.taskID class='form-control' placeholder='Task ID'}}
+        </div>
+        <button type="submit" class='btn btn-default' {{action 'submit'}}>
+          <span {{bind-attr class=":glyphicon model.attempts:glyphicon-repeat:glyphicon-ok"}}></span>
+          Submit
+        </button>
+      </form>
+    </div>
+  </script>
+  <script type="text/x-handlebars" data-template-name="result">
+    <div role="tabpanel" class="tab-pane fade in active">
+      <p>Result:</p>
+      <blockquote>
+        <ol>
+          <li>
+            <span {{bind-attr class="model.validateTask:text-success:text-danger"}}>
+              {{#if model.taskID}}
+                {{model.taskID}}
+              {{else}}
+                nothing typed
+              {{/if}}
+            </span> as a Ticket ID
+            {{#unless model.validateTask}}('Mnemonics' expected){{/unless}}
+          </li>
+          <li>Choose a <span {{bind-attr class="model.validateRadio:text-success:text-danger"}}>Should</span> option</li>
+          <li>
+            Check both <span {{bind-attr class="model.checkedOptions.s:text-success:text-danger"}}>S</span>
+            and <span {{bind-attr class="model.checkedOptions.l:text-success:text-danger"}}>L</span> options
+          </li>
+        </ol>
+      </blockquote>
+      <button type="button" class="btn btn-default" {{action 'restart'}}>
+        <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Try Again
+      </button>
+      {{#if model.failsDetected}}
+        <span class="text-danger">Failed attempts detected</span>
+      {{/if}}
+    </div>
   </script>
 
   <script src="bower_components/jquery/dist/jquery.min.js"></script>

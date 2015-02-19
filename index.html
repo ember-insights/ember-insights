@@ -21,8 +21,7 @@
 
   <script type="text/x-handlebars" data-template-name="index">
     <div role="tabpanel" class="tab-pane fade in active">
-      <p>Task:</p>
-      <p>(Fill in a form with|Submit an application form):</p>
+      <p>Abstract: Submit an application form:</p>
       <blockquote>
         <ol>
           <li>Type 'Mnemonics' as a Ticket ID</li>
@@ -37,7 +36,6 @@
   </script>
   <script type="text/x-handlebars" data-template-name="execution">
     <div role="tabpanel" class="tab-pane fade in active">
-      <p>Execution:</p>
       <form>
         <div class="form-group">
           <div class="radio">
@@ -104,12 +102,14 @@
           <span {{bind-attr class=":glyphicon model.attempts:glyphicon-repeat:glyphicon-ok"}}></span>
           Submit
         </button>
+        {{#if model.isFails}}
+          <span class="text-danger">Failed</span>
+        {{/if}}
       </form>
     </div>
   </script>
   <script type="text/x-handlebars" data-template-name="result">
     <div role="tabpanel" class="tab-pane fade in active">
-      <p>Result:</p>
       <blockquote>
         <ol>
           <li>
@@ -132,9 +132,6 @@
       <button type="button" class="btn btn-default" {{action 'restart'}}>
         <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span> Try Again
       </button>
-      {{#if model.failsDetected}}
-        <span class="text-danger">Failed attempts detected</span>
-      {{/if}}
     </div>
   </script>
 

@@ -1,6 +1,6 @@
 /* global Ember */
 
-import { AbstractTracker } from './abstract-tracker';
+import AbstractTracker from './abstract-tracker';
 
 function trackerFun(trackerFun, global) {
   global = (global || window);
@@ -30,13 +30,9 @@ export default {
 
     // Runtime conveniences as a wrapper for tracker function
     var Tracker = AbstractTracker.extend({
-      init: function() {
-      },
-
-      _setFields: function() {
+      applyAppFields: function() {
         setFields(tracker, namespace, settings.fields);
       },
-
       isTracker: function() {
         return (tracker && typeof tracker === 'function');
       },
@@ -46,11 +42,9 @@ export default {
         }
         return tracker;
       },
-
       set: function(key, value) {
         tracker(namespace('set'), key, value);
       },
-
       send: function(fieldNameObj) {
         fieldNameObj = fieldNameObj || {};
         tracker(namespace('send'), fieldNameObj);
@@ -82,7 +76,6 @@ export default {
         tracker(namespace('send'), 'pageview', path, fieldNameObj);
       }
     });
-
 
     return new Tracker();
   },

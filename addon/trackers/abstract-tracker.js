@@ -3,13 +3,10 @@
 import Class from '../vendor/inheritance';
 
 function notYetImplemented(signature) {
-  Ember.Logger.error("You should override '" + signature + "' method in your tracker");
+  Ember.warn("Tracker function '" + signature + "' is not supported");
 }
 
 var AbstractTracker = Class.extend({
-  init: function() {
-  },
-
   isTracker: function() {
     notYetImplemented('isTracker()');
   },
@@ -27,7 +24,10 @@ var AbstractTracker = Class.extend({
   },
   trackPageView: function(path, fieldNameObj) { // jshint ignore:line
     notYetImplemented('trackPageView(path, fieldNameObj)');
+  },
+  applyAppFields: function() {
+    notYetImplemented('applyAppFields()');
   }
 });
 
-export { AbstractTracker };
+export default AbstractTracker;

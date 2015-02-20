@@ -1,6 +1,6 @@
 /* global Ember */
 
-import { AbstractTracker } from './abstract-tracker';
+import AbstractTracker from './abstract-tracker';
 
 function trackerFun() {
   return function(){

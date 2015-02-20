@@ -3,10 +3,12 @@ module.exports = {
     report: 'min',
     wrap: true
   },
-  dist: {
-    files: [{
-      src: 'dist/ember-insights.amd.js',
-      dest: 'dist/ember-insights.amd.min.js',
-    }]
+  build: {
+    files: [
+      {
+        src: 'build/ember-insights.amd.js',
+        dest: 'build/ember-insights.amd.min.js',
+      },
+    ],
   }
 };

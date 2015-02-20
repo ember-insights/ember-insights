@@ -48,6 +48,26 @@ export default {
 
 In additional, there is available an AMD module and Bower component, find more details here [ember-insights.amd.js](https://github.com/ember-insights/ember-insights.amd.js)
 
+### Setup Google Analytics snippet
+
+To setup Google Universal Analytics, you have to create `analyticsInsights` key in your
+configuration environment.js:
+
+```javascript
+var ENV = {
+  analyticsInsights: {
+    trackers: {
+      googleAnalytics: {
+        webPropertyId: '<id of your web property>',
+        linkid: false, // https://developers.google.com/analytics/devguides/collection/analyticsjs/advanced#enhancedlink
+        displayFeatures: false // https://developers.google.com/analytics/devguides/collection/analyticsjs/display-features
+      }
+    }
+  }
+}
+```
+
+Also check, that you have `{{content-for 'head'}}` in your index.html.
 
 ## Acknowledgement
 

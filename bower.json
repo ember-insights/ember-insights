@@ -3,6 +3,8 @@
   "version": "v0.0.4",
   "description": "ember-insights pages",
   "dependencies": {
-    "ember": "1.8.1"
+    "ember": "1.8.1",
+    "ember-insights": "roundscope/ember-insights#master",
+    "almond": "~0.3.0"
   }
 }

@@ -1,3 +1,60 @@
+var Insights = require('ember-insights')['default'];
+
+Ember.Application.initializer({
+  name: 'Insights',
+  initialize: function (container, application) {
+    Insights.configure('demo', {
+      debug: true,
+      trackerFactory: Insights.ConsoleTracker.factory
+    }).track({
+      insights: {
+        TRANSITIONS: ['index', 'execution'],
+        ALL_ACTIONS: true
+      }
+    }).track({
+      insights: {
+        TRANSITIONS: ['result']
+      },
+      handler: function(type, data, tracker) {
+        var label, value;
+        var category = 'results_page';
+        var action = 'entered';
+        var model = data.route.get('controller.model');
+
+        if (!model) { return console.error('no model found'); }
+
+        if (model.get('isValid')) {
+          label = 'valid';
+          value = {
+            fails: model.get('isFails')
+          };
+        }
+        else {
+          label = 'not valid';
+          var errors = {};
+          if (!model.get('validateRadio')) {
+            errors.selectedRadio = model.get('selectedRadio');
+          }
+          if (!model.get('validateTask')) {
+            errors.taskID = model.get('taskID');
+          }
+          if (!model.get('checkedOptions.s')) {
+            errors.notChecked = ['s'];
+          }
+          if (!model.get('checkedOptions.l')) {
+            errors.notChecked = errors.notChecked || [];
+            errors.notChecked.push('l');
+          }
+          value = { errors: errors };
+        }
+        value = JSON.stringify(value);
+        tracker.sendEvent(category, action, label, value);
+      }
+    });
+    Insights.start('demo');
+  }
+});
+
 App = Ember.Application.create({});
 
 App.Router.map(function() {

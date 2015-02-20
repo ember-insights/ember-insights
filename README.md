@@ -48,22 +48,24 @@ export default {
 
 ### Setup Google Analytics snippet
 
-```html
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+To setup Google Universal Analytics, you have to create `analyticsInsights` key in your
+configuration environment.js:
 
-  // Replace UA-XXXX-Y with your Tracking ID
-  ga('create', 'UA-XXXX-Y', 'auto', {
-    // 'name': 'customTracker',  // custom name for tracker
-    'cookieDomain': 'none'       // for development on localhost
-  });
-</script>
+```javascript
+var ENV = {
+  analyticsInsights: {
+    trackers: {
+      googleAnalytics: {
+        webPropertyId: '<id of your web property>',
+        linkid: false, // https://developers.google.com/analytics/devguides/collection/analyticsjs/advanced#enhancedlink
+        displayFeatures: false // https://developers.google.com/analytics/devguides/collection/analyticsjs/display-features
+      }
+    }
+  }
+}
 ```
 
-
+Also check, that you have `{{content-for 'head'}}` in your index.html.
 
 ## Tracker object
 Call to `Insights.start` method returns object containing utility functions:

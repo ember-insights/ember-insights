@@ -1,10 +1,10 @@
 {
   "name": "ember-insights",
-  "version": "v0.0.4",
+  "version": "v0.0.5",
   "description": "ember-insights pages",
   "dependencies": {
     "ember": "1.8.1",
-    "ember-insights": "roundscope/ember-insights#master",
+    "ember-insights": "roundscope/ember-insights#v0.0.5",
     "almond": "~0.3.0"
   }
 }

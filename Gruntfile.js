@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     configPath: require('path').join(process.cwd(), 'tasks')
   });
 
-  grunt.registerTask('build:amd', [
+  grunt.registerTask('build:amd', "Build AMD package which is available as Bower component", [
     'clean:tmp',
     'copy:tmp',
     'rename:index',
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
   ]);
 
 
-  grunt.registerTask('default', "Build AMD package which is available as Bower component", [
+  grunt.registerTask('default', "Build assets by default", [
     'build:amd',
     'dist',
     'clean:tmp'

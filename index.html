@@ -102,8 +102,8 @@
           <span {{bind-attr class=":glyphicon model.attempts:glyphicon-repeat:glyphicon-ok"}}></span>
           Submit
         </button>
-        {{#if model.isFails}}
-          <span class="text-danger">Failed</span>
+        {{#if model.firstAttempt }}
+          <span class="text-danger">Left last attempt</span>
         {{/if}}
       </form>
     </div>
@@ -113,14 +113,14 @@
       <blockquote>
         <ol>
           <li>
-            <span {{bind-attr class="model.validateTask:text-success:text-danger"}}>
+            <span {{bind-attr class="model.validateInput:text-success:text-danger"}}>
               {{#if model.taskID}}
                 {{model.taskID}}
               {{else}}
                 nothing typed
               {{/if}}
             </span> as a Ticket ID
-            {{#unless model.validateTask}}('Mnemonics' expected){{/unless}}
+            {{#unless model.validateInput}}('Mnemonics' expected){{/unless}}
           </li>
           <li>Choose a <span {{bind-attr class="model.validateRadio:text-success:text-danger"}}>Should</span> option</li>
           <li>

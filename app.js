@@ -4,53 +4,32 @@ Ember.Application.initializer({
   name: 'Insights',
   initialize: function (container, application) {
     Insights.configure('demo', {
-      debug: true,
       trackerFactory: Insights.ConsoleTracker.factory
     }).track({
       insights: {
-        TRANSITIONS: ['index', 'execution'],
-        ALL_ACTIONS: true
+        TRANSITIONS: ['index', 'execution'], ALL_ACTIONS: true
       }
     }).track({
       insights: {
         TRANSITIONS: ['result']
       },
-      handler: function(type, data, tracker) {
+      handler: function(type, context, tracker) {
+        var model = context.route.get('controller.model');
         var label, value;
-        var category = 'results_page';
-        var action = 'entered';
-        var model = data.route.get('controller.model');
-
-        if (!model) { return console.error('no model found'); }
 
         if (model.get('isValid')) {
-          label = 'valid';
-          value = {
-            fails: model.get('isFails')
-          };
+          label = 'success';
+          value = { first_attempt: model.get('firstAttempt'), second_attempt: model.get('secondAttempt') };
         }
         else {
-          label = 'not valid';
-          var errors = {};
-          if (!model.get('validateRadio')) {
-            errors.selectedRadio = model.get('selectedRadio');
-          }
-          if (!model.get('validateTask')) {
-            errors.taskID = model.get('taskID');
-          }
-          if (!model.get('checkedOptions.s')) {
-            errors.notChecked = ['s'];
-          }
-          if (!model.get('checkedOptions.l')) {
-            errors.notChecked = errors.notChecked || [];
-            errors.notChecked.push('l');
-          }
-          value = { errors: errors };
+          label = 'failed';
+          value = { errors: model.errors() };
         }
-        value = JSON.stringify(value);
-        tracker.sendEvent(category, action, label, value);
+
+        tracker.sendEvent('result_page', 'entered', label, value);
       }
     });
+
     Insights.start('demo');
   }
 });
@@ -64,10 +43,30 @@ App.Router.map(function() {
 });
 
 App.Task = Ember.Object.extend({
-  validateTask:  Ember.computed.equal('taskID', 'Mnemonics'),
-  validateRadio: Ember.computed.equal('selectedRadio', 'should'),
-  isValid:       Ember.computed.and('validateTask', 'validateRadio', 'checkedOptions.s', 'checkedOptions.l'),
-  isFails:       Ember.computed.gt('attempts',1)
+  validateInput:    Ember.computed.equal('taskID', 'Mnemonics'),
+  validateRadio:    Ember.computed.equal('selectedRadio', 'should'),
+  validateCheckbox: Ember.computed.and('checkedOptions.s', 'checkedOptions.l'),
+  isValid:          Ember.computed.and('validateInput', 'validateRadio', 'validateCheckbox'),
+  firstAttempt:     Ember.computed.equal('attempts', 1),
+  secondAttempt:    Ember.computed.equal('attempts', 2),
+
+  errors: function() {
+    var errors = {};
+    if (!this.get('validateRadio')) {
+      errors.selectedRadio = this.get('selectedRadio');
+    }
+    if (!this.get('validateInput')) {
+      errors.taskID = this.get('taskID');
+    }
+    if (!this.get('checkedOptions.s')) {
+      errors.notChecked = ['s'];
+    }
+    if (!this.get('checkedOptions.l')) {
+      errors.notChecked = errors.notChecked || [];
+      errors.notChecked.push('l');
+    }
+    return errors;
+  }
 });
 
 App.ExecutionRoute = Ember.Route.extend({

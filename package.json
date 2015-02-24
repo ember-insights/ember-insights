@@ -11,11 +11,10 @@
     "build": "ember build",
     "test": "ember test"
   },
-  "repository": "https://github.com/roundscope/ember-insights",
+  "repository": "https://github.com/ember-insights/ember-insights",
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "Roundscope OSS Labs <oss@roundscope.com>",
   "license": "MIT",
   "devDependencies": {
     "broccoli-asset-rev": "^2.0.0",

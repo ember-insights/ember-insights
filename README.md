@@ -1,6 +1,6 @@
 _Hey, listen! This is alpha-level software with incomplete features and planned future changes. Use at your own risk, expect some instability, disruption and source-level incompatibility for a while yet._
 
-[![Build Status](https://travis-ci.org/roundscope/ember-insights.svg?branch=master)](https://travis-ci.org/roundscope/ember-insights)
+[![Build Status](https://travis-ci.org/ember-insights/ember-insights.svg?branch=master)](https://travis-ci.org/ember-insights/ember-insights)
 
 ## Getting started Ember-CLI addon
 
@@ -117,4 +117,4 @@ For more information on using ember-cli, visit [http://www.ember-cli.com/](http:
 
 ## Acknowledgement
 
-Product of Roundscope Ukraine LLC. HEAD is https://github.com/roundscope/ember-insights. Based on https://github.com/roundscope/web-engineering mastery.
+Product of Roundscope Ukraine LLC. HEAD is https://github.com/ember-insights/ember-insights. Based on https://github.com/roundscope/web-engineering mastery.

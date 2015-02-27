@@ -48,6 +48,9 @@ export default {
 
 In additional, there is available an AMD module and Bower component, find more details here [ember-insights.amd.js](https://github.com/ember-insights/ember-insights.amd.js)
 
+## Ask for help
+
+Report any issues you have on our [issue tracker](https://github.com/ember-insights/ember-insights/issues).
 
 ## Acknowledgement
 

@@ -2,7 +2,7 @@ _Hey, listen! This is alpha-level software with incomplete features and planned 
 
 [![Build Status](https://travis-ci.org/ember-insights/ember-insights.svg?branch=master)](https://travis-ci.org/ember-insights/ember-insights)
 
-## Getting started Ember-CLI addon
+## Getting started
 
 `$` `ember install:addon ember-insights`
 
@@ -46,73 +46,7 @@ export default {
 
 ```
 
-### Setup Google Analytics snippet
-
-```html
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  // Replace UA-XXXX-Y with your Tracking ID
-  ga('create', 'UA-XXXX-Y', 'auto', {
-    // 'name': 'customTracker',  // custom name for tracker
-    'cookieDomain': 'none'       // for development on localhost
-  });
-</script>
-```
-
-
-
-## Tracker object
-Call to `Insights.start` method returns object containing utility functions:
-
-#### Tracker.send(fieldNameObj)
-Calls `gaGlobalFunction('customTrackerName.send', fieldNameObj);` where `gaGlobalFunction` is the name of Google Analytics' global function (default - `window.ga`) and prefix `customTrackerName.` is only present if `'gaTrackerName': 'customTrackerName'` was passed to configuration object.
-
-#### Tracker.sendEvent(category, action, label, value)
-Calls `gaGlobalFunction('customTrackerName.send', fieldNameObj);` where `gaGlobalFunction` - GA's global function, `customTrackerName` - custom name of tracker (if present) and `fieldNameObj` - following object (eventLabel and eventValue may not be added to object):
-```javascript
-{
-  'hitType':       'event',  // Required
-  'eventCategory': category, // Required
-  'eventAction':   action,   // Required
-  'eventLabel':    label,    // Added only if label is present
-  'eventValue':    value     // Added only if label and value are present
-}
-```
-
-#### Tracker.trackPageView(path, fieldNameObj)
-
-Calls `gaGlobalFunction('customTrackerName.send', 'pageview', path, fieldNameObj);` where `gaGlobalFunction` - GA's global function, `customTrackerName` - custom name of tracker (if present) and `path` (if empty) is set following this logic: `var loc = window.location; path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);`
-
-
-
-## For contributors
-
-#### Installation
-
-* `git clone` this repository
-* `npm install`
-* `bower install`
-
-#### Running
-
-* `ember server`
-* Visit your app at http://localhost:4200.
-
-#### Running Tests
-
-* `ember test`
-* `ember test --server`
-
-#### Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
-
+In additional, there is available an AMD module and Bower component, find more details here [ember-insights.amd.js](https://github.com/ember-insights/ember-insights.amd.js)
 
 
 ## Acknowledgement

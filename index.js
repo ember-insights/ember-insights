@@ -71,7 +71,7 @@ function getGoogleAnalyticsTrackingCode(config) {
     "",
     displayFeatures ? config.globalVariable + "('require', 'displayfeatures');" : "",
     linkid ? config.globalVariable + "('require', 'linkid', 'linkid.js');" : "",
-    "" + config.globalVariable + "('create', '" + config.webPropertyId + "', " + gaConfig + ");",
+    config.webPropertyId ? ("" + config.globalVariable + "('create', '" + config.webPropertyId + "', " + gaConfig + ");") : "",
     "</script>"
   ];
 
@@ -93,7 +93,11 @@ module.exports = {
         trackers.googleAnalytics || {}
       );
 
-      if (type === 'head' && gaConfig.webPropertyId !== null) {
+      var loadWithoutWebPropId = gaConfig.loadScriptWithoutWebPropertyId;
+      if (typeof gaConfig.loadScriptWithoutWebPropertyId !== 'undefined') {
+        delete gaConfig.loadScriptWithoutWebPropertyId;
+      }
+      if (type === 'head' && ((gaConfig.webPropertyId !== null) || loadWithoutWebPropId) ) {
         content = content.concat(getGoogleAnalyticsTrackingCode(gaConfig));
       }
     }

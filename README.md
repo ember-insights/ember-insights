@@ -35,7 +35,7 @@ export default {
     });
 
     if (ENV.environment === 'development') {
-      // Starts catching insights and return spicified tracker as an instance.
+      // Starts catching insights and return specified tracker as an instance.
       // You can manually suspend and resume catching with 'start'/'stop' functions
       // any time during application runtime.
       EmberInsights.start(ENV.environment);

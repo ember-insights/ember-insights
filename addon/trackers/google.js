@@ -50,11 +50,7 @@ export default {
         tracker(namespace('send'), fieldNameObj);
       },
       sendEvent: function(category, action, label, value) {
-        var fieldNameObj = {
-          'hitType':       'event',  // Required
-          'eventCategory': category, // Required
-          'eventAction':   action    // Required
-        };
+        var fieldNameObj = { 'hitType': 'event', 'eventCategory': category, 'eventAction': action };
 
         if (label != null) {
           fieldNameObj.eventLabel = label;

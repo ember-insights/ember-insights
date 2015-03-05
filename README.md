@@ -17,9 +17,7 @@ import ENV           from '../config/environment'
 import EmberInsights from 'ember-insights';
 
 export default {
-
   name: 'ember-insights',
-
   initialize: function(/*container, application*/) {
     EmberInsights.configure('development', {
       // Pushes messages into console log.
@@ -27,9 +25,9 @@ export default {
       // Factory that provides tracker instance.
       trackerFactory: EmberInsights.ConsoleTracker.factory,
       // Defines how to track transitions (available options are 'pageview', 'event').
-      //trackTransitionsAs: 'pageview',
+      trackTransitionsAs: 'pageview',
       // Sets application fields.
-      //fields: { appName: 'appName', appId: 'appId', appVersion: 'appVersion'},
+      fields: { appName: 'appName', appId: 'appId', appVersion: 'appVersion'}
     }).track({
       insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true }
     });
@@ -41,9 +39,7 @@ export default {
       EmberInsights.start(ENV.environment);
     }
   }
-
 };
-
 ```
 
 In additional, there is available an AMD module and Bower component, find more details here [ember-insights.amd.js](https://github.com/ember-insights/ember-insights.amd.js).

@@ -46,11 +46,15 @@ export default {
 
 ```
 
-In additional, there is available an AMD module and Bower component, find more details here [ember-insights.amd.js](https://github.com/ember-insights/ember-insights.amd.js)
+In additional, there is available an AMD module and Bower component, find more details here [ember-insights.amd.js](https://github.com/ember-insights/ember-insights.amd.js).
+
+## Live demo
+
+The easiest way to find out more details is checking [live demo](http://ember-insights.github.io/#example-component) and their sources.
 
 ## Ask for help
 
-Report any issues you have on our [issue tracker](https://github.com/ember-insights/ember-insights/issues).
+Check out the [wiki](https://github.com/ember-insights/ember-insights/wiki). Report any issues you have on our [issue tracker](https://github.com/ember-insights/ember-insights/issues).
 
 ## Acknowledgement
 

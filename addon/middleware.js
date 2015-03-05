@@ -71,7 +71,7 @@ export default {
       var newRouteName = appController.get('currentRouteName');
 
       Ember.run.scheduleOnce('routerTransitions', this, function() {
-        var newUrl = this.get('url');
+        var newUrl = (this.get('url') || '/');
         _handle('transition', {
           route:        this.container.lookup('route:' + newRouteName),
           routeName:    newRouteName,

@@ -15,6 +15,13 @@ export default {
       //   trackerFun: 'ga', name: ''
       // })
 
+      // timings: [
+      //   {
+      //     start: 't:index',
+      //     end: 'a:a2',
+      //     points: ['t:outer', 'a:a1']
+      //   }
+      // ]
     }).track({
       insights: {
         ALL_TRANSITIONS: {
@@ -33,6 +40,17 @@ export default {
       },
       // dispatch: function(eventType, context, tracker) {
       //   console.log('Gotcha!');
+      // }
+
+      // timings: [
+      //   {
+      //     title: 'Chain 2',
+      //     start: 't:outer.inner',
+      //     end: 'a:a2'
+      //   }
+      // ],
+      // timingHandler: function(measureName, tracker, data) {
+      //   console.log('New timing in custom track!');
       // }
     });
     Insights.start('development');

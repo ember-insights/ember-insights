@@ -74,7 +74,7 @@ function checkInAll(matchAllConfig, eventType, eventValueToMatch, routeNameNoInd
   return false;
 }
 
-function processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams){
+function processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams, eventValue) { // jshint ignore:line
     for (var i = 0, len = matchedGroups.length; i < len; i++) {
       var matchedGroup = matchedGroups[i].group;
 
@@ -86,9 +86,42 @@ function processMatchedGroups(matchedGroups, addonSettings, eventType, eventPara
     }
 }
 
+function processTiming(addonSettings, eventType, eventValue) {
+  if (!(window.performance && window.performance.mark)) {
+    Ember.warn("Your browser doesn't support User Timing API!");
+    return;
+  }
+
+  var currentEvent = eventType.substr(0, 1) + ':' + eventValue;
+  window.performance.mark(currentEvent);
+
+  var prevLists;
+  if (addonSettings.timingsConfig) {
+    prevLists = addonSettings.timingsConfig[currentEvent];
+  }
+
+  if (prevLists) {
+    prevLists.forEach(function(prevList) {
+      for (var i=0, len=prevList.prevPoints.length; i<len; i++) {
+        var fromEvent = prevList.prevPoints[i];
+        var saved = window.performance.getEntriesByName(fromEvent);
+
+        if (saved.length) {
+          var measureName = fromEvent + '..' + currentEvent;
+          window.performance.measure(measureName, fromEvent, currentEvent);
+          var options = prevList.chainTitle ? { chainTitle: prevList.chainTitle } : {};
+          prevList.timingHandler(measureName, prevList.tracker, options);
+          break;
+        }
+      }
+    });
+  }
+}
+
 export {
   getMatchedGroups,
   processMatchedGroups,
+  processTiming,
   pushToResult,
   getSearchingPaths,
   checkInAll

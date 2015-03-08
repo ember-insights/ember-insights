@@ -1,5 +1,5 @@
 /* global Ember */
-import { getMatchedGroups, processMatchedGroups } from './matcher';
+import { getMatchedGroups, processMatchedGroups, processTiming } from './matcher';
 
 export default {
   use: function(addon) {
@@ -30,7 +30,12 @@ export default {
 
         Ember.debug(msg);
       }
-      processMatchedGroups(matchedGroups, addon.settings, type, data);
+      var eventValue = valueToMatch;
+      if (type === 'transition') {
+        eventValue = eventValue.replace('.index', '');
+      }
+      processTiming(addon.settings, type, eventValue);
+      processMatchedGroups(matchedGroups, addon.settings, type, data, eventValue);
     }
 
 

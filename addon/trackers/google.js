@@ -64,6 +64,9 @@ function _buildFactory(trackerOptions) {
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
         tracker()(namespace('send'), 'pageview', path, fields);
+      },
+      processTimingEvent: function(measure) {
+        tracker()(namespace('send'), 'timing', measure.entryType, measure.name, Math.floor(measure.duration));
       }
     });
 

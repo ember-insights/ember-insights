@@ -23,6 +23,9 @@ export default {
       },
       trackPageView: function(path, fieldNameObj) {
         logger('trackPageView', ['pageview', path, fieldNameObj]);
+      },
+      processTimingEvent: function(measure) {
+        logger('processTimingEvent', measure);
       }
     });
 

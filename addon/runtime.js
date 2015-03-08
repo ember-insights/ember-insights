@@ -15,6 +15,8 @@ export default function(addon) {
       optparse.basicOpts(settings);
       optparse.trackerOpts(settings);
 
+      optparse.buildTimingsConfig(settings);
+
       settings.mappings  = [];
       addon.configs[env] = settings;
 
@@ -28,6 +30,8 @@ export default function(addon) {
       // apply defaults
       optparse.mergeTrackerOpts(mapping, _settings);
       optparse.dispatcherOpts(mapping);
+
+      optparse.buildTimingsConfig(_settings, mapping);
 
       // setup tracking mapping
       _settings.mappings.push(mapping);

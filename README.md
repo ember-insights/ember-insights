@@ -23,7 +23,14 @@ export default {
       // Pushes messages into console log.
       debug: true,
       // Factory that provides tracker instance.
-      trackerFactory: EmberInsights.ConsoleTracker.factory,
+      trackerFactory: EmberInsights.ConsoleTracker.factory
+    }).track({
+      insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true }
+    });
+
+    EmberInsights.configure('production', {
+      // Factory that provides tracker instance.
+      trackerFactory: EmberInsights.GoogleTracker.factory,
       // Defines how to track transitions (available options are 'pageview', 'event').
       trackTransitionsAs: 'pageview',
       // Sets application fields.
@@ -32,12 +39,10 @@ export default {
       insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true }
     });
 
-    if (ENV.environment === 'development') {
-      // Starts catching insights and return specified tracker as an instance.
-      // You can manually suspend and resume catching with 'start'/'stop' functions
-      // any time during application runtime.
-      EmberInsights.start(ENV.environment);
-    }
+    // Starts catching insights and return specified tracker as an instance.
+    // You can manually suspend and resume catching with 'start'/'stop' functions
+    // any time during application runtime.
+    EmberInsights.start(ENV.environment);
   }
 };
 ```

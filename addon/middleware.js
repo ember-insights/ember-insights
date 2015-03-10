@@ -1,9 +1,5 @@
 /* global Ember */
-
-import {
-  getMatchedGroups,
-  processMatchedGroups
-} from './matcher';
+import { getMatchedGroups, processMatchedGroups } from './matcher';
 
 export default {
   use: function(addon) {

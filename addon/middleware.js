@@ -22,11 +22,12 @@ export default {
 
       // drop a line to the console log
       if (addon.settings.debug) {
-        var msg = "TRAP: '" + eventName + "' action";
-        var word = (type === 'action') ? " on '" : " to '";
-        if (data.oldRouteName) { msg += " from '" + data.oldRouteName + "' route (" + data.oldUrl + ")"; }
-        if (data.routeName)    { msg += word      + data.routeName    + "' route (" +    data.url + ")"; }
-        msg += matchedGroups.length ? '. Matches:' : '. No matches!';
+        var isMapped = (matchedGroups.length ? ' SEND' : ' TRAP');
+        var msg = "Ember-Insights%@: '%@'".fmt(isMapped, eventName);
+        if (data.oldRouteName) { msg += " from '%@':'%@'".fmt(data.oldRouteName, data.oldUrl); }
+        var prep = (type === 'action') ? 'action from' : 'to';
+        if (data.routeName)    { msg += " %@ '%@':'%@'".fmt(prep, data.routeName, data.url); }
+
         Ember.debug(msg);
       }
       processMatchedGroups(matchedGroups, addon.settings, type, data);

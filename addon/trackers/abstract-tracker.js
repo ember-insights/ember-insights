@@ -3,7 +3,7 @@
 import Class from '../vendor/inheritance';
 
 function notYetImplemented(signature) {
-  Ember.warn("Tracker function '" + signature + "' is not supported");
+  Ember.warn("function '" + signature + "' is not yet implemented");
 }
 
 var AbstractTracker = Class.extend({

@@ -79,11 +79,6 @@ function processMatchedGroups(matchedGroups, addonSettings, eventType, eventPara
       var matchedGroup = matchedGroups[i].group;
       var matchedKey   = matchedGroups[i].keyMatched;
 
-      // drop a line to the developer console
-      if (addonSettings.debug) {
-        Ember.debug("TRAP: ---- MATCHED key '" + matchedKey + "' in group '" + matchedGroup.name + "'");
-      }
-
       if (eventType === 'transition' && addonSettings.updateDocumentLocationOnTransitions) {
         matchedGroup.tracker.set('location', document.URL);
       }

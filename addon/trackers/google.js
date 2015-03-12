@@ -36,9 +36,6 @@ export default {
         return (tracker && typeof tracker === 'function');
       },
       getTracker: function() {
-        if (! this.isTracker()) {
-          Ember.debug("Can't find in `window` a `" + settings.trackerFun + "` function definition");
-        }
         return tracker;
       },
       set: function(key, value) {

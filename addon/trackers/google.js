@@ -1,4 +1,3 @@
-/* global Ember */
 import AbstractTracker from './abstract-tracker';
 
 function trackerFun(trackerFun, global) {

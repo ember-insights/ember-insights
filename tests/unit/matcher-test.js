@@ -61,9 +61,9 @@ describe('Matcher', function() {
           handler: function() {}
         }
       }];
-      addonSettings = { debug: true };
-      eventType = 'transition';
-      eventParams = { testProperty: 'testValue' };
+      addonSettings = {};
+      eventType     = 'transition';
+      eventParams   = { testProperty: 'testValue' };
     });
 
     it('invokes handler', function(done) {

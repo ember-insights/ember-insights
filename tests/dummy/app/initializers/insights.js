@@ -8,7 +8,6 @@ export default {
   initialize: function (container, application) {
 
     Insights.configure('development', {
-      debug: true,
       trackerFactory: Insights.ConsoleTracker.factory
     }).track({
       insights: {

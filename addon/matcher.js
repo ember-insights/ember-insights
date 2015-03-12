@@ -77,7 +77,6 @@ function checkInAll(matchAllConfig, eventType, eventValueToMatch, routeNameNoInd
 function processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams){
     for (var i = 0, len = matchedGroups.length; i < len; i++) {
       var matchedGroup = matchedGroups[i].group;
-      var matchedKey   = matchedGroups[i].keyMatched;
 
       if (eventType === 'transition' && addonSettings.updateDocumentLocationOnTransitions) {
         matchedGroup.tracker.set('location', document.URL);

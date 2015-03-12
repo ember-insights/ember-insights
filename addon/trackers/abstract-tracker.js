@@ -1,5 +1,4 @@
 /* global Ember */
-
 import Class from '../vendor/inheritance';
 
 function notYetImplemented(signature) {

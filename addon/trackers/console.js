@@ -1,5 +1,4 @@
 /* global Ember */
-
 import AbstractTracker from './abstract-tracker';
 
 function logger(label, params) {

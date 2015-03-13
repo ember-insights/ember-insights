@@ -23,47 +23,44 @@ function setFields(tracker, namespace, fields) {
 export default {
   factory: function(settings) {
 
-    var tracker   = trackerFun(settings.trackerFun);
+    function tracker() { return trackerFun(settings.trackerFun); }
     var namespace = trackingNamespace(settings.trackingNamespace);
 
     // Runtime conveniences as a wrapper for tracker function
     var Tracker = AbstractTracker.extend({
       applyAppFields: function() {
-        setFields(tracker, namespace, settings.fields);
+        setFields(tracker(), namespace, settings.fields);
       },
       isTracker: function() {
-        return (tracker && typeof tracker === 'function');
+        return (tracker() && typeof tracker() === 'function');
       },
       getTracker: function() {
-        return tracker;
+        return tracker();
       },
       set: function(key, value) {
-        tracker(namespace('set'), key, value);
+        tracker()(namespace('set'), key, value);
       },
-      send: function(fieldNameObj) {
-        fieldNameObj = fieldNameObj || {};
-        tracker(namespace('send'), fieldNameObj);
+      send: function(fields) {
+        fields = fields || {};
+        tracker()(namespace('send'), fields);
       },
       sendEvent: function(category, action, label, value) {
-        var fieldNameObj = {
+        var fields = {
           hitType:      'event',
           eventCategory: category,
           eventAction:   action,
           eventLabel:    label,
           eventValue:    value
         };
-
-        tracker(namespace('send'), fieldNameObj);
+        this.send(fields);
       },
-      trackPageView: function(path, fieldNameObj) {
-        fieldNameObj = fieldNameObj || {};
-
+      trackPageView: function(path, fields) {
+        fields = fields || {};
         if (!path) {
           var loc = window.location;
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
-
-        tracker(namespace('send'), 'pageview', path, fieldNameObj);
+        tracker()(namespace('send'), 'pageview', path, fields);
       }
     });
 

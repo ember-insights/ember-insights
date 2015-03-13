@@ -15,14 +15,14 @@ var AbstractTracker = Class.extend({
   set: function(key, value) { // jshint ignore:line
     notYetImplemented('set(key, value)');
   },
-  send: function(fieldNameObj) { // jshint ignore:line
-    notYetImplemented('send(fieldNameObj)');
+  send: function(fields) { // jshint ignore:line
+    notYetImplemented('send(fields)');
   },
   sendEvent: function(category, action, label, value) { // jshint ignore:line
     notYetImplemented('sendEvent(category, action, label, value)');
   },
-  trackPageView: function(path, fieldNameObj) { // jshint ignore:line
-    notYetImplemented('trackPageView(path, fieldNameObj)');
+  trackPageView: function(path, fields) { // jshint ignore:line
+    notYetImplemented('trackPageView(path, fields)');
   },
   applyAppFields: function() {
     notYetImplemented('applyAppFields()');

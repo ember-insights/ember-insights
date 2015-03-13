@@ -1,5 +1,3 @@
-/* global Ember */
-
 import AbstractTracker from './abstract-tracker';
 
 function trackerFun(trackerFun, global) {
@@ -25,55 +23,44 @@ function setFields(tracker, namespace, fields) {
 export default {
   factory: function(settings) {
 
-    var tracker   = trackerFun(settings.trackerFun);
+    function tracker() { return trackerFun(settings.trackerFun); }
     var namespace = trackingNamespace(settings.trackingNamespace);
 
     // Runtime conveniences as a wrapper for tracker function
     var Tracker = AbstractTracker.extend({
       applyAppFields: function() {
-        setFields(tracker, namespace, settings.fields);
+        setFields(tracker(), namespace, settings.fields);
       },
       isTracker: function() {
-        return (tracker && typeof tracker === 'function');
+        return (tracker() && typeof tracker() === 'function');
       },
       getTracker: function() {
-        if (! this.isTracker()) {
-          Ember.debug("Can't find in `window` a `" + settings.trackerFun + "` function definition");
-        }
-        return tracker;
+        return tracker();
       },
       set: function(key, value) {
-        tracker(namespace('set'), key, value);
+        tracker()(namespace('set'), key, value);
       },
-      send: function(fieldNameObj) {
-        fieldNameObj = fieldNameObj || {};
-        tracker(namespace('send'), fieldNameObj);
+      send: function(fields) {
+        fields = fields || {};
+        tracker()(namespace('send'), fields);
       },
       sendEvent: function(category, action, label, value) {
-        var fieldNameObj = {
-          'hitType':       'event',  // Required
-          'eventCategory': category, // Required
-          'eventAction':   action    // Required
+        var fields = {
+          hitType:      'event',
+          eventCategory: category,
+          eventAction:   action,
+          eventLabel:    label,
+          eventValue:    value
         };
-
-        if (label != null) {
-          fieldNameObj.eventLabel = label;
-          if (value != null) {
-            fieldNameObj.eventValue = value;
-          }
-        }
-
-        tracker(namespace('send'), fieldNameObj);
+        this.send(fields);
       },
-      trackPageView: function(path, fieldNameObj) {
-        fieldNameObj = fieldNameObj || {};
-
+      trackPageView: function(path, fields) {
+        fields = fields || {};
         if (!path) {
           var loc = window.location;
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
-
-        tracker(namespace('send'), 'pageview', path, fieldNameObj);
+        tracker()(namespace('send'), 'pageview', path, fields);
       }
     });
 

@@ -20,8 +20,8 @@ export default {
   name: 'ember-insights',
   initialize: function(/*container, application*/) {
     EmberInsights.configure('development', {
-      // Pushes messages into console log.
-      debug: true,
+      // Pushes messages into `Ember.debug`.
+      //debug: false,
       // Factory that provides tracker instance.
       trackerFactory: EmberInsights.ConsoleTracker.factory
     }).track({

@@ -10,6 +10,8 @@ export default {
   mergeTrackerOpts: function(opts, basicOpts) {
     var assert, typeOf;
 
+    opts.debug = (opts.debug === undefined ? true : opts.debug);
+
     opts.trackerFun = (opts.trackerFun || basicOpts.trackerFun || 'ga');
     typeOf = typeof opts.trackerFun;
     assert = (typeOf === 'function' || typeOf === 'string');

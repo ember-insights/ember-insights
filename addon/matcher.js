@@ -1,4 +1,4 @@
-import Ember from 'ember';
+/* global Ember */
 
 function groupMatches(group, routeName, eventType, eventValueToMatch) {
   var routeNameNoIndex = routeName.replace('.index', '');
@@ -77,12 +77,6 @@ function checkInAll(matchAllConfig, eventType, eventValueToMatch, routeNameNoInd
 function processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams){
     for (var i = 0, len = matchedGroups.length; i < len; i++) {
       var matchedGroup = matchedGroups[i].group;
-      var matchedKey   = matchedGroups[i].keyMatched;
-
-      // drop a line to the developer console
-      if (addonSettings.debug) {
-        Ember.debug("TRAP: ---- MATCHED key '" + matchedKey + "' in group '" + matchedGroup.name + "'");
-      }
 
       if (eventType === 'transition' && addonSettings.updateDocumentLocationOnTransitions) {
         matchedGroup.tracker.set('location', document.URL);

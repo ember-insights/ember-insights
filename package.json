@@ -1,6 +1,6 @@
 {
   "name": "ember-insights",
-  "version": "0.1.2-dev",
+  "version": "0.1.2",
   "description": "The Ember.js framework for measurement of user-centered metrics",
   "homepage": "http://ember-insights.github.io",
   "license": "MIT",

@@ -1,6 +1,6 @@
 _Hey, listen! This is alpha-level software with incomplete features and planned future changes. Use at your own risk, expect some instability, disruption and source-level incompatibility for a while yet._
 
-[![Build Status](https://travis-ci.org/ember-insights/ember-insights.svg?branch=master)](https://travis-ci.org/ember-insights/ember-insights)
+[![Build Status](https://travis-ci.org/ember-insights/ember-insights.svg?branch=master)](https://travis-ci.org/ember-insights/ember-insights) [![Ember Observer Score](http://emberobserver.com/badges/ember-insights.svg)](http://emberobserver.com/addons/ember-insights)
 
 ## Getting started
 

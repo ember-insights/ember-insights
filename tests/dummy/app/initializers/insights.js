@@ -16,12 +16,12 @@ export default {
           except: ['index', 'main.record', 'outer', 'outer.inner', 'outer.inner.nested']
         },
         TRANSITIONS: ['index', 'outer.inner.nested'],
-        ACTIONS: ['testAction1'],
+        ACTIONS: ['a1'],
         MAP: {
           outer: {
-            ACTIONS: ['TRANSITION', 'testAction2'],
+            ACTIONS: ['TRANSITION', 'a2'],
             inner: {
-              ACTIONS: ['TRANSITION', 'testAction2', 'testAction3']
+              ACTIONS: ['TRANSITION', 'a2', 'a3']
             }
           }
         }

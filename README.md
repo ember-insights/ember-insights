@@ -1,6 +1,6 @@
 _Hey, listen! This is alpha-level software with incomplete features and planned future changes. Users's metrics are extensive, and not trivial to implement. `ember-insights.js` is heavily based on Google Analytics._
 
-[![Build Status](https://travis-ci.org/ember-insights/ember-insights.svg?branch=master)](https://travis-ci.org/ember-insights/ember-insights) [![Ember Observer Score](http://emberobserver.com/badges/ember-insights.svg)](http://emberobserver.com/addons/ember-insights)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ember-insights/ember-insights/blob/master/LICENSE.md) [![Build Status](https://travis-ci.org/ember-insights/ember-insights.svg?branch=master)](https://travis-ci.org/ember-insights/ember-insights) [![Ember Observer Score](http://emberobserver.com/badges/ember-insights.svg)](http://emberobserver.com/addons/ember-insights)
 
 ## Getting started
 

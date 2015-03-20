@@ -47,4 +47,50 @@ describe('Google Tracker', function() {
     GoogleTracker.setFields(_tracker, _namespace, fields);
   });
 
+  it('uses default trackerFun and trackingNamespace', function(done) {
+    var bckp = window['ga'];
+    window['ga'] = function (cdm, params) {
+      expect(cdm).to.equal('send');
+      expect(params).to.equal('a');
+      window['ga'] = bckp;
+      done();
+    };
+    var factory = GoogleTracker.factory;
+    var tracker = factory();
+    tracker.send('a');
+  });
+
+  it('uses custom trackerFun and trackingNamespace', function(done) {
+    var bckp = window['gaNew'];
+    window['gaNew'] = function (cdm, params) {
+      expect(cdm).to.equal('nmspc.send');
+      expect(params).to.equal('a');
+      window['gaNew'] = bckp;
+      done();
+    };
+    var factory = GoogleTracker.with({
+      trackerFun: 'gaNew',
+      trackingNamespace: 'nmspc'
+    });
+    var tracker = factory();
+    tracker.send('a');
+  });
+
+  it('sets GA fields on init', function(done) {
+    var bckp = window['gaNew'];
+    window['gaNew'] = function (cdm, key, val) {
+      expect(cdm).to.equal('nmspc.set');
+      expect(key).to.equal('appName');
+      expect(val).to.equal('app name');
+      window['gaNew'] = bckp;
+      done();
+    };
+    var factory = GoogleTracker.with({
+      trackerFun: 'gaNew',
+      trackingNamespace: 'nmspc',
+      fields: { appName: 'app name' }
+    });
+    var tracker = factory();
+  });
+
 });

@@ -20,16 +20,19 @@ function setFields(tracker, namespace, fields) {
   }
 }
 
-export default {
-  factory: function(settings) {
+function _buildFactory(trackerOptions) {
+  trackerOptions = trackerOptions || {};
 
-    function tracker() { return trackerFun(settings.trackerFun); }
-    var namespace = trackingNamespace(settings.trackingNamespace);
+  return function(settings) { // jshint ignore:line
+    function tracker() { return trackerFun(trackerOptions.trackerFun || 'ga'); }
+    var namespace = trackingNamespace(trackerOptions.trackingNamespace || '');
 
     // Runtime conveniences as a wrapper for tracker function
     var Tracker = AbstractTracker.extend({
-      applyAppFields: function() {
-        setFields(tracker(), namespace, settings.fields);
+      init: function() {
+        if (trackerOptions.fields) {
+          setFields(tracker(), namespace, trackerOptions.fields);
+        }
       },
       isTracker: function() {
         return (tracker() && typeof tracker() === 'function');
@@ -65,6 +68,14 @@ export default {
     });
 
     return new Tracker();
+  };
+}
+
+export default {
+  factory: _buildFactory(),
+
+  with: function(trackerOptions) {
+    return _buildFactory(trackerOptions);
   },
 
   trackerFun: trackerFun,

@@ -23,9 +23,6 @@ var AbstractTracker = Class.extend({
   },
   trackPageView: function(path, fields) { // jshint ignore:line
     notYetImplemented('trackPageView(path, fields)');
-  },
-  applyAppFields: function() {
-    notYetImplemented('applyAppFields()');
   }
 });
 

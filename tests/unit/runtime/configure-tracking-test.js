@@ -14,8 +14,6 @@ describe('Runtime #track', function() {
     var settings = addon.configs['default'];
     expect(settings).to.be.ok();
     expect(settings.mappings).to.be.ok();
-    expect(mapping.trackerFun).to.equal('ga');
-    expect(settings.trackingNamespace).to.equal('');
     expect(typeof mapping.trackerFactory === 'function').to.be.ok();
     expect(typeof mapping.tracker === 'object').to.be.ok();
     expect(settings.mappings.length).to.equal(1);
@@ -57,8 +55,6 @@ describe('Runtime #track', function() {
     settings = addon.configs['test'];
     expect(settings).to.be.ok();
     expect(settings.mappings).to.be.ok();
-    expect(mapping.trackerFun).to.equal('trackerFun');
-    expect(mapping.trackingNamespace).to.equal('trackingNamespace');
     expect(typeof mapping.trackerFactory === 'function').to.be.ok();
     expect(typeof mapping.tracker === 'object').to.be.ok();
     expect(settings.mappings.length).to.equal(1);

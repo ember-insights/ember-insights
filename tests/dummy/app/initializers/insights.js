@@ -9,6 +9,7 @@ export default {
 
     Insights.configure('development', {
       //trackerFactory: Insights.ConsoleTracker.factory
+      //trackerFactory: Insights.GoogleTracker.with({})
       trackerFactory: Insights.GoogleTracker.factory
     }).track({
       insights: {

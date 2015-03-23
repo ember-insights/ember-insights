@@ -30,11 +30,12 @@ export default {
 
     EmberInsights.configure('production', {
       // Factory that provides tracker instance.
-      trackerFactory: EmberInsights.GoogleTracker.factory,
+      trackerFactory: EmberInsights.GoogleTracker.with({
+        // Sets GA specific application fields.
+        fields: { appName: 'appName', appId: 'appId', appVersion: 'appVersion' }
+      }),
       // Defines how to track transitions (available options are 'pageview', 'event').
-      trackTransitionsAs: 'pageview',
-      // Sets application fields.
-      fields: { appName: 'appName', appId: 'appId', appVersion: 'appVersion'}
+      trackTransitionsAs: 'pageview'
     }).track({
       insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true }
     });

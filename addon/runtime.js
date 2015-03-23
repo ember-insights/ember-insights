@@ -15,8 +15,6 @@ export default function(addon) {
       optparse.basicOpts(settings);
       optparse.trackerOpts(settings);
 
-      settings.tracker.applyAppFields();
-
       settings.mappings  = [];
       addon.configs[env] = settings;
 
@@ -24,10 +22,6 @@ export default function(addon) {
     },
     track: function(mapping) {
       Ember.assert("Can't find `insights` property inside", mapping.insights);
-
-      // fields params are not yet implemented,
-      // - https://github.com/roundscope/ember-insights/issues/56
-      delete mapping.fields;
 
       mapping.insights = Ember.Object.create(mapping.insights);
 

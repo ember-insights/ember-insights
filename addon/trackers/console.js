@@ -23,9 +23,6 @@ export default {
       },
       trackPageView: function(path, fieldNameObj) {
         logger('trackPageView', ['pageview', path, fieldNameObj]);
-      },
-      applyAppFields: function() {
-        logger('applyAppFields');
       }
     });
 

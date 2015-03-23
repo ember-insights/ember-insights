@@ -47,7 +47,7 @@ describe('Google Tracker', function() {
     GoogleTracker.setFields(_tracker, _namespace, fields);
   });
 
-  it('uses default trackerFun and trackingNamespace', function(done) {
+  it('uses default `trackerFun` and `name`', function(done) {
     var bckp = window['ga'];
     window['ga'] = function (cdm, params) {
       expect(cdm).to.equal('send');
@@ -60,7 +60,7 @@ describe('Google Tracker', function() {
     tracker.send('a');
   });
 
-  it('uses custom trackerFun and trackingNamespace', function(done) {
+  it('uses custom `trackerFun` and `name`', function(done) {
     var bckp = window['gaNew'];
     window['gaNew'] = function (cdm, params) {
       expect(cdm).to.equal('nmspc.send');
@@ -70,7 +70,7 @@ describe('Google Tracker', function() {
     };
     var factory = GoogleTracker.with({
       trackerFun: 'gaNew',
-      trackingNamespace: 'nmspc'
+      name: 'nmspc'
     });
     var tracker = factory();
     tracker.send('a');
@@ -87,7 +87,7 @@ describe('Google Tracker', function() {
     };
     var factory = GoogleTracker.with({
       trackerFun: 'gaNew',
-      trackingNamespace: 'nmspc',
+      name: 'nmspc',
       fields: { appName: 'app name' }
     });
     var tracker = factory();

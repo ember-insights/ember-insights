@@ -25,7 +25,7 @@ function _buildFactory(trackerOptions) {
 
   return function(settings) { // jshint ignore:line
     function tracker() { return trackerFun(trackerOptions.trackerFun || 'ga'); }
-    var namespace = trackingNamespace(trackerOptions.trackingNamespace || '');
+    var namespace = trackingNamespace(trackerOptions.name || '');
 
     // Runtime conveniences as a wrapper for tracker function
     var Tracker = AbstractTracker.extend({

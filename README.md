@@ -55,7 +55,9 @@ The easiest way to find out more details is checking [live demo](http://ember-in
 
 ## Ask for help
 
-Check out the [wiki](https://github.com/ember-insights/ember-insights/wiki). If you feel like porting or fixing something, please drop a [pull request](https://github.com/ember-insights/ember-insights/pulls) or [issue tracker](https://github.com/ember-insights/ember-insights/issues) at GitHub! I believe that with the help of everyone we can bring this to Ember in a modular and robust way.
+Check out the [wiki](https://github.com/ember-insights/ember-insights/wiki). If you feel like porting or fixing something, please drop a [pull request](https://github.com/ember-insights/ember-insights/pulls) or [issue tracker](https://github.com/ember-insights/ember-insights/issues) at GitHub! Check out the [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+
+I believe that with the help of everyone we can bring this to Ember in a modular and robust way.
 
 ## Acknowledgement
 

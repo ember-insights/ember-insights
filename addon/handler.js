@@ -31,17 +31,18 @@ function actionHandler(data, tracker, settings) {
 
 export default {
   factory: function(settings) {
-    var handler = function(type, data, tracker) {
-      if (type === 'transition') {
-        transitionHandler(data, tracker, settings);
+    function defaultDispatcher(type, data, tracker) {
+      switch(type) {
+        case 'transition':
+          transitionHandler(data, tracker, settings);
+          break;
+        case 'action':
+          actionHandler(data, tracker, settings);
+          break;
       }
+    }
 
-      if (type === 'action') {
-        actionHandler(data, tracker, settings);
-      }
-    };
-
-    return handler;
+    return defaultDispatcher;
   },
 
   transitionHandler: transitionHandler,

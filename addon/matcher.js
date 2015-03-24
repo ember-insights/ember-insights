@@ -81,8 +81,8 @@ function processMatchedGroups(matchedGroups, addonSettings, eventType, eventPara
       if (eventType === 'transition' && addonSettings.updateDocumentLocationOnTransitions) {
         matchedGroup.tracker.set('location', document.URL);
       }
-      // handle particular (matched) insight
-      matchedGroup.handler(eventType, eventParams, matchedGroup.tracker);
+      // dispatches mapped action
+      matchedGroup.dispatch(eventType, eventParams, matchedGroup.tracker);
     }
 }
 

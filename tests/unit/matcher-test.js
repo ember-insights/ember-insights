@@ -5,21 +5,19 @@ import { pushToResult, getSearchingPaths, checkInAll, processMatchedGroups } fro
 
 describe('Matcher', function() {
 
-  it('adds mached groups to searching result', function(){
-    var holder;
-
-    // match found
-    holder = [];
+  it('does match', function(){
+    var holder = [];
     pushToResult(true, 'group', holder);
     expect(holder).to.deep.equal([{ group: 'group', keyMatched: true }]);
+  });
 
-    // match not found
-    holder = [];
+  it('does not match', function() {
+    var holder = [];
     pushToResult(false, 'group', holder);
     expect(holder).to.deep.equal([]);
   });
 
-  it('returns an array of searching paths', function() {
+  it('returns searching paths', function() {
     var eventType = 'transition';
     var routeName = 'mainpage.index';
     var routeNameNoIndex = 'mainpage';
@@ -46,7 +44,7 @@ describe('Matcher', function() {
     ]);
   });
 
-  describe('processes matched groups', function() {
+  describe('processes groups', function() {
     var testTracker, matchedGroups, addonSettings, eventType, eventParams;
 
     beforeEach(function() {
@@ -58,7 +56,7 @@ describe('Matcher', function() {
         group: {
           name: 'testName',
           tracker: testTracker,
-          handler: function() {}
+          dispatch: function() {}
         }
       }];
       addonSettings = {};
@@ -66,13 +64,15 @@ describe('Matcher', function() {
       eventParams   = { testProperty: 'testValue' };
     });
 
-    it('invokes handler', function(done) {
-      matchedGroups[0].group.handler = function(eventType, eventParams, tracker) {
+    it('invokes dispatcher', function(done) {
+      function dispatcher(eventType, eventParams, tracker) {
         expect(eventType).to.equal('transition');
         expect(eventParams).to.deep.equal({ testProperty: 'testValue' });
         expect(tracker).to.deep.equal(testTracker);
         done();
-      };
+      }
+
+      matchedGroups[0].group.dispatch = dispatcher;
       processMatchedGroups(matchedGroups, addonSettings, eventType, eventParams);
     });
 

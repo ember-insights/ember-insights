@@ -33,12 +33,10 @@ export default {
     return opts;
   },
 
-  handlerOpts: function(opts) {
-    var assert;
-
-    opts.handler = (opts.handler || DefaultHandler.factory(opts));
-    assert = (typeof opts.handler === 'function');
-    Ember.assert("'handler' should be a function", assert);
+  dispatcherOpts: function(opts) {
+    opts.dispatch = (opts.dispatch || DefaultHandler.factory(opts));
+    var assert = (typeof opts.dispatch === 'function');
+    Ember.assert("'dispatch' should be a function", assert);
 
     return opts;
   }

@@ -101,15 +101,15 @@ export default {
     ALL_ACTIONS: true,
 
     //
-    // Advanced handling.
-    // In order to redefine handling of users actions and transitions
-    // you're able to specify your own 'handler' behavior. The 'handler' function calls
-    // each time for certain insight.
+    // Sending custom events.
+    // In order to change default behavior of sending users actions, transitions and their context to the tracker
+    // you're able to specify your own dispatcher for each consecutive mapping.
+    // The 'dispatch' function behaves like a middleware so, that you will be able to prepare advanced context and send it to the provided tracker.
     //
     // * __type__ (string, event type such as 'transition' or 'action')
     // * __context__ (object, event context)
-    // * __tracker__ (object, instance of (Google|Console)Tracker)
-    // handler: function(type, context, tracker) {
+    // * __tracker__ (object, specified tracker instance)
+    // dispatch: function(type, context, tracker) {
     //
     // }
 

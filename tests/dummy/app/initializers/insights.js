@@ -26,7 +26,10 @@ export default {
             }
           }
         }
-      }
+      },
+      // dispatch: function(eventType, context, tracker) {
+      //   console.log('Gotcha!');
+      // }
     });
     Insights.start('development');
   }

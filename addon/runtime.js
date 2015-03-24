@@ -27,7 +27,7 @@ export default function(addon) {
 
       // apply defaults
       optparse.mergeTrackerOpts(mapping, _settings);
-      optparse.handlerOpts(mapping);
+      optparse.dispatcherOpts(mapping);
 
       // setup tracking mapping
       _settings.mappings.push(mapping);

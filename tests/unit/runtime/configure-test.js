@@ -17,8 +17,6 @@ describe('Runtime #configure', function() {
     settings = addon.configs['test'];
 
     expect(settings).to.be.ok();
-    expect(settings.trackerFun).to.equal('ga');
-    expect(settings.trackingNamespace).to.equal('');
     expect(typeof settings.trackerFactory === 'function').to.be.ok();
     expect(typeof settings.tracker === 'object').to.be.ok();
     expect(settings.trackTransitionsAs).to.equal('pageview');

@@ -1,5 +1,5 @@
 /* global Ember */
-import DefaultTracker from './trackers/google';
+import DefaultTracker from './trackers/console';
 import DefaultHandler from './handler';
 
 export default {
@@ -8,19 +8,9 @@ export default {
   },
 
   mergeTrackerOpts: function(opts, basicOpts) {
-    var assert, typeOf;
+    var assert;
 
     opts.debug = (opts.debug === undefined ? true : opts.debug);
-
-    opts.trackerFun = (opts.trackerFun || basicOpts.trackerFun || 'ga');
-    typeOf = typeof opts.trackerFun;
-    assert = (typeOf === 'function' || typeOf === 'string');
-    Ember.assert("'trackerFun' should be either a function or string option", assert);
-
-    opts.trackingNamespace = (opts.trackingNamespace || basicOpts.trackingNamespace || '');
-    typeOf = typeof opts.trackingNamespace;
-    assert = (typeOf === 'string');
-    Ember.assert("'trackingNamespace' should be a string option", assert);
 
     opts.trackerFactory = (opts.trackerFactory || basicOpts.trackerFactory || DefaultTracker.factory);
     assert = (typeof opts.trackerFactory === 'function');
@@ -43,12 +33,10 @@ export default {
     return opts;
   },
 
-  handlerOpts: function(opts) {
-    var assert;
-
-    opts.handler = (opts.handler || DefaultHandler.factory(opts));
-    assert = (typeof opts.handler === 'function');
-    Ember.assert("'handler' should be a function", assert);
+  dispatcherOpts: function(opts) {
+    opts.dispatch = (opts.dispatch || DefaultHandler.factory(opts));
+    var assert = (typeof opts.dispatch === 'function');
+    Ember.assert("'dispatch' should be a function", assert);
 
     return opts;
   }

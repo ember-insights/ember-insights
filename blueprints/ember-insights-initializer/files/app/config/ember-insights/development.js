@@ -94,24 +94,21 @@ export default {
   //       }
   //     }
   //   `
-
   insights: {
-
     ALL_TRANSITIONS: true,
     ALL_ACTIONS: true,
+  },
 
-    //
-    // Sending custom events.
-    // In order to change default behavior of sending users actions, transitions and their context to the tracker
-    // you're able to specify your own dispatcher for each consecutive mapping.
-    // The 'dispatch' function behaves like a middleware so, that you will be able to prepare advanced context and send it to the provided tracker.
-    //
-    // * __type__ (string, event type such as 'transition' or 'action')
-    // * __context__ (object, event context)
-    // * __tracker__ (object, specified tracker instance)
-    // dispatch: function(type, context, tracker) {
-    //
-    // }
-
-  }
+  //
+  // Sending custom events.
+  // In order to change default behavior of sending users actions, transitions and their context to the tracker
+  // you're able to specify your own dispatcher for each consecutive mapping.
+  // The 'dispatch' function behaves like a middleware so, that you will be able to prepare advanced context and send it to the provided tracker.
+  //
+  // * __type__ (string, event type such as 'transition' or 'action')
+  // * __context__ (object, event context)
+  // * __tracker__ (object, specified tracker instance)
+  // dispatch: function(type, context, tracker) {
+  //
+  // }
 };

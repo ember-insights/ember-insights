@@ -1,7 +1,7 @@
 {
   "name": "ember-insights",
-  "version": "0.1.2",
-  "description": "The Ember.js framework for measurement of user-centered metrics",
+  "version": "0.2.0",
+  "description": "The Ember.js addon for tracking web analytics and user experience",
   "homepage": "http://ember-insights.github.io",
   "license": "MIT",
   "author": "Roundscope Ukraine Labs",

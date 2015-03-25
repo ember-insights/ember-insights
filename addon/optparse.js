@@ -1,5 +1,5 @@
 /* global Ember */
-import DefaultTracker from './trackers/google';
+import DefaultTracker from './trackers/console';
 import DefaultHandler from './handler';
 
 export default {

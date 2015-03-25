@@ -22,8 +22,8 @@ export default {
     EmberInsights.configure('development', {
       // Pushes messages into `Ember.debug`, sets 'true' by default.
       // debug: false,
-      // Sets environment specific tracker.
-      trackerFactory: EmberInsights.ConsoleTracker.factory
+      // Sets environment-specific tracker, uses an 'EmberInsights.ConsoleTracker' by default.
+      // trackerFactory: EmberInsights.ConsoleTracker.factory
     }).track({
       insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true }
     });
@@ -33,7 +33,7 @@ export default {
       // debug: false,
       // Defines how to track transitions (available options are 'pageview' and 'event'), uses a 'pageview' by default.
       // trackTransitionsAs: 'event',
-      // Sets environment specific tracker.
+      // Sets environment-specific tracker.
       trackerFactory: EmberInsights.GoogleTracker.with({
         // Sets custom tracker object (available options are 'string' or 'function'), uses a 'ga' object by default.
         // trackerFun: '_ga',

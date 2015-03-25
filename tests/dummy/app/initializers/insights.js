@@ -8,9 +8,13 @@ export default {
   initialize: function (container, application) {
 
     Insights.configure('development', {
-      //trackerFactory: Insights.ConsoleTracker.factory
-      //trackerFactory: Insights.GoogleTracker.with({})
-      trackerFactory: Insights.GoogleTracker.factory
+      // trackerFactory: Insights.ConsoleTracker.factory
+
+      // trackerFactory: Insights.GoogleTracker.factory
+      // trackerFactory: Insights.GoogleTracker.with({
+      //   trackerFun: 'ga', name: ''
+      // })
+
     }).track({
       insights: {
         ALL_TRANSITIONS: {

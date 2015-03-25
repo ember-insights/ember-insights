@@ -12,7 +12,7 @@ export default {
       // debug: false,
       // Defines how to track transitions (available options are 'pageview' and 'event'), uses a 'pageview' by default.
       // trackTransitionsAs: 'event',
-      // Sets environment specific tracker, uses an 'EmberInsights.ConsoleTracker' by default.
+      // Sets environment-specific tracker, uses an 'EmberInsights.ConsoleTracker' by default.
       // trackerFactory: EmberInsights.GoogleTracker.with({
       //   // Sets custom tracker object (available options are 'string' or 'function'), uses a 'ga' object by default.
       //   // trackerFun: '_ga',

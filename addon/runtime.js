@@ -35,6 +35,7 @@ export default function(addon) {
       return this;
     },
     start: function(env) {
+      env = (env || 'default');
       addon.settings = addon.configs[env];
       Ember.assert("can't find settings for '" + env + "' environment", addon.settings);
 

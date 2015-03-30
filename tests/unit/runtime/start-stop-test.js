@@ -7,9 +7,15 @@ describe('Engine Start/Stop', function() {
   it('tries to start', function() {
     function attempt() {
       var addon = { configs: [] };
-      runtime(addon).configure().start();
+      runtime(addon).configure().start('undefined');
     }
     expect(attempt).to.throw(Error);
+  });
+
+  it('starts runtime by default', function() {
+    var addon = { configs: [] };
+    runtime(addon).configure().start();
+    expect(addon.isActivated).to.be.ok();
   });
 
   it('starts runtime', function() {

@@ -9,6 +9,13 @@ describe('Runtime #track', function() {
     addon = { configs: [] };
   });
 
+  it('requires "insights"', function() {
+    var attempt = function() {
+      runtime(addon).configure().track({});
+    };
+    expect(attempt).to.throw(Error, "Can't find `insights` property inside");
+  });
+
   describe('in context of #configure/2', function() {
 
     var mapping = { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } };

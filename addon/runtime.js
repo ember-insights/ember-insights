@@ -7,13 +7,14 @@ export default function(addon) {
   var _settings = {}; // current configuration stage
   var runtime = {
     configure: function() {
+      optparse.defaultConfigureOpts(arguments);
       if (typeof arguments[0] === 'string') {
         if (!(arguments[2] && arguments[2].append)) {
           _settings = {};
         }
-        var env       = (arguments[0] || 'default');
-        var settings  = (arguments[1] || {});
-        _settings[env] = settings;
+        var env         = arguments[0];
+        var settings    = arguments[1];
+        _settings[env]  = settings;
 
         // apply defaults
         optparse.basicOpts(settings);
@@ -21,8 +22,7 @@ export default function(addon) {
 
         settings.mappings  = [];
         addon.configs[env] = settings;
-      }
-      else if (typeof arguments[0] === 'object') {
+      } else if (typeof arguments[0] === 'object') {
         var envs = arguments[0];
         var self = this;
         Object.keys(envs).forEach(function(envName) {
@@ -32,7 +32,7 @@ export default function(addon) {
       return this;
     },
     track: function(mapping) {
-      Ember.assert("Can't find `insights` property inside", mapping.insights);
+      mapping = optparse.defaultTrackOpts(mapping);
 
       Object.keys(_settings).forEach(function(settingsName) {
         var newMapping = Ember.$.extend(true, {}, mapping);

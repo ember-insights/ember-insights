@@ -23,7 +23,8 @@ export default {
   defaultTrackOpts: function(opts) {
     var defaultOpts = { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } };
     opts = (opts || defaultOpts);
-    Ember.assert("Can't find `insights` property inside", opts.insights);
+    var assert = (typeof opts.insights === 'object');
+    Ember.assert("Can't find `insights` property inside", assert);
     return opts;
   },
 

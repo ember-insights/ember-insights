@@ -74,7 +74,7 @@ Which is the same as available by default:
 EmberInsights.configure();
 ```
 
-_Tips: [Trackers](https://github.com/ember-insights/ember-insights/wiki#trackers) wiki has more specific details._
+_Tips: [Trackers](https://github.com/ember-insights/ember-insights/wiki#built-in-tracking-adapters) wiki has more specific details._
 
 ### #track/1 and #track/0 (as a default convinience)
 
@@ -122,7 +122,7 @@ to submit a custom insight other that sends by default in context of specific `t
 });
 ```
 
-_Tips: [Tracking mappings](https://github.com/ember-insights/ember-insights/wiki#tracking-mappings) page has more specific details._
+_Tips: [Tracking mappings](https://github.com/ember-insights/ember-insights/wiki#tracking-metrics) page has more specific details._
 
 ### #start/1 and #stop/0
 

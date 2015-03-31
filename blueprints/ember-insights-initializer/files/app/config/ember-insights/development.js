@@ -94,6 +94,9 @@ export default {
   //       }
   //     }
   //   `
+  //
+  // Tips: find more details here, https://github.com/ember-insights/ember-insights/wiki/Specifying-Insights-tracking
+  ///
   insights: {
     ALL_TRANSITIONS: true,
     ALL_ACTIONS: true,

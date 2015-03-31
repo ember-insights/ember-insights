@@ -9,7 +9,7 @@ describe('Engine Start/Stop', function() {
       var addon = { configs: [] };
       runtime(addon).configure().start('undefined');
     }
-    expect(attempt).to.throw(Error);
+    expect(attempt).to.throw(Error, "can't find settings for 'undefined' environment");
   });
 
   it('starts runtime by default', function() {

@@ -1,10 +1,10 @@
 {
   "name": "ember-insights",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The Ember.js addon for tracking web analytics and user experience",
   "homepage": "http://ember-insights.github.io",
   "license": "MIT",
-  "author": "Roundscope Ukraine Labs",
+  "author": "Aleksey Zatvobor",
   "repository": {
     "type": "git",
     "url": "https://github.com/ember-insights/ember-insights.git"

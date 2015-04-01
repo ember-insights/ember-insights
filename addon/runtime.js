@@ -4,39 +4,55 @@ import { ConsoleTracker, GoogleTracker } from './trackers';
 
 
 export default function(addon) {
-  var _settings; // current configuration stage
+  var _settings = {}; // current configuration stage
   var runtime = {
-    configure: function(env, settings) {
-      env       = (env || 'default');
-      settings  = (settings || {});
-      _settings = settings;
+    configure: function() {
+      optparse.defaultConfigureOpts(arguments);
+      if (typeof arguments[0] === 'string') {
+        if (!(arguments[2] && arguments[2].append)) {
+          _settings = {};
+        }
+        var env         = arguments[0];
+        var settings    = arguments[1];
+        _settings[env]  = settings;
 
-      // apply defaults
-      optparse.basicOpts(settings);
-      optparse.trackerOpts(settings);
+        // apply defaults
+        optparse.basicOpts(settings);
+        optparse.trackerOpts(settings);
 
-      settings.mappings  = [];
-      addon.configs[env] = settings;
-
+        settings.mappings  = [];
+        addon.configs[env] = settings;
+      } else if (typeof arguments[0] === 'object') {
+        var envs = arguments[0];
+        var self = this;
+        Object.keys(envs).forEach(function(envName) {
+          self.configure(envName, envs[envName], { append: true });
+        });
+      }
       return this;
     },
     track: function(mapping) {
-      Ember.assert("Can't find `insights` property inside", mapping.insights);
+      mapping = optparse.defaultTrackOpts(mapping);
 
-      mapping.insights = Ember.Object.create(mapping.insights);
+      Object.keys(_settings).forEach(function(settingsName) {
+        var newMapping = Ember.$.extend(true, {}, mapping);
+        newMapping.insights = Ember.Object.create(newMapping.insights);
 
-      // apply defaults
-      optparse.mergeTrackerOpts(mapping, _settings);
-      optparse.dispatcherOpts(mapping);
-
-      // setup tracking mapping
-      _settings.mappings.push(mapping);
+        var setting = _settings[settingsName];
+        // apply defaults
+        optparse.mergeTrackerOpts(newMapping, setting);
+        optparse.dispatcherOpts(newMapping);
+        // setup tracking mapping
+        setting.mappings.push(newMapping);
+      });
 
       return this;
     },
     start: function(env) {
+      env = (env || 'default');
       addon.settings = addon.configs[env];
       Ember.assert("can't find settings for '" + env + "' environment", addon.settings);
+      Ember.assert("can't start without specified mappings", addon.settings.mappings.length > 0);
 
       addon.isActivated = true;
 

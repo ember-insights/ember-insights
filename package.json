@@ -1,10 +1,10 @@
 {
   "name": "ember-insights",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The Ember.js addon for tracking web analytics and user experience",
   "homepage": "http://ember-insights.github.io",
   "license": "MIT",
-  "author": "Roundscope Ukraine Labs",
+  "author": "Aleksey Zatvobor",
   "repository": {
     "type": "git",
     "url": "https://github.com/ember-insights/ember-insights.git"
@@ -24,17 +24,16 @@
     "test": "ember test"
   },
   "devDependencies": {
-    "broccoli-asset-rev": "^2.0.0",
-    "broccoli-sass": "0.6.2",
-    "ember-cli": "^0.2.1",
-    "ember-cli-app-version": "0.3.2",
-    "ember-cli-babel": "^4.0.0",
-    "ember-cli-content-security-policy": "0.3.0",
+    "broccoli-asset-rev": "^2.0.2",
+    "broccoli-sass": "0.6.3",
+    "ember-cli": "0.2.1",
+    "ember-cli-app-version": "0.3.3",
+    "ember-cli-content-security-policy": "0.4.0",
     "ember-cli-dependency-checker": "0.0.8",
     "ember-cli-htmlbars": "0.7.4",
     "ember-cli-ic-ajax": "0.1.1",
     "ember-cli-inject-live-reload": "^1.3.0",
-    "ember-cli-mocha": "^0.4.0",
+    "ember-cli-mocha": "^0.5.0",
     "ember-cli-uglify": "1.0.1",
     "ember-data": "1.0.0-beta.16",
     "ember-export-application-global": "^1.0.2"
@@ -48,6 +47,9 @@
     "user experience",
     "google analytics"
   ],
+  "dependencies": {
+    "ember-cli-babel": "^4.0.0"
+  },
   "ember-addon": {
     "configPath": "tests/dummy/config"
   }

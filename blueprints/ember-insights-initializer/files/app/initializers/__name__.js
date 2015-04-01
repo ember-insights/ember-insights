@@ -7,7 +7,7 @@ export default {
   name: 'ember-insights',
 
   initialize: function(/*container, application*/) {
-    EmberInsights.configure('development', {
+    EmberInsights.configure({
       'development': { debug:true },
       // 'production': {
         // Pushes messages into `Ember.debug`, sets 'true' by default.

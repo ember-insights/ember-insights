@@ -14,15 +14,16 @@ export default {
     return opts;
   },
 
+  configureOpts: ['debug', 'trackerFactory', 'trackTransitionsAs', 'updateDocumentLocationOnTransitions'],
+
   hasConfigureOpts: function(opts) {
-    var configureOpts = ['debug', 'trackerFactory', 'trackTransitionsAs', 'updateDocumentLocationOnTransitions'];
-    var result = Ember.A(configureOpts).find(function(e) { return opts.hasOwnProperty(e); });
+    let result = Ember.A(this.configureOpts).find( (e) => opts.hasOwnProperty(e) );
     return result;
   },
 
-  defaultTrackOpts: function(opts) {
-    var defaultOpts = { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } };
-    opts = (opts || defaultOpts);
+  defaultInsightsMapping: { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } },
+
+  defaultTrackOpts: function(opts = this.defaultInsightsMapping) {
     var assert = (typeof opts.insights === 'object');
     Ember.assert("Can't find `insights` property inside", assert);
     return opts;

@@ -48,8 +48,7 @@ export default function(addon) {
 
       return this;
     },
-    start: function(env) {
-      env = (env || 'default');
+    start: function(env = 'default') {
       addon.settings = addon.configs[env];
       Ember.assert("can't find settings for '" + env + "' environment", addon.settings);
       Ember.assert("can't start without specified mappings", addon.settings.mappings.length > 0);

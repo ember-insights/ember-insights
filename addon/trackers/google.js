@@ -9,9 +9,7 @@ function trackerFun(trackerFun, global) {
 }
 
 function trackingNamespace(name) {
-  return function(action) {
-    return (name ? name + '.' : '') + action;
-  };
+  return (action) => (name ? name + '.' : '') + action;
 }
 
 function setFields(tracker, namespace, fields) {

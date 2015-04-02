@@ -2,7 +2,7 @@ function transitionHandler(data, tracker, settings) {
   switch (settings.trackTransitionsAs) {
     case 'event':
       tracker.sendEvent(
-        'transition', JSON.stringify({ from: data.oldRouteName, to: data.routeName })
+        'transition', JSON.stringify({ from: data.prevRouteName, to: data.routeName })
       );
       break;
     case 'pageview':

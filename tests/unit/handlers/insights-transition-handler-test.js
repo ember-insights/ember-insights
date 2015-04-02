@@ -10,7 +10,7 @@ describe('Insights Handler in context of #transitionHandler', function() {
     it('as an "event"', function(done) {
       var settings = { trackTransitionsAs: 'event'};
       var data = {
-        oldRouteName: 'outer.inner.nested', routeName: 'outer.inner.index',
+        prevRouteName: 'outer.inner.nested', routeName: 'outer.inner.index',
       };
       var tracker = {
         sendEvent: function(type, json) {

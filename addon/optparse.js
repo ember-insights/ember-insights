@@ -17,7 +17,7 @@ export default {
   configureOpts: ['debug', 'trackerFactory', 'trackTransitionsAs', 'updateDocumentLocationOnTransitions'],
 
   hasConfigureOpts: function(opts) {
-    let result = Ember.A(this.configureOpts).find( (e) => opts.hasOwnProperty(e) );
+    let result = Ember.A(this.configureOpts).find( (e) => e in opts );
     return result;
   },
 

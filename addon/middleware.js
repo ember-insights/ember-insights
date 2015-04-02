@@ -39,18 +39,22 @@ export default {
       // use original implementation if addon is not activated
       if (!addon.isActivated) { this._super.apply(this, arguments); return; }
 
-      var appController = this.container.lookup('controller:application');
-      var routeName     = appController.get('currentRouteName');
+      var appController   = this.container.lookup('controller:application');
+      var routeName       = appController.get('currentRouteName');
+      var route           = this.container.lookup('route:' + routeName);
+      var url             = this.container.lookup('router:main').get('url');
+      var actionArguments = [].slice.call(arguments, 1);
 
-      _handle('action', {
-        actionName:       actionName,
-        actionArguments:  [].slice.call(arguments, 1),
-        route:            this.container.lookup('route:' + routeName),
-        routeName:        this.container.lookup('controller:application').get('currentRouteName'),
-        url:              this.container.lookup('router:main').get('url')
+      Ember.run.schedule('afterRender', this, function() {
+        _handle('action', {
+          actionName:       actionName,
+          actionArguments:  actionArguments,
+          route:            route,
+          routeName:        routeName,
+          url:              url
+        });
       });
 
-      // bubble event back to the Ember engine
       this._super.apply(this, arguments);
     }
 

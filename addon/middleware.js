@@ -23,10 +23,11 @@ export default {
       // drop a line to the console log
       if (addon.settings.debug) {
         var isMapped = (matchedGroups.length ? ' SEND' : ' TRAP');
-        var msg = "Ember-Insights%@: '%@'".fmt(isMapped, eventName);
-        if (data.oldRouteName) { msg += " from '%@':'%@'".fmt(data.oldRouteName, data.oldUrl); }
+        var template = { prompt: "Ember-Insights%@: '%@'", p1: " from '%@':'%@'", p2: " %@ '%@':'%@'" };
+        var msg = Ember.String.fmt(template.prompt, isMapped, eventName);
+        if (data.oldRouteName) { msg += Ember.String.fmt(template.p1, data.oldRouteName, data.oldUrl); }
         var prep = (type === 'action') ? 'action from' : 'to';
-        if (data.routeName)    { msg += " %@ '%@':'%@'".fmt(prep, data.routeName, data.url); }
+        if (data.routeName)    { msg += Ember.String.fmt(template.p2, prep, data.routeName, data.url); }
 
         Ember.debug(msg);
       }

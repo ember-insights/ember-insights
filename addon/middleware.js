@@ -24,7 +24,7 @@ export default {
       if (addon.settings.debug) {
         var isMapped = (matchedGroups.length ? ' SEND' : ' TRAP');
         var msg = "Ember-Insights%@: '%@'".fmt(isMapped, eventName);
-        if (data.oldRouteName) { msg += " from '%@':'%@'".fmt(data.oldRouteName, data.oldUrl); }
+        if (data.prevRouteName) { msg += " from '%@':'%@'".fmt(data.prevRouteName, data.prevUrl); }
         var prep = (type === 'action') ? 'action from' : 'to';
         if (data.routeName)    { msg += " %@ '%@':'%@'".fmt(prep, data.routeName, data.url); }
 
@@ -39,18 +39,22 @@ export default {
       // use original implementation if addon is not activated
       if (!addon.isActivated) { this._super.apply(this, arguments); return; }
 
-      var appController = this.container.lookup('controller:application');
-      var routeName     = appController.get('currentRouteName');
+      var appController   = this.container.lookup('controller:application');
+      var routeName       = appController.get('currentRouteName');
+      var route           = this.container.lookup('route:' + routeName);
+      var url             = this.container.lookup('router:main').get('url');
+      var actionArguments = [].slice.call(arguments, 1);
 
-      _handle('action', {
-        actionName:       actionName,
-        actionArguments:  [].slice.call(arguments, 1),
-        route:            this.container.lookup('route:' + routeName),
-        routeName:        this.container.lookup('controller:application').get('currentRouteName'),
-        url:              this.container.lookup('router:main').get('url')
+      Ember.run.schedule('afterRender', this, function() {
+        _handle('action', {
+          actionName:       actionName,
+          actionArguments:  actionArguments,
+          route:            route,
+          routeName:        routeName,
+          url:              url
+        });
       });
 
-      // bubble event back to the Ember engine
       this._super.apply(this, arguments);
     }
 
@@ -59,24 +63,22 @@ export default {
       // use original implementation if addon is not activated
       if (!addon.isActivated) { this._super.apply(this, arguments); return; }
 
-      var appController = this.container.lookup('controller:application');
-      var oldRouteName  = appController.get('currentRouteName');
-      var oldUrl        = oldRouteName ? this.get('url') : '';
+      var appController  = this.container.lookup('controller:application');
+      var prevRouteName  = appController.get('currentRouteName');
+      var prevUrl        = (prevRouteName ? this.get('url') : '');
+      var newRouteName   = arguments[0][arguments[0].length-1].name;
 
-      this._super.apply(this, arguments); // bubble event back to the Ember engine
-
-      var newRouteName = appController.get('currentRouteName');
-
-      Ember.run.scheduleOnce('routerTransitions', this, function() {
-        var newUrl = (this.get('url') || '/');
+      Ember.run.schedule('afterRender', this, function() {
         _handle('transition', {
-          route:        this.container.lookup('route:' + newRouteName),
-          routeName:    newRouteName,
-          oldRouteName: oldRouteName,
-          url:          newUrl,
-          oldUrl:       oldUrl
+          route:         this.container.lookup('route:' + newRouteName),
+          routeName:     newRouteName,
+          prevRouteName: prevRouteName,
+          url:           (this.get('url') || '/'),
+          prevUrl:       prevUrl
         });
       });
+
+      this._super.apply(this, arguments);
     }
 
     // start catching actions

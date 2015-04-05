@@ -9,7 +9,7 @@ function transitionHandler(data, tracker, settings) {
   }
 }
 
-function actionHandler(data, tracker, settings = {}) {
+function actionHandler(data, tracker) {
   var actionLabel = data.actionArguments[0];
   var actionValue = data.actionArguments[1];
 

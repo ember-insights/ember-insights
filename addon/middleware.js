@@ -35,17 +35,16 @@ export default {
     }
 
     // middleware for actions
-    function actionMiddleware(actionName) {
+    function actionMiddleware(actionName, ...actionArguments) {
       // use original implementation if addon is not activated
-      if (!addon.isActivated) { this._super.apply(this, arguments); return; }
+      if (!addon.isActivated) { this._super(...arguments); return; }
 
       let appController   = this.container.lookup('controller:application');
       let routeName       = appController.get('currentRouteName');
       let route           = this.container.lookup('route:' + routeName);
       let url             = this.container.lookup('router:main').get('url');
-      let actionArguments = [].slice.call(arguments, 1);
 
-      Ember.run.schedule('afterRender', this, function() {
+      Ember.run.schedule('afterRender', this, () => {
         _handle('action', {
           actionName:       actionName,
           actionArguments:  actionArguments,
@@ -55,20 +54,20 @@ export default {
         });
       });
 
-      this._super.apply(this, arguments);
+      this._super(...arguments);
     }
 
     // middleware for transitions
     function transitionMiddleware() {
       // use original implementation if addon is not activated
-      if (!addon.isActivated) { this._super.apply(this, arguments); return; }
+      if (!addon.isActivated) { this._super(...arguments); return; }
 
       let appController  = this.container.lookup('controller:application');
       let prevRouteName  = appController.get('currentRouteName');
       let prevUrl        = (prevRouteName ? this.get('url') : '');
       let newRouteName   = arguments[0][arguments[0].length-1].name;
 
-      Ember.run.schedule('afterRender', this, function() {
+      Ember.run.schedule('afterRender', this, () => {
         _handle('transition', {
           route:         this.container.lookup('route:' + newRouteName),
           routeName:     newRouteName,
@@ -78,7 +77,7 @@ export default {
         });
       });
 
-      this._super.apply(this, arguments);
+      this._super(...arguments);
     }
 
     // start catching actions

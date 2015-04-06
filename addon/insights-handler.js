@@ -10,15 +10,15 @@ function transitionHandler(data, tracker, settings) {
 }
 
 function actionHandler(data, tracker) {
-  var actionLabel = data.actionArguments[0];
-  var actionValue = data.actionArguments[1];
+  let actionLabel = data.actionArguments[0];
+  let actionValue = data.actionArguments[1];
 
   tracker.sendEvent('action', data.actionName, actionLabel, actionValue);
 }
 
 
 export default {
-  factory: function(settings) {
+  factory: (settings) => {
     function defaultDispatcher(type, data, tracker) {
       switch(type) {
         case 'transition':

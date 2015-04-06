@@ -4,7 +4,7 @@ import { ConsoleTracker, GoogleTracker } from './trackers';
 
 
 export default function(addon) {
-  var _settings = {}; // current configuration stage
+  let _settings = {}; // current configuration stage
   var runtime = {
     configure: function() {
       optparse.defaultConfigureOpts(arguments);
@@ -12,8 +12,8 @@ export default function(addon) {
         if (!(arguments[2] && arguments[2].append)) {
           _settings = {};
         }
-        var env         = arguments[0];
-        var settings    = arguments[1];
+        let env         = arguments[0];
+        let settings    = arguments[1];
         _settings[env]  = settings;
 
         // apply defaults
@@ -23,10 +23,9 @@ export default function(addon) {
         settings.mappings  = [];
         addon.configs[env] = settings;
       } else if (typeof arguments[0] === 'object') {
-        var envs = arguments[0];
-        var self = this;
-        Object.keys(envs).forEach(function(envName) {
-          self.configure(envName, envs[envName], { append: true });
+        let envs = arguments[0];
+        Object.keys(envs).forEach( (envName) => {
+          this.configure(envName, envs[envName], { append: true });
         });
       }
       return this;
@@ -34,11 +33,11 @@ export default function(addon) {
     track: function(mapping) {
       mapping = optparse.defaultTrackOpts(mapping);
 
-      Object.keys(_settings).forEach(function(settingsName) {
-        var newMapping = Ember.$.extend(true, {}, mapping);
+      Object.keys(_settings).forEach( (settingsName) => {
+        let newMapping = Ember.$.extend(true, {}, mapping);
         newMapping.insights = Ember.Object.create(newMapping.insights);
 
-        var setting = _settings[settingsName];
+        let setting = _settings[settingsName];
         // apply defaults
         optparse.mergeTrackerOpts(newMapping, setting);
         optparse.dispatcherOpts(newMapping);

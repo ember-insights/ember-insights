@@ -10,7 +10,7 @@ export default {
     Insights.configure('development', {
       // trackerFactory: Insights.ConsoleTracker.factory
 
-      // trackerFactory: Insights.GoogleTracker.factory
+      trackerFactory: Insights.GoogleTracker.factory
       // trackerFactory: Insights.GoogleTracker.with({
       //   trackerFun: 'ga', name: ''
       // })

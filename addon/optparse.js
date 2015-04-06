@@ -24,7 +24,7 @@ export default {
   defaultInsightsMapping: { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } },
 
   defaultTrackOpts: function(opts = this.defaultInsightsMapping) {
-    var assert = (typeof opts.insights === 'object');
+    let assert = (typeof opts.insights === 'object');
     Ember.assert("Can't find `insights` property inside", assert);
     return opts;
   },
@@ -34,7 +34,7 @@ export default {
   },
 
   mergeTrackerOpts: function(opts, basicOpts) {
-    var assert;
+    let assert;
 
     opts.debug = (opts.debug === undefined ? true : opts.debug);
 
@@ -61,7 +61,7 @@ export default {
 
   dispatcherOpts: function(opts) {
     opts.dispatch = (opts.dispatch || DefaultHandler.factory(opts));
-    var assert = (typeof opts.dispatch === 'function');
+    let assert = (typeof opts.dispatch === 'function');
     Ember.assert("'dispatch' should be a function", assert);
 
     return opts;

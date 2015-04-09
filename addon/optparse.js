@@ -14,16 +14,17 @@ export default {
     return opts;
   },
 
+  configureOpts: ['debug', 'trackerFactory', 'trackTransitionsAs', 'updateDocumentLocationOnTransitions'],
+
   hasConfigureOpts: function(opts) {
-    var configureOpts = ['debug', 'trackerFactory', 'trackTransitionsAs', 'updateDocumentLocationOnTransitions'];
-    var result = Ember.A(configureOpts).find(function(e) { return opts.hasOwnProperty(e); });
+    let result = Ember.A(this.configureOpts).find( (e) => e in opts );
     return result;
   },
 
-  defaultTrackOpts: function(opts) {
-    var defaultOpts = { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } };
-    opts = (opts || defaultOpts);
-    var assert = (typeof opts.insights === 'object');
+  defaultInsightsMapping: { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } },
+
+  defaultTrackOpts: function(opts = this.defaultInsightsMapping) {
+    let assert = (typeof opts.insights === 'object');
     Ember.assert("Can't find `insights` property inside", assert);
     return opts;
   },
@@ -33,7 +34,7 @@ export default {
   },
 
   mergeTrackerOpts: function(opts, basicOpts) {
-    var assert;
+    let assert;
 
     opts.debug = (opts.debug === undefined ? true : opts.debug);
 
@@ -60,7 +61,7 @@ export default {
 
   dispatcherOpts: function(opts) {
     opts.dispatch = (opts.dispatch || DefaultHandler.factory(opts));
-    var assert = (typeof opts.dispatch === 'function');
+    let assert = (typeof opts.dispatch === 'function');
     Ember.assert("'dispatch' should be a function", assert);
 
     return opts;

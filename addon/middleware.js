@@ -2,9 +2,9 @@
 import { getMatchedGroups, processMatchedGroups } from './matcher';
 
 export default {
-  use: function(addon) {
+  use: (addon) => {
     function _handle(type, data) {
-      var eventName, valueToMatch;
+      let eventName, valueToMatch;
 
       switch (type) {
         case 'transition':
@@ -17,67 +17,67 @@ export default {
           break;
       }
 
-      // look up for all matching insight mappings
-      var matchedGroups = getMatchedGroups(addon.settings.mappings, data.routeName, type, valueToMatch);
+      let matchedGroups = getMatchedGroups(addon.settings.mappings, data.routeName, type, valueToMatch);
 
-      // drop a line to the console log
+      // drop a line to the Ember.debug
       if (addon.settings.debug) {
-        var isMapped = (matchedGroups.length ? ' SEND' : ' TRAP');
-        var template = { prompt: "Ember-Insights%@: '%@'", p1: " from '%@':'%@'", p2: " %@ '%@':'%@'" };
-        var msg = Ember.String.fmt(template.prompt, isMapped, eventName);
-        if (data.oldRouteName) { msg += Ember.String.fmt(template.p1, data.oldRouteName, data.oldUrl); }
-        var prep = (type === 'action') ? 'action from' : 'to';
+        let isMapped = (matchedGroups.length ? ' SEND' : ' TRAP');
+        let template = { prompt: "Ember-Insights%@: '%@'", p1: " from '%@':'%@'", p2: " %@ '%@':'%@'" };
+        let msg = Ember.String.fmt(template.prompt, isMapped, eventName);
+        if (data.prevRouteName) { msg += Ember.String.fmt(template.p1, data.prevRouteName, data.prevUrl); }
+        let prep = (type === 'action') ? 'action from' : 'to';
         if (data.routeName)    { msg += Ember.String.fmt(template.p2, prep, data.routeName, data.url); }
 
         Ember.debug(msg);
       }
+
       processMatchedGroups(matchedGroups, addon.settings, type, data);
     }
 
-
     // middleware for actions
-    function actionMiddleware(actionName) {
+    function actionMiddleware(actionName, ...actionArguments) {
       // use original implementation if addon is not activated
-      if (!addon.isActivated) { this._super.apply(this, arguments); return; }
+      if (!addon.isActivated) { this._super(...arguments); return; }
 
-      var appController = this.container.lookup('controller:application');
-      var routeName     = appController.get('currentRouteName');
+      let appController   = this.container.lookup('controller:application');
+      let routeName       = appController.get('currentRouteName');
+      let route           = this.container.lookup('route:' + routeName);
+      let url             = this.container.lookup('router:main').get('url');
 
-      _handle('action', {
-        actionName:       actionName,
-        actionArguments:  [].slice.call(arguments, 1),
-        route:            this.container.lookup('route:' + routeName),
-        routeName:        this.container.lookup('controller:application').get('currentRouteName'),
-        url:              this.container.lookup('router:main').get('url')
+      Ember.run.schedule('afterRender', this, () => {
+        _handle('action', {
+          actionName:       actionName,
+          actionArguments:  actionArguments,
+          route:            route,
+          routeName:        routeName,
+          url:              url
+        });
       });
 
-      // bubble event back to the Ember engine
-      this._super.apply(this, arguments);
+      this._super(...arguments);
     }
 
     // middleware for transitions
     function transitionMiddleware() {
       // use original implementation if addon is not activated
-      if (!addon.isActivated) { this._super.apply(this, arguments); return; }
+      if (!addon.isActivated) { this._super(...arguments); return; }
 
-      var appController = this.container.lookup('controller:application');
-      var oldRouteName  = appController.get('currentRouteName');
-      var oldUrl        = oldRouteName ? this.get('url') : '';
+      let appController  = this.container.lookup('controller:application');
+      let prevRouteName  = appController.get('currentRouteName');
+      let prevUrl        = (prevRouteName ? this.get('url') : '');
+      let newRouteName   = arguments[0][arguments[0].length-1].name;
 
-      this._super.apply(this, arguments); // bubble event back to the Ember engine
-
-      var newRouteName = appController.get('currentRouteName');
-
-      Ember.run.scheduleOnce('routerTransitions', this, function() {
-        var newUrl = (this.get('url') || '/');
+      Ember.run.schedule('afterRender', this, () => {
         _handle('transition', {
-          route:        this.container.lookup('route:' + newRouteName),
-          routeName:    newRouteName,
-          oldRouteName: oldRouteName,
-          url:          newUrl,
-          oldUrl:       oldUrl
+          route:         this.container.lookup('route:' + newRouteName),
+          routeName:     newRouteName,
+          prevRouteName: prevRouteName,
+          url:           (this.get('url') || '/'),
+          prevUrl:       prevUrl
         });
       });
+
+      this._super(...arguments);
     }
 
     // start catching actions

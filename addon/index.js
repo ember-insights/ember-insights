@@ -1,8 +1,8 @@
 import runtime    from './runtime';
 import middleware from './middleware';
 
-var initializer = (function() {
-  var Addon = {
+var initializer = ( () => {
+  let Addon = {
     isActivated:  false,
     configs:      {},
     settings:     null

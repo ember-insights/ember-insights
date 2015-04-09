@@ -1,16 +1,16 @@
 /* global Ember */
 
 function groupMatches(group, routeName, eventType, eventValueToMatch) {
-  var routeNameNoIndex = routeName.replace('.index', '');
+  let routeNameNoIndex = routeName.replace('.index', '');
 
-  var allKey = 'ALL_' + eventType.toUpperCase() + 'S';
-  var all = group.insights.getWithDefault(allKey, false);
+  let allKey = 'ALL_' + eventType.toUpperCase() + 'S';
+  let all = group.insights.getWithDefault(allKey, false);
 
   if ( checkInAll(all, eventType, eventValueToMatch, routeNameNoIndex) ) {
     return allKey;
   }
 
-  var toMatch = getSearchingPaths(eventType, routeName, routeNameNoIndex, eventValueToMatch);
+  let toMatch = getSearchingPaths(eventType, routeName, routeNameNoIndex, eventValueToMatch);
 
   for (var i = 0, len = toMatch.length; i < len; i++) {
     var path   = toMatch[i][0];
@@ -24,19 +24,20 @@ function groupMatches(group, routeName, eventType, eventValueToMatch) {
 }
 
 function getSearchingPaths(eventType, routeName, routeNameNoIndex, eventValueToMatch) {
-  if (eventType === 'transition') {
-    return [
-      ['TRANSITIONS', routeName       ],
-      ['TRANSITIONS', routeNameNoIndex],
-      ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
-      ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
-    ];
-  } else if (eventType === 'action') {
-    return [
-      ['ACTIONS', eventValueToMatch],
-      ['MAP.' + routeName        + '.ACTIONS', eventValueToMatch],
-      ['MAP.' + routeNameNoIndex + '.ACTIONS', eventValueToMatch]
-    ];
+  switch (eventType) {
+    case 'transition':
+      return [
+        ['TRANSITIONS', routeName       ],
+        ['TRANSITIONS', routeNameNoIndex],
+        ['MAP.' + routeName        + '.ACTIONS', 'TRANSITION'],
+        ['MAP.' + routeNameNoIndex + '.ACTIONS', 'TRANSITION']
+      ];
+    case 'action':
+      return [
+        ['ACTIONS', eventValueToMatch],
+        ['MAP.' + routeName        + '.ACTIONS', eventValueToMatch],
+        ['MAP.' + routeNameNoIndex + '.ACTIONS', eventValueToMatch]
+      ];
   }
 }
 

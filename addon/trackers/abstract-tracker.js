@@ -5,7 +5,7 @@ function notYetImplemented(signature) {
   Ember.warn("function '" + signature + "' is not yet implemented");
 }
 
-var AbstractTracker = Class.extend({
+let AbstractTracker = Class.extend({
   isTracker: function() {
     notYetImplemented('isTracker()');
   },

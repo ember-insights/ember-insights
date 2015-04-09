@@ -2,13 +2,13 @@
 import AbstractTracker from './abstract-tracker';
 
 function logger(label, params) {
-  var message = Ember.String.fmt('LOG: Ember-Insights: ConsoleTracker.%@(%@)', label, params);
+  let message = Ember.String.fmt('LOG: Ember-Insights: ConsoleTracker.%@(%@)', label, params);
   Ember.Logger.log(message);
 }
 
 export default {
   factory: function() {
-    var Tracker = AbstractTracker.extend({
+    let Tracker = AbstractTracker.extend({
       getTracker: function() {
         return logger;
       },

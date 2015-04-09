@@ -9,9 +9,7 @@ function trackerFun(trackerFun, global) {
 }
 
 function trackingNamespace(name) {
-  return function(action) {
-    return (name ? name + '.' : '') + action;
-  };
+  return (action) => (name ? name + '.' : '') + action;
 }
 
 function setFields(tracker, namespace, fields) {
@@ -23,12 +21,12 @@ function setFields(tracker, namespace, fields) {
 function _buildFactory(trackerOptions) {
   trackerOptions = trackerOptions || {};
 
-  return function(settings) { // jshint ignore:line
-    function tracker() { return trackerFun(trackerOptions.trackerFun || 'ga'); }
-    var namespace = trackingNamespace(trackerOptions.name || '');
+  return function(/* settings */) {
+    let tracker = () => trackerFun(trackerOptions.trackerFun || 'ga');
+    let namespace = trackingNamespace(trackerOptions.name || '');
 
     // Runtime conveniences as a wrapper for tracker function
-    var Tracker = AbstractTracker.extend({
+    let Tracker = AbstractTracker.extend({
       init: function() {
         if (trackerOptions.fields) {
           setFields(tracker(), namespace, trackerOptions.fields);
@@ -48,7 +46,7 @@ function _buildFactory(trackerOptions) {
         tracker()(namespace('send'), fields);
       },
       sendEvent: function(category, action, label, value) {
-        var fields = {
+        let fields = {
           hitType:      'event',
           eventCategory: category,
           eventAction:   action,
@@ -60,7 +58,7 @@ function _buildFactory(trackerOptions) {
       trackPageView: function(path, fields) {
         fields = fields || {};
         if (!path) {
-          var loc = window.location;
+          let loc = window.location;
           path = loc.hash ? loc.hash.substring(1) : (loc.pathname + loc.search);
         }
         tracker()(namespace('send'), 'pageview', path, fields);

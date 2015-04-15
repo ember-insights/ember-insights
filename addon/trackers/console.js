@@ -7,9 +7,6 @@ function logger(label, params) {
 }
 
 class ConsoleTracker extends AbstractTracker {
-  getTracker() {
-    return logger;
-  }
   set(key, value) {
     logger('set', [key, value]);
   }

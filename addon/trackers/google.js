@@ -28,14 +28,6 @@ class GoogleTracker extends AbstractTracker {
     }
   }
 
-  isTracker() {
-    return (this.tracker() && typeof this.tracker() === 'function');
-  }
-
-  getTracker() {
-    return this.tracker();
-  }
-
   set(key, value) {
     this.tracker()(this.name('set'), key, value);
   }

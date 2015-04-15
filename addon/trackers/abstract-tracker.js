@@ -5,12 +5,6 @@ function notYetImplemented(signature) {
 }
 
 class AbstractTracker {
-  isTracker() {
-    notYetImplemented('isTracker()');
-  }
-  getTracker() {
-    notYetImplemented('getTracker()');
-  }
   set(key, value) { // jshint ignore:line
     notYetImplemented('set(key, value)');
   }

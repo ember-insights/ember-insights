@@ -1,29 +1,28 @@
 /* global Ember */
-import Class from '../vendor/inheritance';
 
 function notYetImplemented(signature) {
   Ember.warn("function '" + signature + "' is not yet implemented");
 }
 
-let AbstractTracker = Class.extend({
-  isTracker: function() {
+class AbstractTracker {
+  isTracker() {
     notYetImplemented('isTracker()');
-  },
-  getTracker: function() {
+  }
+  getTracker() {
     notYetImplemented('getTracker()');
-  },
-  set: function(key, value) { // jshint ignore:line
+  }
+  set(key, value) { // jshint ignore:line
     notYetImplemented('set(key, value)');
-  },
-  send: function(fields) { // jshint ignore:line
+  }
+  send(fields) { // jshint ignore:line
     notYetImplemented('send(fields)');
-  },
-  sendEvent: function(category, action, label, value) { // jshint ignore:line
+  }
+  sendEvent(category, action, label, value) { // jshint ignore:line
     notYetImplemented('sendEvent(category, action, label, value)');
-  },
-  trackPageView: function(path, fields) { // jshint ignore:line
+  }
+  trackPageView(path, fields) { // jshint ignore:line
     notYetImplemented('trackPageView(path, fields)');
   }
-});
+}
 
 export default AbstractTracker;

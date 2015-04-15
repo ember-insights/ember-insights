@@ -1,17 +1,21 @@
+/* global Ember */
 import runtime    from './runtime';
 import middleware from './middleware';
 
-var initializer = ( () => {
+let version = '0.4.0';
+Ember.libraries.register('Ember Insights', version);
+
+export default ( () => {
   let Addon = {
     isActivated:  false,
     configs:      {},
     settings:     null
   };
 
-  // start catching all of actions and transitions
   middleware.use(Addon);
 
-  return runtime(Addon);
-})();
+  let instance     = runtime(Addon);
+  instance.VERSION = version;
 
-export default initializer;
+  return instance;
+})();

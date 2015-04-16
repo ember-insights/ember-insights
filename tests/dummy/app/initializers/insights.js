@@ -1,5 +1,6 @@
 import Ember    from 'ember';
 import Insights from 'ember-insights';
+import AlertTracker from 'dummy/lib/alert_tracker';
 
 export default {
 
@@ -8,9 +9,9 @@ export default {
   initialize: function (container, application) {
 
     Insights.configure('development', {
-      // trackerFactory: Insights.ConsoleTracker.factory
-
-      trackerFactory: Insights.GoogleTracker.factory
+      // trackerFactory: AlertTracker.factory
+      trackerFactory: Insights.ConsoleTracker.factory
+      // trackerFactory: Insights.GoogleTracker.factory
       // trackerFactory: Insights.GoogleTracker.with({
       //   trackerFun: 'ga', name: ''
       // })

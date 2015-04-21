@@ -8,7 +8,7 @@ describe('Google Tracker', ()=> {
   describe('Configuration', ()=> {
 
     let assertTrackerByDefault = (tracker, name) => {
-      expect(tracker.tracker).to.be.ok();
+      expect(tracker.ga).to.be.ok();
       expect(tracker.name('')).to.be.equal(name);
     };
 

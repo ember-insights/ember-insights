@@ -1,12 +1,12 @@
-/* global Ember */
-import AbstractTracker from './abstract-tracker';
+/* global Ember, alert */
+import AbstractTracker from 'ember-insights/trackers/abstract-tracker';
 
 function logger(label, ...params) {
-  let message = Ember.String.fmt('LOG: Ember-Insights: ConsoleTracker.%@(%@)', label, params);
-  Ember.Logger.log(message);
+  let message = Ember.String.fmt('AlertTracker.%@(%@)', label, params);
+  alert(message);
 }
 
-class ConsoleTracker extends AbstractTracker {
+class AlertTracker extends AbstractTracker {
   set(key, value) {
     logger('set', key, value);
   }
@@ -20,7 +20,6 @@ class ConsoleTracker extends AbstractTracker {
     logger('trackPageView', 'pageview', path, fieldNameObj);
   }
 }
-
 export default {
-  factory: () => new ConsoleTracker()
+  factory: () => new AlertTracker()
 };

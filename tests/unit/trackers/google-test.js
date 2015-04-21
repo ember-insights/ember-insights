@@ -3,33 +3,74 @@ import { it } from 'ember-mocha';
 import { GoogleTracker }  from 'ember-insights/trackers';
 
 
-describe('Google Tracker', function() {
+describe('Google Tracker', ()=> {
 
-  it('sets tracking namespace', function() {
-    var command = GoogleTracker.trackingNamespace('namespace')('send');
-    expect(command).to.equal('namespace.send');
+  describe('Configuration', ()=> {
+
+    let assertTrackerByDefault = (tracker, name) => {
+      expect(tracker.ga).to.be.ok();
+      expect(tracker.name('')).to.be.equal(name);
+    };
+
+    describe('.factory/0', ()=> {
+
+      it('creates by default', ()=> {
+        let t = GoogleTracker.factory;
+        assertTrackerByDefault(t(), '');
+      });
+
+    });
+
+    describe('.with', ()=> {
+
+      it('creates by default', ()=> {
+        let t = GoogleTracker.with();
+        assertTrackerByDefault(t(), '');
+      });
+
+      it('creates by params', ()=> {
+        let params = { name:'newTracker' };
+        let t = GoogleTracker.with(params);
+        assertTrackerByDefault(t(), 'newTracker');
+      });
+
+    });
   });
 
-  it('does not set tracking namespace', function() {
-    var command = GoogleTracker.trackingNamespace()('set');
-    expect(command).to.equal('set');
+  describe('Custom tracking object name', ()=> {
 
-    command = GoogleTracker.trackingNamespace('')('set');
-    expect(command).to.equal('set');
+    it('with namespace', ()=> {
+      let command = GoogleTracker.trackingNamespace('namespace')('send');
+      expect(command).to.equal('namespace.send');
+
+      command = GoogleTracker.trackingNamespace('namespace')();
+      expect(command).to.equal('namespace');
+    });
+
+    it('with out namespace', ()=> {
+      let command = GoogleTracker.trackingNamespace()('set');
+      expect(command).to.equal('set');
+
+      command = GoogleTracker.trackingNamespace('')('set');
+      expect(command).to.equal('set');
+    });
   });
 
-  it('gets tracking function', function() {
-    var actual = GoogleTracker.trackerFun('global', { global: true });
-    expect(actual).to.be.ok();
+  describe('Custom tracking object', ()=> {
+    it('as a string', ()=> {
+      let actual = GoogleTracker.trackerFun('global', { global: true });
+      expect(actual).to.be.ok();
+    });
+
+    it('as a function', ()=> {
+      let expected = function() {};
+      let actual   = GoogleTracker.trackerFun(expected);
+      expect(actual).to.equal(expected);
+    });
   });
 
-  it('gets custom tracking function', function() {
-    var expected = function() {};
-    var actual   = GoogleTracker.trackerFun(expected);
-    expect(actual).to.equal(expected);
-  });
 
-  it('sets application fields', function(done) {
+  it.skip('sets application fields', function(done) {
     var countCalled = 0;
     var _tracker = function(nmspace, propName, propVal) {
       expect(nmspace).to.equal('namespace');
@@ -47,20 +88,7 @@ describe('Google Tracker', function() {
     GoogleTracker.setFields(_tracker, _namespace, fields);
   });
 
-  it('uses default `trackerFun` and `name`', function(done) {
-    var bckp = window['ga'];
-    window['ga'] = function (cdm, params) {
-      expect(cdm).to.equal('send');
-      expect(params).to.equal('a');
-      window['ga'] = bckp;
-      done();
-    };
-    var factory = GoogleTracker.factory;
-    var tracker = factory();
-    tracker.send('a');
-  });
-
-  it('uses custom `trackerFun` and `name`', function(done) {
+  it.skip('uses custom `trackerFun` and `name`', function(done) {
     var bckp = window['gaNew'];
     window['gaNew'] = function (cdm, params) {
       expect(cdm).to.equal('nmspc.send');
@@ -76,7 +104,7 @@ describe('Google Tracker', function() {
     tracker.send('a');
   });
 
-  it('sets GA fields on init', function(done) {
+  it.skip('sets GA fields on init', function(done) {
     var bckp = window['gaNew'];
     window['gaNew'] = function (cdm, key, val) {
       expect(cdm).to.equal('nmspc.set');

@@ -128,6 +128,14 @@ _Tips: [Tracking mappings](https://github.com/ember-insights/ember-insights/wiki
 
 Runtime management. So that, you are be able to `start` by environment name and `stop` tracking at all.
 
+```javascript
+var emberInsights = EmberInsights.configure(/*options*/).track(/*mappings*/);
+// ...
+emberInsights.start();
+// ...
+emberInsights.stop();
+```
+
 ## Advanced #configure/1
 
 This one provides you a bit different way for specifying environments as described before. The main purpose is

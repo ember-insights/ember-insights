@@ -12,7 +12,7 @@ describe('Google Tracker', ()=> {
       expect(tracker.name('')).to.be.equal(name);
     };
 
-    describe('.factory/0', ()=> {
+    describe('through .factory/0', ()=> {
 
       it('creates by default', ()=> {
         let t = GoogleTracker.factory;
@@ -21,7 +21,7 @@ describe('Google Tracker', ()=> {
 
     });
 
-    describe('.with', ()=> {
+    describe('through .with', ()=> {
 
       it('creates by default', ()=> {
         let t = GoogleTracker.with();
@@ -29,11 +29,34 @@ describe('Google Tracker', ()=> {
       });
 
       it('creates by params', ()=> {
-        let params = { name:'newTracker' };
-        let t = GoogleTracker.with(params);
+        let t = GoogleTracker.with({ name: 'newTracker' });
         assertTrackerByDefault(t(), 'newTracker');
       });
 
+      describe.skip('by creating tracker object', ()=> {
+
+        let createMock = (expectedProperyId, expectedParams, done) => {
+          return (command, propertyId, params) => {
+            expect(command).to.be.equal('create');
+            expect(propertyId).to.be.equal(expectedProperyId);
+            expect(params).to.be.equal(expectedParams);
+            done();
+          };
+        };
+
+        it('creates by default', (done)=> {
+          window['ga'] = createMock('UA-XXXX-Y', 'auto', done);
+          let t = GoogleTracker.with('ga', 'UA-XXXX-Y', 'auto');
+          assertTrackerByDefault(t(), '');
+        });
+
+        it('creates by params', (done)=> {
+          window['ga'] = createMock('UA-XXXX-Y', { name: 'newTracker' }, done);
+          let t = GoogleTracker.with('ga', 'UA-XXXX-Y', { name: 'newTracker' });
+          assertTrackerByDefault(t(), 'newTracker');
+        });
+
+      });
     });
   });
 

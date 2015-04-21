@@ -33,7 +33,7 @@ describe('Google Tracker', ()=> {
         assertTrackerByDefault(t(), 'newTracker');
       });
 
-      describe.skip('by creating tracker object', ()=> {
+      describe('by creating tracker object', ()=> {
 
         let createMock = (expectedProperyId, expectedParams, done) => {
           return (command, propertyId, params) => {
@@ -51,8 +51,9 @@ describe('Google Tracker', ()=> {
         });
 
         it('creates by params', (done)=> {
-          window['ga'] = createMock('UA-XXXX-Y', { name: 'newTracker' }, done);
-          let t = GoogleTracker.with('ga', 'UA-XXXX-Y', { name: 'newTracker' });
+          let params = { name: 'newTracker' };
+          window['ga'] = createMock('UA-XXXX-Y', params, done);
+          let t = GoogleTracker.with('ga', 'UA-XXXX-Y', params);
           assertTrackerByDefault(t(), 'newTracker');
         });
 
@@ -93,7 +94,7 @@ describe('Google Tracker', ()=> {
   });
 
 
-  it.skip('uses custom `trackerFun` and `name`', function(done) {
+  it('uses custom `trackerFun` and `name`', function(done) {
     var bckp = window['gaNew'];
     window['gaNew'] = function (cdm, params) {
       expect(cdm).to.equal('nmspc.send');

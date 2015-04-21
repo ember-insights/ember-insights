@@ -13,10 +13,21 @@ function trackingNamespace(name) {
 
 
 class GoogleTracker extends AbstractTracker {
-  constructor(trackerOptions = {}) {
+  constructor(trackerObject, propertyId, trackerOptions) {
     super();
-    this.ga       = () => trackerFun(trackerOptions.trackerFun || 'ga');
-    this.name     = trackingNamespace(trackerOptions.name || '');
+
+    if(typeof trackerObject === 'undefined') { trackerObject = {}; }
+    if(typeof trackerObject === 'object') {
+      trackerOptions = trackerObject;
+      this.ga        = () => trackerFun(trackerOptions.trackerFun || 'ga');
+      this.name      = trackingNamespace(trackerOptions.name || '');
+    }
+
+    if(typeof trackerObject === 'string') {
+      this.ga        = () => trackerFun(trackerObject);
+      this.name      = trackingNamespace(trackerOptions.name || '');
+      this.ga()('create', propertyId, trackerOptions);
+    }
   }
 
   set(key, value) {
@@ -49,13 +60,13 @@ class GoogleTracker extends AbstractTracker {
   }
 }
 
-function _buildFactory(trackerOptions) {
-  return (/* settings */) => new GoogleTracker(trackerOptions);
+function _buildFactory(trackerObject, propertyId, trackerOptions) {
+  return (/* settings */) => new GoogleTracker(trackerObject, propertyId, trackerOptions);
 }
 
 export default {
   factory: _buildFactory(),
-  with: (trackerOptions) => _buildFactory(trackerOptions),
+  with: function(trackerObject, propertyId, trackerOptions) { return _buildFactory(trackerObject, propertyId, trackerOptions); },
 
   trackerFun:        trackerFun,
   trackingNamespace: trackingNamespace,

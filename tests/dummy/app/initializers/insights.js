@@ -10,11 +10,11 @@ export default {
 
     Insights.configure('development', {
       // trackerFactory: AlertTracker.factory
-      trackerFactory: Insights.ConsoleTracker.factory
+      // trackerFactory: Insights.ConsoleTracker.factory
       // trackerFactory: Insights.GoogleTracker.factory
-      // trackerFactory: Insights.GoogleTracker.with({
-      //   trackerFun: 'ga', name: ''
-      // })
+      trackerFactory: Insights.GoogleTracker.with({
+        trackerFun: 'ga', name: '', fields: {appName: 'dummy'}
+      })
 
     }).track({
       insights: {

@@ -1,4 +1,3 @@
-/* global Ember */
 import AbstractTracker from './abstract-tracker';
 
 function trackerFun(trackerFun, global = window) {
@@ -12,22 +11,12 @@ function trackingNamespace(name) {
   return (action) => action ? ((name ? (name + '.') : '') + action) : name;
 }
 
-function setFields(ga, namespace, fields) {
-  Ember.deprecate('Settings custom application `fields` goes to be removed from next MINOR release.');
-  for (var propName in fields) {
-    ga(namespace('set'), propName, fields[propName]);
-  }
-}
 
 class GoogleTracker extends AbstractTracker {
   constructor(trackerOptions = {}) {
     super();
     this.ga       = () => trackerFun(trackerOptions.trackerFun || 'ga');
     this.name     = trackingNamespace(trackerOptions.name || '');
-
-    if (trackerOptions.fields) {
-      setFields(this.ga(), this.name, trackerOptions.fields);
-    }
   }
 
   set(key, value) {
@@ -70,5 +59,4 @@ export default {
 
   trackerFun:        trackerFun,
   trackingNamespace: trackingNamespace,
-  setFields:         setFields
 };

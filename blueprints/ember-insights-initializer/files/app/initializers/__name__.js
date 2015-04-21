@@ -19,9 +19,7 @@ export default {
         //   // Sets custom tracker object (available options are 'string' or 'function'), uses a 'ga' object by default.
         //   // trackerFun: '_ga',
         //   // Sets custom tracker name.
-        //   //name: 'newTracker',
-        //   // Sets application specific fields.
-        //   //fields: { appName: 'appName', appId: 'appId', appVersion: 'appVersion' }
+        //   //name: 'newTracker'
         // })
       // }
     }).track(

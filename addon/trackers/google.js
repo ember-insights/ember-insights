@@ -8,7 +8,7 @@ function trackerFun(trackerFun, global = window) {
 }
 
 function trackingNamespace(name) {
-  return (action) => (name ? name + '.' : '') + action;
+  return (action) => action ? ((name ? (name + '.') : '') + action) : name;
 }
 
 function setFields(ga, namespace, fields) {

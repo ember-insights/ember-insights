@@ -1,4 +1,4 @@
-_Hey, listen! This is alpha-level software with incomplete features and planned future changes. Users's metrics are extensive, and not trivial to implement. `ember-insights.js` is heavily based on Google Analytics._
+_Hey, listen! This is alpha-level software with planned future changes (check out **CHANGELOG** each time after releasing MINOR milestone). Users's metrics are extensive, and not trivial to implement. `ember-insights.js` is heavily based on Google Analytics (with ability to add others)._
 
 [![Build Status](https://travis-ci.org/ember-insights/ember-insights.svg?branch=master)](https://travis-ci.org/ember-insights/ember-insights) [![NPM version](http://img.shields.io/npm/v/ember-insights.svg)](https://npmjs.org/package/ember-insights) [![NPM Downloads](https://img.shields.io/npm/dm/ember-insights.svg)](https://npmjs.org/package/ember-insights) [![Ember Observer Score](http://emberobserver.com/badges/ember-insights.svg)](http://emberobserver.com/addons/ember-insights) [![License](https://img.shields.io/npm/l/ember-insights.svg)](https://github.com/ember-insights/ember-insights/blob/master/LICENSE.md)
 
@@ -10,7 +10,7 @@ Use blueprint for generating configs and initializer.
 
 `$` `ember generate ember-insights-initializer ember-insights`
 
-Or you could manually drop an initializer.
+Or just drop an initializer manually.
 
 ```javascript
 import EmberInsights from 'ember-insights';

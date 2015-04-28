@@ -11,8 +11,8 @@ class AbstractTracker {
   send(fields) { // jshint ignore:line
     notYetImplemented('send(fields)');
   }
-  sendEvent(category, action, label, value) { // jshint ignore:line
-    notYetImplemented('sendEvent(category, action, label, value)');
+  sendEvent(category, action, ...tail) { // jshint ignore:line
+    notYetImplemented('sendEvent(category, action, ...tail)');
   }
   trackPageView(path, fields) { // jshint ignore:line
     notYetImplemented('trackPageView(path, fields)');

@@ -17,6 +17,7 @@ class GoogleTracker extends AbstractTracker {
     super();
 
     if(typeof trackerObject === 'undefined') { trackerObject = {}; }
+
     if(typeof trackerObject === 'object') {
       trackerOptions = trackerObject;
       this.ga        = () => trackerFun(trackerOptions.trackerFun || 'ga');
@@ -38,14 +39,13 @@ class GoogleTracker extends AbstractTracker {
     this.ga()(this.name('send'), fields);
   }
 
-  sendEvent(category, action, label, value) {
-    let fields = {
-      hitType:      'event',
-      eventCategory: category,
-      eventAction:   action,
-      eventLabel:    label,
-      eventValue:    value
-    };
+  sendEvent(category, action, ...tail) {
+    let fields = ((typeof tail[0] === 'object') ? tail[0] : (tail[2] ? tail[2] : {}));
+    fields.hitType       = 'event';
+    fields.eventCategory = category;
+    fields.eventAction   = action;
+    fields.eventLabel    = tail[0];
+    fields.eventValue    = tail[1];
 
     this.send(fields);
   }

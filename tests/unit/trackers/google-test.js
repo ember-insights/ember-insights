@@ -33,6 +33,11 @@ describe('Google Tracker', ()=> {
         assertTrackerByDefault(t(), 'newTracker');
       });
 
+      it('creates by params w/ undefined `trackerFun`', ()=> {
+        let t = GoogleTracker.with({ name: 'newTracker', trackerFun: undefined });
+        assertTrackerByDefault(t(), 'newTracker');
+      });
+
       describe('by creating tracker object', ()=> {
 
         let createMock = (expectedProperyId, expectedParams, done) => {
@@ -93,6 +98,53 @@ describe('Google Tracker', ()=> {
     });
   });
 
+  describe('API', ()=> {
+
+    let t, trackerFun, assert;
+
+    describe('#sendEvent', ()=> {
+
+      beforeEach( ()=> {
+        trackerFun = (command, fields) => {
+          expect(command).to.be.equal('send');
+          expect(fields.hitType).to.be.equal('event');
+          expect(fields.eventCategory).to.be.equal('category');
+          expect(fields.eventAction).to.be.equal('action');
+          if(assert) assert(fields);
+        };
+        t = GoogleTracker.with({trackerFun: trackerFun})();
+      });
+
+      it('specifies event by required params', ()=> {
+        assert = (fields) => {
+          expect(fields.eventLabel).not.to.be.ok();
+          expect(fields.eventValue).not.to.be.ok();
+        };
+        t.sendEvent('category', 'action');
+      });
+      it('specifies event by required params and fields', ()=> {
+        assert = (fields) => {
+          expect(fields.nonInteraction).to.be.equal(1);
+        };
+        t.sendEvent('category', 'action', {'nonInteraction': 1});
+      });
+      it('specifies event by params', ()=> {
+        assert = (fields) => {
+          expect(fields.eventLabel).to.be.equal('label');
+          expect(fields.eventValue).to.be.equal(-1);
+        };
+        t.sendEvent('category', 'action', 'label', -1);
+      });
+      it('specifies event by params and fields', ()=> {
+        assert = (fields) => {
+          expect(fields.eventLabel).to.be.equal('label');
+          expect(fields.eventValue).to.be.equal(-1);
+          expect(fields.nonInteraction).to.be.equal(3);
+        };
+        t.sendEvent('category', 'action', 'label', -1, {'nonInteraction': 3});
+      });
+    });
+  });
 
   it('uses custom `trackerFun` and `name`', function(done) {
     var bckp = window['gaNew'];

@@ -144,6 +144,46 @@ describe('Google Tracker', ()=> {
         t.sendEvent('category', 'action', 'label', -1, {'nonInteraction': 3});
       });
     });
+
+    describe('#sendTiming', ()=> {
+      beforeEach( ()=> {
+        trackerFun = (command, fields) => {
+          expect(command).to.be.equal('send');
+          expect(fields.hitType).to.be.equal('timing');
+          expect(fields.timingCategory).to.be.equal('category');
+          expect(fields.timingVar).to.be.equal('var');
+          expect(fields.timingValue).to.be.equal(-1);
+          if(assert) assert(fields);
+        };
+        t = GoogleTracker.with({trackerFun: trackerFun})();
+      });
+
+      it('specifies timing by required params', ()=> {
+        assert = (fields) => {
+          expect(fields.timingLabel).not.to.be.ok();
+        };
+        t.sendTiming('category', 'var', -1);
+      });
+      it('specifies timing by required params and fields', ()=> {
+        assert = (fields) => {
+          expect(fields.page).to.be.equal('/my-new-page');
+        };
+        t.sendTiming('category', 'var', -1, {'page': '/my-new-page'});
+      });
+      it('specifies timing by params', ()=> {
+        assert = (fields) => {
+          expect(fields.timingLabel).to.be.equal('label');
+        };
+        t.sendTiming('category', 'var', -1, 'label');
+      });
+      it('specifies timing by params and fields', ()=> {
+        assert = (fields) => {
+          expect(fields.timingLabel).to.be.equal('label');
+          expect(fields.page).to.be.equal('/my-new-page');
+        };
+        t.sendTiming('category', 'var', -1, 'label', {'page': '/my-new-page'});
+      });
+    });
   });
 
   it('uses custom `trackerFun` and `name`', function(done) {

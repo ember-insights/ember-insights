@@ -50,6 +50,17 @@ class GoogleTracker extends AbstractTracker {
     this.send(fields);
   }
 
+  sendTiming(category, variable, value, ...tail) {
+    let fields = ((typeof tail[0] === 'object') ? tail[0] : (tail[1] ? tail[1] : {}));
+    fields.hitType        = 'timing';
+    fields.timingCategory = category;
+    fields.timingVar      = variable;
+    fields.timingValue    = value;
+    fields.timingLabel    = tail[0];
+
+    this.send(fields);
+  }
+
   trackPageView(path, fields) {
     fields = fields || {};
     if (!path) {

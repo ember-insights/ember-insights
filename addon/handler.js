@@ -9,10 +9,10 @@ export default {
     };
   },
   proxy: (dispatch, settings) => {
-    let timingHandler = TimingHandler.factory(settings);
+    let timing = new TimingHandler(settings);
     return (type, data, tracker) => {
       dispatch(type, data, tracker);
-      timingHandler(type, data, tracker);
+      timing.handle(type, data, tracker);
     };
   }
 };

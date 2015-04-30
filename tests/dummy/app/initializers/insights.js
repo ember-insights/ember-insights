@@ -17,6 +17,7 @@ export default {
       // })
 
     }).track({
+      timing: {transitions:true},
       insights: {
         ALL_TRANSITIONS: {
           except: ['index', 'main.record', 'outer', 'outer.inner', 'outer.inner.nested']

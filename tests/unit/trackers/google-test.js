@@ -164,12 +164,6 @@ describe('Google Tracker', ()=> {
         };
         t.sendTiming('category', 'var', -1);
       });
-      it('specifies timing by required params and fields', ()=> {
-        assert = (fields) => {
-          expect(fields.page).to.be.equal('/my-new-page');
-        };
-        t.sendTiming('category', 'var', -1, {'page': '/my-new-page'});
-      });
       it('specifies timing by params', ()=> {
         assert = (fields) => {
           expect(fields.timingLabel).to.be.equal('label');

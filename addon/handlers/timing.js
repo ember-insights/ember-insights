@@ -1,6 +1,8 @@
+/*global Ember*/
+
 class TimingHandler {
   constructor(settings) {
-    //this.settings = settings;
+    this.settings = settings;
     this.isTimingAvailable = (typeof window.performance === 'undefined');
     this.isTransitionsEnabled = settings.timing.transitions;
   }
@@ -21,8 +23,12 @@ class TimingHandler {
       timing.currentMark();
 
       if(timing.isPrevMark) {
-        let measure = timing.currentMeasure();
-        tracker.sendTiming('transition', data.prevRouteName, measure.duration, { page: data.prevUrl });
+        let duration = timing.currentMeasure().duration.toFixed();
+        if(this.settings.debug) {
+          let msg = Ember.String.fmt("Ember-Insights SEND TIMING: 'transition' for '%@' (%@ ms)", data.prevRouteName, duration);
+          Ember.debug(msg);
+        }
+        tracker.sendTiming('transition', data.prevRouteName, duration, 'time spend on-screen', { page: data.prevUrl });
         timing.releaseMeasurement();
       }
     }

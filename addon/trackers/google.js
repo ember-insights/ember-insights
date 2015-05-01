@@ -51,7 +51,7 @@ class GoogleTracker extends AbstractTracker {
   }
 
   sendTiming(category, variable, value, ...tail) {
-    let fields = ((typeof tail[0] === 'object') ? tail[0] : (tail[1] ? tail[1] : {}));
+    let fields = ((typeof tail[1] === 'object') ? tail[1] : {});
     fields.hitType        = 'timing';
     fields.timingCategory = category;
     fields.timingVar      = variable;

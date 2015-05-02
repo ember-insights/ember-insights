@@ -32,7 +32,7 @@ describe('Timing Handler', ()=> {
       expect(entries.currentMeasurement).to.be.equal('transition:prevUrl');
     });
 
-    it('#createTimingContext', ()=> {
+    it.skip('#createTimingContext', ()=> {
       let entries = subject.buildEntriesNames(data);
       let timing  = subject.createTimingContext(entries);
       expect(timing).to.be.ok();

@@ -2,6 +2,18 @@
   "framework": "mocha",
   "reporter": "dot",
   "test_page": "tests/index.html?hidepassed",
-  "launch_in_ci": [ "PhantomJS" ],
-  "launch_in_dev": [ "PhantomJS", "Chrome" ] 
+  "timeout": 540,
+  "launch_in_ci": [
+    "SL_Chrome_Current"
+  ],
+  "launch_in_dev": [
+    "PhantomJS",
+    "Chrome"
+  ],
+  "launchers": {
+    "SL_Chrome_Current": {
+      "command": "./node_modules/.bin/ember-cli-sauce -b chrome --no-ct --u <url>",
+      "protocol": "tap"
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import DefaultHandler from 'ember-insights/insights-handler';
+import DefaultHandler from 'ember-insights/handlers/insights';
 import { it } from 'ember-mocha';
 
 

@@ -1,4 +1,3 @@
-/* global Ember */
 import AbstractTracker from './abstract-tracker';
 
 function trackerFun(trackerFun, global = window) {
@@ -12,21 +11,23 @@ function trackingNamespace(name) {
   return (action) => action ? ((name ? (name + '.') : '') + action) : name;
 }
 
-function setFields(ga, namespace, fields) {
-  Ember.deprecate('Settings custom application `fields` goes to be removed from next MINOR release.');
-  for (var propName in fields) {
-    ga(namespace('set'), propName, fields[propName]);
-  }
-}
 
 class GoogleTracker extends AbstractTracker {
-  constructor(trackerOptions = {}) {
+  constructor(trackerObject, propertyId, trackerOptions) {
     super();
-    this.ga       = () => trackerFun(trackerOptions.trackerFun || 'ga');
-    this.name     = trackingNamespace(trackerOptions.name || '');
 
-    if (trackerOptions.fields) {
-      setFields(this.ga(), this.name, trackerOptions.fields);
+    if(typeof trackerObject === 'undefined') { trackerObject = {}; }
+
+    if(typeof trackerObject === 'object') {
+      trackerOptions = trackerObject;
+      this.ga        = () => trackerFun(trackerOptions.trackerFun || 'ga');
+      this.name      = trackingNamespace(trackerOptions.name || '');
+    }
+
+    if(typeof trackerObject === 'string') {
+      this.ga        = () => trackerFun(trackerObject);
+      this.name      = trackingNamespace(trackerOptions.name || '');
+      this.ga()('create', propertyId, trackerOptions);
     }
   }
 
@@ -38,14 +39,24 @@ class GoogleTracker extends AbstractTracker {
     this.ga()(this.name('send'), fields);
   }
 
-  sendEvent(category, action, label, value) {
-    let fields = {
-      hitType:      'event',
-      eventCategory: category,
-      eventAction:   action,
-      eventLabel:    label,
-      eventValue:    value
-    };
+  sendEvent(category, action, ...tail) {
+    let fields = ((typeof tail[0] === 'object') ? tail[0] : (tail[2] ? tail[2] : {}));
+    fields.hitType       = 'event';
+    fields.eventCategory = category;
+    fields.eventAction   = action;
+    fields.eventLabel    = tail[0];
+    fields.eventValue    = tail[1];
+
+    this.send(fields);
+  }
+
+  sendTiming(category, variable, value, ...tail) {
+    let fields = ((typeof tail[1] === 'object') ? tail[1] : {});
+    fields.hitType        = 'timing';
+    fields.timingCategory = category;
+    fields.timingVar      = variable;
+    fields.timingValue    = value;
+    fields.timingLabel    = tail[0];
 
     this.send(fields);
   }
@@ -60,15 +71,14 @@ class GoogleTracker extends AbstractTracker {
   }
 }
 
-function _buildFactory(trackerOptions) {
-  return (/* settings */) => new GoogleTracker(trackerOptions);
+function _buildFactory(trackerObject, propertyId, trackerOptions) {
+  return (/* settings */) => new GoogleTracker(trackerObject, propertyId, trackerOptions);
 }
 
 export default {
   factory: _buildFactory(),
-  with: (trackerOptions) => _buildFactory(trackerOptions),
+  with: function(trackerObject, propertyId, trackerOptions) { return _buildFactory(trackerObject, propertyId, trackerOptions); },
 
   trackerFun:        trackerFun,
   trackingNamespace: trackingNamespace,
-  setFields:         setFields
 };

@@ -1,4 +1,4 @@
-import DefaultHandler from 'ember-insights/insights-handler';
+import DefaultHandler from 'ember-insights/handlers/insights';
 import { it } from 'ember-mocha';
 
 
@@ -62,8 +62,8 @@ describe('Insights Handler in context of #transitionHandler', function() {
       };
 
       handler({}, tracker, settings);
-      expect(sendEventCalled).to.be.ok();
-      expect(trackPageViewCalled).not.to.be.ok();
+      expect(sendEventCalled).to.be.true();
+      expect(trackPageViewCalled).to.be.false();
     });
 
     it('calls #trackPageView in case of "pageview"', function() {
@@ -78,8 +78,8 @@ describe('Insights Handler in context of #transitionHandler', function() {
       };
 
       handler({}, tracker, settings);
-      expect(sendEventCalled).not.to.be.ok();
-      expect(trackPageViewCalled).to.be.ok();
+      expect(sendEventCalled).to.be.false();
+      expect(trackPageViewCalled).to.be.true();
     });
   });
 });

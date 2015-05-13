@@ -2,7 +2,7 @@
 import runtime    from './runtime';
 import middleware from './middleware';
 
-let version = '0.5.1';
+let version = '0.6.0';
 Ember.libraries.register('Ember Insights', version);
 
 export default ( () => {

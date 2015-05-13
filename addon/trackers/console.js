@@ -13,8 +13,11 @@ class ConsoleTracker extends AbstractTracker {
   send(fieldNameObj) {
     logger('send', fieldNameObj);
   }
-  sendEvent(category, action, label, value) {
-    logger('sendEvent', category, action, label, value);
+  sendEvent(category, action, ...tail) {
+    logger('sendEvent', category, action, ...tail);
+  }
+  sendTiming(category, variable, ...tail) {
+    logger('sendTiming', category, variable, ...tail);
   }
   trackPageView(path, fieldNameObj) {
     logger('trackPageView', 'pageview', path, fieldNameObj);

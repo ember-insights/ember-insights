@@ -22,10 +22,11 @@ export default {
   },
 
   defaultInsightsMapping: { insights: { ALL_TRANSITIONS: true, ALL_ACTIONS: true } },
+  defaultTimingSettings:   { timing: { transitions: false } },
 
   defaultTrackOpts: function(opts = this.defaultInsightsMapping) {
-    let assert = (typeof opts.insights === 'object');
-    Ember.assert("Can't find `insights` property inside", assert);
+    _assertInsightsMapping(opts);
+    _assertTimingSettings(opts, this.defaultTimingSettings);
     return opts;
   },
 
@@ -63,7 +64,20 @@ export default {
     opts.dispatch = (opts.dispatch || DefaultHandler.factory(opts));
     let assert = (typeof opts.dispatch === 'function');
     Ember.assert("'dispatch' should be a function", assert);
+    opts.dispatch = DefaultHandler.proxy(opts.dispatch, opts);
 
     return opts;
   }
 };
+
+
+function _assertInsightsMapping(opts) {
+  let assert = (typeof opts.insights === 'object');
+  Ember.assert("Can't find `insights` property inside", assert);
+}
+
+function _assertTimingSettings(opts, defaultTimingSettings) {
+  opts.timing = (opts.timing || defaultTimingSettings.timing);
+  let assert = (typeof opts.timing === 'object');
+  Ember.assert("Can't find a properly defined `timing` settings", assert);
+}

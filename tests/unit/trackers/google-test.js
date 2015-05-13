@@ -12,7 +12,7 @@ describe('Google Tracker', ()=> {
       expect(tracker.name('')).to.be.equal(name);
     };
 
-    describe('.factory/0', ()=> {
+    describe('through .factory/0', ()=> {
 
       it('creates by default', ()=> {
         let t = GoogleTracker.factory;
@@ -21,7 +21,7 @@ describe('Google Tracker', ()=> {
 
     });
 
-    describe('.with', ()=> {
+    describe('through .with', ()=> {
 
       it('creates by default', ()=> {
         let t = GoogleTracker.with();
@@ -29,11 +29,40 @@ describe('Google Tracker', ()=> {
       });
 
       it('creates by params', ()=> {
-        let params = { name:'newTracker' };
-        let t = GoogleTracker.with(params);
+        let t = GoogleTracker.with({ name: 'newTracker' });
         assertTrackerByDefault(t(), 'newTracker');
       });
 
+      it('creates by params w/ undefined `trackerFun`', ()=> {
+        let t = GoogleTracker.with({ name: 'newTracker', trackerFun: undefined });
+        assertTrackerByDefault(t(), 'newTracker');
+      });
+
+      describe('by creating tracker object', ()=> {
+
+        let createMock = (expectedProperyId, expectedParams, done) => {
+          return (command, propertyId, params) => {
+            expect(command).to.be.equal('create');
+            expect(propertyId).to.be.equal(expectedProperyId);
+            expect(params).to.be.equal(expectedParams);
+            done();
+          };
+        };
+
+        it('creates by default', (done)=> {
+          window['ga'] = createMock('UA-XXXX-Y', 'auto', done);
+          let t = GoogleTracker.with('ga', 'UA-XXXX-Y', 'auto');
+          assertTrackerByDefault(t(), '');
+        });
+
+        it('creates by params', (done)=> {
+          let params = { name: 'newTracker' };
+          window['ga'] = createMock('UA-XXXX-Y', params, done);
+          let t = GoogleTracker.with('ga', 'UA-XXXX-Y', params);
+          assertTrackerByDefault(t(), 'newTracker');
+        });
+
+      });
     });
   });
 
@@ -69,26 +98,89 @@ describe('Google Tracker', ()=> {
     });
   });
 
+  describe('API', ()=> {
 
-  it.skip('sets application fields', function(done) {
-    var countCalled = 0;
-    var _tracker = function(nmspace, propName, propVal) {
-      expect(nmspace).to.equal('namespace');
-      var expression = (propName === 'appName' && propVal === 'appName') || (propName === 'screenResolution' && propVal === 'screenResolution');
-      expect(expression).to.be.ok();
-      countCalled++;
-      if (countCalled === 2) { done(); }
-    };
-    var _namespace = function(commandName) {
-      expect(commandName).to.equal('set');
-      return 'namespace';
-    };
-    var fields = { appName: 'appName', screenResolution: 'screenResolution' };
+    let t, trackerFun, assert;
 
-    GoogleTracker.setFields(_tracker, _namespace, fields);
+    describe('#sendEvent', ()=> {
+
+      beforeEach( ()=> {
+        trackerFun = (command, fields) => {
+          expect(command).to.be.equal('send');
+          expect(fields.hitType).to.be.equal('event');
+          expect(fields.eventCategory).to.be.equal('category');
+          expect(fields.eventAction).to.be.equal('action');
+          if(assert) assert(fields);
+        };
+        t = GoogleTracker.with({trackerFun: trackerFun})();
+      });
+
+      it('specifies event by required params', ()=> {
+        assert = (fields) => {
+          expect(fields.eventLabel).not.to.be.ok();
+          expect(fields.eventValue).not.to.be.ok();
+        };
+        t.sendEvent('category', 'action');
+      });
+      it('specifies event by required params and fields', ()=> {
+        assert = (fields) => {
+          expect(fields.nonInteraction).to.be.equal(1);
+        };
+        t.sendEvent('category', 'action', {'nonInteraction': 1});
+      });
+      it('specifies event by params', ()=> {
+        assert = (fields) => {
+          expect(fields.eventLabel).to.be.equal('label');
+          expect(fields.eventValue).to.be.equal(-1);
+        };
+        t.sendEvent('category', 'action', 'label', -1);
+      });
+      it('specifies event by params and fields', ()=> {
+        assert = (fields) => {
+          expect(fields.eventLabel).to.be.equal('label');
+          expect(fields.eventValue).to.be.equal(-1);
+          expect(fields.nonInteraction).to.be.equal(3);
+        };
+        t.sendEvent('category', 'action', 'label', -1, {'nonInteraction': 3});
+      });
+    });
+
+    describe('#sendTiming', ()=> {
+      beforeEach( ()=> {
+        trackerFun = (command, fields) => {
+          expect(command).to.be.equal('send');
+          expect(fields.hitType).to.be.equal('timing');
+          expect(fields.timingCategory).to.be.equal('category');
+          expect(fields.timingVar).to.be.equal('var');
+          expect(fields.timingValue).to.be.equal(-1);
+          if(assert) assert(fields);
+        };
+        t = GoogleTracker.with({trackerFun: trackerFun})();
+      });
+
+      it('specifies timing by required params', ()=> {
+        assert = (fields) => {
+          expect(fields.timingLabel).not.to.be.ok();
+        };
+        t.sendTiming('category', 'var', -1);
+      });
+      it('specifies timing by params', ()=> {
+        assert = (fields) => {
+          expect(fields.timingLabel).to.be.equal('label');
+        };
+        t.sendTiming('category', 'var', -1, 'label');
+      });
+      it('specifies timing by params and fields', ()=> {
+        assert = (fields) => {
+          expect(fields.timingLabel).to.be.equal('label');
+          expect(fields.page).to.be.equal('/my-new-page');
+        };
+        t.sendTiming('category', 'var', -1, 'label', {'page': '/my-new-page'});
+      });
+    });
   });
 
-  it.skip('uses custom `trackerFun` and `name`', function(done) {
+  it('uses custom `trackerFun` and `name`', function(done) {
     var bckp = window['gaNew'];
     window['gaNew'] = function (cdm, params) {
       expect(cdm).to.equal('nmspc.send');
@@ -102,23 +194,6 @@ describe('Google Tracker', ()=> {
     });
     var tracker = factory();
     tracker.send('a');
-  });
-
-  it.skip('sets GA fields on init', function(done) {
-    var bckp = window['gaNew'];
-    window['gaNew'] = function (cdm, key, val) {
-      expect(cdm).to.equal('nmspc.set');
-      expect(key).to.equal('appName');
-      expect(val).to.equal('app name');
-      window['gaNew'] = bckp;
-      done();
-    };
-    var factory = GoogleTracker.with({
-      trackerFun: 'gaNew',
-      name: 'nmspc',
-      fields: { appName: 'app name' }
-    });
-    var tracker = factory();
   });
 
 });

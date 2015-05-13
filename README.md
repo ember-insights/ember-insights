@@ -124,6 +124,14 @@ to submit a custom insight other that sends by default in context of specific `t
 
 _Tips: [Tracking mappings](https://github.com/ember-insights/ember-insights/wiki#tracking-metrics) page has more specific details._
 
+#### timing
+
+Defines ability to send a timing report. This feature is based on [HTML5: User Timing API](http://www.html5rocks.com/en/tutorials/webperformance/usertiming/) and works just only for [particular browsers](http://caniuse.com/#search=timing).
+
+```javascript
+.track({ timing: { transitions: true } });
+```
+
 ### #start/1 and #stop/0
 
 Runtime management. So that, you are be able to `start` by environment name and `stop` tracking at all.

@@ -173,6 +173,6 @@ I believe that with the help of everyone we can bring this to Ember in a modular
 
 ## Acknowledgement
 
-Product of Roundscope Ukraine LLC. HEAD is https://github.com/ember-insights/ember-insights.
+Project's HEAD repository is https://github.com/ember-insights/ember-insights.
 
 [![Analytics](https://ga-beacon.appspot.com/UA-60632001-5/ember-insights/ember-insights/README)](https://github.com/igrigorik/ga-beacon)

@@ -1,6 +1,6 @@
 {
   "name": "ember-insights",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "The Ember.js addon for tracking web analytics and user experience",
   "homepage": "http://ember-insights.github.io",
   "license": "MIT",
@@ -52,6 +52,7 @@
     "ember-cli-babel": "^5.0.0"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "configPath": "tests/dummy/config",
+    "demoURL": "http://ember-insights.github.io/#task-success-component"
   }
 }

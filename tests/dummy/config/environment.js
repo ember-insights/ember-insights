@@ -17,6 +17,18 @@ module.exports = function(environment) {
       // Here you can pass flags/options to your application instance
       // when it is created
     },
+
+    // analyticsInsights: {
+    //   trackers: {
+    //     googleAnalytics: {
+    //       // webPropertyId: 'UA-XXXXS-Y',
+    //       loadScriptWithoutWebPropertyId: true,
+    //       linkid: false, // https://developers.google.com/analytics/devguides/collection/analyticsjs/advanced#enhancedlink
+    //       displayFeatures: false // https://developers.google.com/analytics/devguides/collection/analyticsjs/display-features
+    //     }
+    //   }
+    // },
+
     contentSecurityPolicyHeader: 'Content-Security-Policy-Report-Only',
     contentSecurityPolicy: {
       'default-src': "'none'",
